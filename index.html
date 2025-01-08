@@ -1,0 +1,532 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Patch Generator</title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+  <style>
+    body {
+      font-family: 'Arial', sans-serif;
+      background-color: #FFFFFFF;
+      color: #333;
+      margin: 0;
+      padding: 0;
+    }
+
+    /* Header section styling */
+    header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 20px;
+      background-color: #ffffff;
+      border-bottom: 1px solid #e6e6e6;
+    }
+
+    header h1 {
+      font-size: 1.2rem;
+      font-weight: bold;
+      margin: 0;
+      text-transform: uppercase;
+    }
+
+    header .version {
+      font-size: 0.8rem;
+      color: #666;
+    }
+
+    header .status {
+      display: flex;
+      gap: 10px;
+    }
+
+    .container {
+      width: 100%;
+      background-color: #f8f8f8;
+      max-width: 800px;
+      margin: 0 auto;
+      padding: 0 20px;
+      box-sizing: border-box;
+    }
+    .tutorial-container {
+      width: 100%;
+      background-color: #f8f8f8;
+      max-width: 800px;
+      margin-top:  10px;
+      margin-bottom: 10px;
+      margin-left: auto;
+      margin-right: auto;
+      padding: 10px 20px;
+      box-sizing: border-box;
+      white-space: pre-line;
+    }
+
+    @media (max-width: 840px) {
+      .container {
+        padding: 0 20px;
+      }
+    }
+
+    @media (max-width: 800px) {
+      .container {
+        width: calc(100% - 40px); /* 20px margin on both sides */
+      }
+    }
+
+    .status .status-indicator {
+      display: inline-block;
+      padding: 4px 8px;
+      font-size: 0.9rem;
+      color: #fff;
+      border-radius: 3px;
+    }
+
+    .status .op1 {
+      background-color: #ff6f61;
+    }
+
+    .status .opz {
+      background-color: #6c757d;
+    }
+
+    /* Drag-and-drop area styling */
+    .drag-and-drop {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 40px;
+      margin: 20px auto;
+      background-color: #f2f2f2;
+      border: 2px dashed #c0c0c0;
+      border-radius: 8px;
+      text-align: center;
+    }
+
+    .drag-and-drop span {
+      font-size: 1rem;
+      color: #555;
+    }
+
+    /* Rows container */
+    .rows {
+      max-width: 800px;
+      margin: 20px auto;
+      background-color: #ffffff;
+      border-radius: 8px;
+      box-shadow: 0px 2px 8px rgba(0, 0, 0, 0.1);
+    }
+
+    /* Individual rows */
+    .row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 10px 20px;
+      border-bottom: 1px solid #e6e6e6;
+      font-size: 1rem;
+    }
+
+    .row:last-child {
+      border-bottom: none;
+    }
+
+    .row .number {
+      flex: 0 0 30px;
+      font-weight: bold;
+      color: #888;
+    }
+
+    .row .circle {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background-color: #c0c0c0;
+      margin-right: 10px;
+      visibility: hidden;
+    }
+
+    .row .label {
+      flex: 1;
+      font-style: italic;
+      color: #888;
+    }
+
+    .row .file-name {
+      flex: 1;
+      color: #555;
+      text-align: right;
+    }
+
+    .row .clear-button {
+      display: none;
+      margin-left: 10px;
+      padding: 5px 10px;
+      font-size: 0.9em;
+      background-color: #ff6f61;
+      color: white;
+      border: none;
+      border-radius: 3px;
+      cursor: pointer;
+    }
+
+    .row .clear-button:hover {
+      background-color: #ff4940;
+    }
+
+    /* Highlight state for drag-and-drop */
+    .row.highlight {
+      background-color: #f0f8ff;
+    }
+    
+    .button {
+        display: inline-block;
+        padding: 10px 20px;
+        background-color: #007bff;
+        color: white;
+        text-align: center;
+        border: none;
+        cursor: pointer;
+        border-radius: 5px;
+        margin-bottom: 20px;
+      }
+
+    /* Footer or additional info */
+    footer {
+      text-align: center;
+      padding: 20px;
+      font-size: 0.9rem;
+      color: #aaa;
+    }
+    header {
+      text-align: center;
+      padding: 20px;
+      font-size: 1.1rem;
+      color: #aaa;
+    }
+
+    .keyboard-container {
+      display: flex;
+      gap: 10px; /* Space between containers */
+      width: 90%; /* Adjust width as needed */
+      flex-wrap: wrap; /* Allow containers to wrap to the next line if necessary */
+    }
+
+    .keyboard-section {
+      flex: 1; /* Makes all containers equally wide */
+      display: flex;
+      flex-direction: column;
+      gap: 10px; /* Space between rows */
+      background-color: #eaeaea;
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+      min-width: 200px; /* Minimum width for each container */
+    }
+
+    .keyboard-row {
+      display: flex;
+      gap: 10px; /* Space between child elements */
+    }
+
+    .keyboard-key {
+      flex: 1; /* Makes child elements within a row stretch equally */
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      background-color: #888;
+      font-style: italic;
+      color: white;
+      font-size: 0.8rem;
+      height: 50px; /* Height of child elements */
+      border-radius: 5px;
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    }
+    a {
+      color: #007bff;
+      text-decoration: none; /* Removes underline */
+      font-weight: bold;
+    }
+  </style>
+</head>
+<body>
+  <header>OP-XY Drum Patch Generator<button id="generateButton" class="button">Generate Patch</button></header>
+  <div class="tutorial-container">Drag and drop samples onto each row.
+
+  You can use your keyboard to play each sample:
+  <div class="keyboard-container" style="padding-top: 10px">
+    <div class="keyboard-section">
+      <div class="keyboard-row">
+        <div class="keyboard-key">W</div>
+        <div class="keyboard-key">E</div>
+        <div class="keyboard-key">R</div>
+      </div>
+      <div class="keyboard-row">
+        <div class="keyboard-key">A</div>
+        <div class="keyboard-key">S</div>
+        <div class="keyboard-key">D</div>
+        <div class="keyboard-key">F</div>
+      </div>
+    </div>
+    <div class="keyboard-section">
+      <div class="keyboard-row">
+        <div class="keyboard-key">Y</div>
+        <div class="keyboard-key">U</div>
+      </div>
+      <div class="keyboard-row">
+        <div class="keyboard-key">G</div>
+        <div class="keyboard-key">H</div>
+        <div class="keyboard-key">J</div>
+      </div>
+    </div>
+  </div>
+
+  Octave Up / Down
+  <div class="keyboard-row" style="width: 100px; padding-top: 10px;">
+  <div class="keyboard-key">Z</div>
+  <div class="keyboard-key">X</div>
+  </div>
+  When you are finished press <b>Generate Patch</b> to download a zip file containing the samples and the patch.json. Unzip into a folder named like <b>PresetName.preset</b>.
+  Check <a href="https://www.youtube.com/watch?v=u3f3tF35JwQ&t=5m30s"> this video</a> for more information about loading samples onto the OP-XY.
+  </div>
+  <div class="container">
+        <div id="rows"></div>
+  </div>
+  <footer>made by <a href="https://linktr.ee/Zeitgeese">zeitgeese</a></footer>
+
+  <script>
+    const circleRows = [2, 4, 6, 9, 11, 14, 16, 18, 21, 23];
+    const rowsContainer = document.getElementById('rows');
+    const baseJson = {
+      engine: {
+        bendrange: 8191,
+        highpass: 0,
+        modulation: {
+          aftertouch: { amount: 16383, target: 0 },
+          modwheel: { amount: 16383, target: 0 },
+          pitchbend: { amount: 16383, target: 0 },
+          velocity: { amount: 16383, target: 0 }
+        },
+        params: Array(8).fill(16384),
+        playmode: "poly",
+        "portamento.amount": 0,
+        "portamento.type": 32767,
+        transpose: 0,
+        "tuning.root": 0,
+        "tuning.scale": 0,
+        "velocity.sensitivity": 19660,
+        volume: 18348,
+        width: 0,
+      },
+      envelope: {
+        amp: { attack: 0, decay: 0, release: 1000, sustain: 32767 },
+        filter: { attack: 0, decay: 3276, release: 23757, sustain: 983 },
+      },
+      fx: { active: false, params: [22014, 0, 30285, 11880, 0, 32767, 0, 0], type: "ladder" },
+      lfo: { active: false, params: [20309, 5679, 19114, 15807, 0, 0, 0, 12287], type: "random" },
+      octave: 0,
+      platform: "OP-XY",
+      regions: [],
+      type: "drum",
+      version: 4,
+    };
+
+    const files = Array(24).fill(null);
+    const audioElements = Array(24).fill(null);
+
+    function createRow(rowNumber) {
+      const placeholder = {
+        1: "(kick)",
+        2: "(kick alt)",
+        3: "(snare)",
+        4: "(snare)",
+        5: "(rim)",
+        6: "(clap / snap)",
+        7: "(tamp / perc)",
+        8: "(shaker)",
+        9: "(closed hi-hat)",
+        10: "(closed hi-hat)",
+        11: "(open hi-hat)",
+        12: "(clave)",
+        13: "(low tom)",
+        14: "(ride)",
+        15: "(mid tom)",
+        16: "(crash)",
+        17: "(hi tom)",
+        18: "(triangle)",
+        19: "(low congo)",
+        20: "(high congo)",
+        21: "(cowbell)",
+        22: "(guiro)",
+        23: "(metal)",
+        24: "(chi)",
+      }
+      const row = document.createElement('div');
+      row.className = 'row';
+      row.dataset.row = rowNumber;
+
+      const number = document.createElement('div');
+      number.className = 'number';
+      number.textContent = rowNumber;
+
+      const circle = document.createElement('div');
+      circle.className = 'circle';
+      circle.style.visibility = circleRows.includes(rowNumber) ? 'visible' : 'hidden';
+
+      const label = document.createElement('div');
+      label.className = 'label';
+      label.textContent  = rowNumber in placeholder ? placeholder[rowNumber] : "wav file";
+
+      const fileName = document.createElement('span');
+      fileName.className = 'file-name';
+
+      const clearButton = document.createElement('button');
+      clearButton.textContent = 'Clear';
+      clearButton.style.display = 'none'; // Initially hidden
+      clearButton.className = 'button clear-button';
+      clearButton.addEventListener('click', () => {
+        label.textContent = rowNumber in placeholder ? placeholder[rowNumber] : "wav file";
+        fileName.textContent = '';
+        clearButton.style.display = 'none'; // Hide button
+        files[rowNumber - 1] = null; // Clear the file
+        audioElements[rowNumber - 1] = null; // Clear the file
+      });
+
+      row.appendChild(number);
+      row.appendChild(circle);
+      row.appendChild(label);
+      row.appendChild(fileName);
+      row.appendChild(clearButton); // Add the button to the row
+
+      row.addEventListener('dragover', (e) => {
+        e.preventDefault();
+        row.classList.add('highlight');
+      });
+
+      row.addEventListener('dragleave', () => {
+        row.classList.remove('highlight');
+      });
+
+    
+      row.addEventListener('drop', (e) => {
+        e.preventDefault();
+        row.classList.remove('highlight');
+
+        const file = e.dataTransfer.files[0];
+        if (file && file.name.endsWith('.wav')) {
+          //label.textContent = file.name;
+          fileName.textContent = `(${file.name})`;
+          files[rowNumber - 1] = file; // Store the File object
+          clearButton.style.display = 'inline-block'; // Show the button
+          // Create a new audio object and set it up
+          const reader = new FileReader();
+          reader.onload = () => {
+            const audio = new Audio(reader.result);
+            audioElements[rowNumber - 1] = audio; // Store the audio element
+          };
+          reader.readAsDataURL(file);
+        }
+      });
+
+      row.addEventListener('click', () => {
+        if (audioElements[rowNumber - 1]) {
+          audioElements[rowNumber - 1].play();
+        }
+      });
+
+      return row;
+    }
+
+    for (let i = 1; i <= 24; i++) {
+      rowsContainer.appendChild(createRow(i));
+    }
+    var octave = 0
+    keyMap = {
+      a: 0,
+      w: 1,
+      s: 2,
+      e: 3,
+      d: 4,
+      r: 5,
+      f: 6,
+      g: 7,
+      k: 8,
+      y: 9,
+      h: 10,
+      j: 11
+    }
+
+    document.addEventListener('keydown', (e) => {
+        const key = e.key.toLowerCase();
+        if (key == "z") {
+          octave = 0;
+        }
+        if (key == "x") {
+          octave = 1;
+        }
+        if (!(key in keyMap)) {
+          return;
+        }
+        rowNumber = keyMap[key] + (12 * octave);
+
+        if (audioElements[rowNumber]) {
+          audioElements[rowNumber].play();
+        }
+    });
+
+    document.getElementById('generateButton').addEventListener('click', async () => {
+      const patchJson = { ...baseJson, regions: [] };
+      const zip = new JSZip();
+
+      const fileReadPromises = files.map((file, index) => {
+        return new Promise((resolve) => {
+          if (file) {
+            const reader = new FileReader();
+            reader.onload = (e) => {
+              const rowNumber = index + 1;
+
+              // Add region to the patch.json
+              patchJson.regions.push({
+                "fade.in": 0,
+                "fade.out": 0,
+                "framecount": 6897,
+                hikey: 52 + rowNumber,
+                lokey: 52 + rowNumber,
+                pan: 0,
+                "pitch.keycenter": 60,
+                playmode: "oneshot",
+                reverse: false,
+                sample: file.name,
+                transpose: 0,
+                tune: 0,
+              });
+
+              // Add the file content to the ZIP
+              zip.file(file.name, e.target.result);
+              resolve();
+            };
+            reader.readAsArrayBuffer(file);
+          } else {
+            resolve(); // Skip empty slots
+          }
+        });
+      });
+      // Wait for all file reading to finish
+      await Promise.all(fileReadPromises);
+
+      // Add patch.json to the ZIP
+      zip.file("patch.json", JSON.stringify(patchJson, null, 2));
+
+      // Generate ZIP and download
+      const zipBlob = await zip.generateAsync({ type: "blob" });
+      const url = URL.createObjectURL(zipBlob);
+
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = 'Drums.preset.zip';
+      a.click() ;
+      URL.revokeObjectURL(url);
+    });
+
+  </script>
+</body>
+</html>
