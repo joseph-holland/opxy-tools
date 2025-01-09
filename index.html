@@ -489,9 +489,7 @@
             const reader = new FileReader();
             reader.onload = (e) => {
               const rowNumber = index + 1;
-              // {'d': duration, 's': sampleRate}
               audioMeta = audioData[index];
-              // Add region to the patch.json
               patchJson.regions.push({
                 "fade.in": 0,
                 "fade.out": 0,
