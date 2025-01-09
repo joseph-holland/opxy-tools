@@ -332,6 +332,7 @@
 
     const files = Array(24).fill(null);
     const audioElements = Array(24).fill(null);
+    const audioData = Array(24).fill(null);
 
     function createRow(rowNumber) {
       const placeholder = {
@@ -389,6 +390,7 @@
         clearButton.style.display = 'none'; // Hide button
         files[rowNumber - 1] = null; // Clear the file
         audioElements[rowNumber - 1] = null; // Clear the file
+        audioData[rowNumber - 1] = null;
       });
 
       row.appendChild(number);
@@ -419,7 +421,13 @@
           clearButton.style.display = 'inline-block'; // Show the button
           // Create a new audio object and set it up
           const reader = new FileReader();
-          reader.onload = () => {
+          reader.onload = async () => {
+            const audioContext = new AudioContext();
+            const arrayBuffer = await fetch(reader.result).then((res) => res.arrayBuffer());
+            const audioBuffer = await audioContext.decodeAudioData(arrayBuffer);
+            const duration = audioBuffer.duration;
+            const sampleRate = audioBuffer.sampleRate;
+            audioData[rowNumber - 1] = {'d': duration, 's': sampleRate};
             const audio = new Audio(reader.result);
             audioElements[rowNumber - 1] = audio; // Store the audio element
           };
@@ -483,12 +491,13 @@
             const reader = new FileReader();
             reader.onload = (e) => {
               const rowNumber = index + 1;
-
+              // {'d': duration, 's': sampleRate}
+              audioMeta = audioData[index];
               // Add region to the patch.json
               patchJson.regions.push({
                 "fade.in": 0,
                 "fade.out": 0,
-                "framecount": 6897,
+                "framecount": Math.floor(audioMeta['d'] * audioMeta['s']),
                 hikey: 52 + rowNumber,
                 lokey: 52 + rowNumber,
                 pan: 0,
