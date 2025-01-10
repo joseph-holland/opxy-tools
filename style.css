@@ -1,0 +1,259 @@
+body {
+  font-family: 'Arial', sans-serif;
+  background-color: #FFFFFFF;
+  color: #333;
+  margin: 0;
+  padding: 0;
+}
+header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20px;
+  background-color: #ffffff;
+  border-bottom: 1px solid #e6e6e6;
+}
+
+header h1 {
+  font-size: 1.2rem;
+  font-weight: bold;
+  margin: 0;
+  text-transform: uppercase;
+}
+
+header .version {
+  font-size: 0.8rem;
+  color: #666;
+}
+
+header .status {
+  display: flex;
+  gap: 10px;
+}
+
+.container {
+  width: 100%;
+  background-color: #f8f8f8;
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 0 20px;
+  box-sizing: border-box;
+}
+
+.colapsable-container {
+  width: 100%;
+  background-color: #f8f8f8;
+  max-width: 800px;
+  margin-top:  10px;
+  margin-bottom: 10px;
+  margin-left: auto;
+  margin-right: auto;
+  padding: 10px 20px;
+  box-sizing: border-box;
+  white-space: pre-line;
+}
+
+.top-line {
+  display: flex;
+  justify-content: space-between; /* Ensures left and right alignment */
+  align-items: center; /* Optional for vertical alignment */
+  width: 100%;
+}
+
+.hidden {
+  display: none;
+}
+
+.right-link {
+  margin-left: auto; /* Push the link to the right */
+}
+
+.section-header {
+  color: #888;
+  font-weight: bold;
+}
+
+@media (max-width: 840px) {
+  .container {
+    padding: 0 20px;
+  }
+}
+
+@media (max-width: 800px) {
+  .container {
+    width: calc(100% - 40px); /* 20px margin on both sides */
+  }
+}
+
+.status .status-indicator {
+  display: inline-block;
+  padding: 4px 8px;
+  font-size: 0.9rem;
+  color: #fff;
+  border-radius: 3px;
+}
+
+.status .op1 {
+  background-color: #ff6f61;
+}
+
+.status .opz {
+  background-color: #6c757d;
+}
+
+/* Drag-and-drop area styling */
+.drag-and-drop {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 40px;
+  margin: 20px auto;
+  background-color: #f2f2f2;
+  border: 2px dashed #c0c0c0;
+  border-radius: 8px;
+  text-align: center;
+}
+
+.drag-and-drop span {
+  font-size: 1rem;
+  color: #555;
+}
+
+/* Rows container */
+.rows {
+  max-width: 800px;
+  margin: 20px auto;
+  background-color: #ffffff;
+  border-radius: 8px;
+  box-shadow: 0px 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* Individual rows */
+.row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 20px;
+  border-bottom: 1px solid #e6e6e6;
+  font-size: 1rem;
+}
+
+.row:last-child {
+  border-bottom: none;
+}
+
+.row .number {
+  flex: 0 0 30px;
+  font-weight: bold;
+  color: #888;
+}
+
+.row .circle {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background-color: #c0c0c0;
+  margin-right: 10px;
+  visibility: hidden;
+}
+
+.row .label {
+  flex: 1;
+  font-style: italic;
+  color: #888;
+}
+
+.row .file-name {
+  flex: 1;
+  color: #555;
+  text-align: right;
+}
+
+.row .clear-button {
+  display: none;
+  margin-left: 10px;
+  padding: 5px 10px;
+  font-size: 0.9em;
+  background-color: #ff6f61;
+  color: white;
+  border: none;
+  border-radius: 3px;
+  cursor: pointer;
+}
+
+.row .clear-button:hover {
+  background-color: #ff4940;
+}
+
+/* Highlight state for drag-and-drop */
+.row.highlight {
+  background-color: #f0f8ff;
+}
+
+.button {
+    display: inline-block;
+    padding: 10px 20px;
+    background-color: #007bff;
+    color: white;
+    text-align: center;
+    border: none;
+    cursor: pointer;
+    border-radius: 5px;
+    margin-bottom: 20px;
+  }
+
+/* Footer or additional info */
+footer {
+  text-align: center;
+  padding: 20px;
+  font-size: 0.9rem;
+  color: #aaa;
+}
+header {
+  text-align: center;
+  padding: 20px;
+  font-size: 1.1rem;
+  color: #aaa;
+}
+
+.keyboard-container {
+  display: flex;
+  gap: 10px; /* Space between containers */
+  width: 90%; /* Adjust width as needed */
+  flex-wrap: wrap; /* Allow containers to wrap to the next line if necessary */
+}
+
+.keyboard-section {
+  flex: 1; /* Makes all containers equally wide */
+  display: flex;
+  flex-direction: column;
+  gap: 10px; /* Space between rows */
+  background-color: #eaeaea;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  min-width: 200px; /* Minimum width for each container */
+}
+
+.keyboard-row {
+  display: flex;
+  gap: 10px; /* Space between child elements */
+}
+
+.keyboard-key {
+  flex: 1; /* Makes child elements within a row stretch equally */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: #888;
+  font-style: italic;
+  color: white;
+  font-size: 0.8rem;
+  height: 50px; /* Height of child elements */
+  border-radius: 5px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+a {
+  color: #007bff;
+  text-decoration: none; /* Removes underline */
+  font-weight: bold;
+}

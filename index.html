@@ -5,286 +5,68 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Patch Generator</title>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
-  <style>
-    body {
-      font-family: 'Arial', sans-serif;
-      background-color: #FFFFFFF;
-      color: #333;
-      margin: 0;
-      padding: 0;
-    }
-    header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      padding: 20px;
-      background-color: #ffffff;
-      border-bottom: 1px solid #e6e6e6;
-    }
-
-    header h1 {
-      font-size: 1.2rem;
-      font-weight: bold;
-      margin: 0;
-      text-transform: uppercase;
-    }
-
-    header .version {
-      font-size: 0.8rem;
-      color: #666;
-    }
-
-    header .status {
-      display: flex;
-      gap: 10px;
-    }
-
-    .container {
-      width: 100%;
-      background-color: #f8f8f8;
-      max-width: 800px;
-      margin: 0 auto;
-      padding: 0 20px;
-      box-sizing: border-box;
-    }
-    .tutorial-container {
-      width: 100%;
-      background-color: #f8f8f8;
-      max-width: 800px;
-      margin-top:  10px;
-      margin-bottom: 10px;
-      margin-left: auto;
-      margin-right: auto;
-      padding: 10px 20px;
-      box-sizing: border-box;
-      white-space: pre-line;
-    }
-
-    @media (max-width: 840px) {
-      .container {
-        padding: 0 20px;
-      }
-    }
-
-    @media (max-width: 800px) {
-      .container {
-        width: calc(100% - 40px); /* 20px margin on both sides */
-      }
-    }
-
-    .status .status-indicator {
-      display: inline-block;
-      padding: 4px 8px;
-      font-size: 0.9rem;
-      color: #fff;
-      border-radius: 3px;
-    }
-
-    .status .op1 {
-      background-color: #ff6f61;
-    }
-
-    .status .opz {
-      background-color: #6c757d;
-    }
-
-    /* Drag-and-drop area styling */
-    .drag-and-drop {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      padding: 40px;
-      margin: 20px auto;
-      background-color: #f2f2f2;
-      border: 2px dashed #c0c0c0;
-      border-radius: 8px;
-      text-align: center;
-    }
-
-    .drag-and-drop span {
-      font-size: 1rem;
-      color: #555;
-    }
-
-    /* Rows container */
-    .rows {
-      max-width: 800px;
-      margin: 20px auto;
-      background-color: #ffffff;
-      border-radius: 8px;
-      box-shadow: 0px 2px 8px rgba(0, 0, 0, 0.1);
-    }
-
-    /* Individual rows */
-    .row {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      padding: 10px 20px;
-      border-bottom: 1px solid #e6e6e6;
-      font-size: 1rem;
-    }
-
-    .row:last-child {
-      border-bottom: none;
-    }
-
-    .row .number {
-      flex: 0 0 30px;
-      font-weight: bold;
-      color: #888;
-    }
-
-    .row .circle {
-      width: 10px;
-      height: 10px;
-      border-radius: 50%;
-      background-color: #c0c0c0;
-      margin-right: 10px;
-      visibility: hidden;
-    }
-
-    .row .label {
-      flex: 1;
-      font-style: italic;
-      color: #888;
-    }
-
-    .row .file-name {
-      flex: 1;
-      color: #555;
-      text-align: right;
-    }
-
-    .row .clear-button {
-      display: none;
-      margin-left: 10px;
-      padding: 5px 10px;
-      font-size: 0.9em;
-      background-color: #ff6f61;
-      color: white;
-      border: none;
-      border-radius: 3px;
-      cursor: pointer;
-    }
-
-    .row .clear-button:hover {
-      background-color: #ff4940;
-    }
-
-    /* Highlight state for drag-and-drop */
-    .row.highlight {
-      background-color: #f0f8ff;
-    }
-    
-    .button {
-        display: inline-block;
-        padding: 10px 20px;
-        background-color: #007bff;
-        color: white;
-        text-align: center;
-        border: none;
-        cursor: pointer;
-        border-radius: 5px;
-        margin-bottom: 20px;
-      }
-
-    /* Footer or additional info */
-    footer {
-      text-align: center;
-      padding: 20px;
-      font-size: 0.9rem;
-      color: #aaa;
-    }
-    header {
-      text-align: center;
-      padding: 20px;
-      font-size: 1.1rem;
-      color: #aaa;
-    }
-
-    .keyboard-container {
-      display: flex;
-      gap: 10px; /* Space between containers */
-      width: 90%; /* Adjust width as needed */
-      flex-wrap: wrap; /* Allow containers to wrap to the next line if necessary */
-    }
-
-    .keyboard-section {
-      flex: 1; /* Makes all containers equally wide */
-      display: flex;
-      flex-direction: column;
-      gap: 10px; /* Space between rows */
-      background-color: #eaeaea;
-      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-      min-width: 200px; /* Minimum width for each container */
-    }
-
-    .keyboard-row {
-      display: flex;
-      gap: 10px; /* Space between child elements */
-    }
-
-    .keyboard-key {
-      flex: 1; /* Makes child elements within a row stretch equally */
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      background-color: #888;
-      font-style: italic;
-      color: white;
-      font-size: 0.8rem;
-      height: 50px; /* Height of child elements */
-      border-radius: 5px;
-      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-    }
-    a {
-      color: #007bff;
-      text-decoration: none; /* Removes underline */
-      font-weight: bold;
-    }
-  </style>
+  <script src="audio_tools.js"></script>
+  <link rel="stylesheet" href="style.css">
 </head>
 <body>
   <header>OP-XY Drum Patch Generator<button id="generateButton" class="button">Generate Patch</button></header>
-  <div class="tutorial-container">Drag and drop samples onto each row.
+  <div class="colapsable-container">
+    <div class="top-line">
+      <span class="section-header">how to</span>
+      <a href="#" class="right-link" onclick="toggleTutorial()">expand / collapse</a>
+    </div><div class="tutorial-container" style="font-size: 0.9rem;">
+      Drag and drop samples onto each row.
 
-  You can use your keyboard to play each sample:
-  <div class="keyboard-container" style="padding-top: 10px">
-    <div class="keyboard-section">
-      <div class="keyboard-row">
-        <div class="keyboard-key">W</div>
-        <div class="keyboard-key">E</div>
-        <div class="keyboard-key">R</div>
+      You can use your keyboard to play each sample:
+      <div class="keyboard-container" style="padding-top: 10px">
+        <div class="keyboard-section">
+          <div class="keyboard-row">
+            <div class="keyboard-key">W</div>
+            <div class="keyboard-key">E</div>
+            <div class="keyboard-key">R</div>
+          </div>
+          <div class="keyboard-row">
+            <div class="keyboard-key">A</div>
+            <div class="keyboard-key">S</div>
+            <div class="keyboard-key">D</div>
+            <div class="keyboard-key">F</div>
+          </div>
+        </div>
+        <div class="keyboard-section">
+          <div class="keyboard-row">
+            <div class="keyboard-key">Y</div>
+            <div class="keyboard-key">U</div>
+          </div>
+          <div class="keyboard-row">
+            <div class="keyboard-key">G</div>
+            <div class="keyboard-key">H</div>
+            <div class="keyboard-key">J</div>
+          </div>
+        </div>
       </div>
-      <div class="keyboard-row">
-        <div class="keyboard-key">A</div>
-        <div class="keyboard-key">S</div>
-        <div class="keyboard-key">D</div>
-        <div class="keyboard-key">F</div>
+
+      Octave Up / Down
+      <div class="keyboard-row" style="width: 100px; padding-top: 10px;">
+      <div class="keyboard-key">Z</div>
+      <div class="keyboard-key">X</div>
       </div>
-    </div>
-    <div class="keyboard-section">
-      <div class="keyboard-row">
-        <div class="keyboard-key">Y</div>
-        <div class="keyboard-key">U</div>
-      </div>
-      <div class="keyboard-row">
-        <div class="keyboard-key">G</div>
-        <div class="keyboard-key">H</div>
-        <div class="keyboard-key">J</div>
-      </div>
+      When you are finished press <b>Generate Patch</b> to download a zip file containing the preset. 
+      Unzip into a folder named like <b>PresetName.preset</b>.
+      Check <a href="https://www.youtube.com/watch?v=u3f3tF35JwQ&t=5m30s"> this video</a> for more information about loading samples onto the OP-XY.
     </div>
   </div>
-
-  Octave Up / Down
-  <div class="keyboard-row" style="width: 100px; padding-top: 10px;">
-  <div class="keyboard-key">Z</div>
-  <div class="keyboard-key">X</div>
-  </div>
-  When you are finished press <b>Generate Patch</b> to download a zip file containing the samples and the patch.json. Unzip into a folder named like <b>PresetName.preset</b>.
-  Check <a href="https://www.youtube.com/watch?v=u3f3tF35JwQ&t=5m30s"> this video</a> for more information about loading samples onto the OP-XY.
+  <div class="colapsable-container">
+    <div class="top-line">
+      <span class="section-header">settings</span>
+      <a href="#" class="right-link" onclick="toggleSettings()">expand / collapse</a>
+    </div><div class="setting-container hidden" style="font-size: 0.9rem;">
+      Sample Rate: <select name="sample rate" id="sample-rate">
+        <option value="0">keep original</option>
+        <option value="1">re-encode 11kHz</option>
+        <option value="2">re-encode 22kHz</option>
+        <option value="3">re-encode 44kHz</option>
+      </select>
+    </div>
   </div>
   <div class="container">
         <div id="rows"></div>
@@ -292,6 +74,17 @@
   <footer>made by <a href="https://linktr.ee/Zeitgeese">zeitgeese</a></footer>
 
   <script>
+    // Toggle UI
+    function toggleTutorial() {
+      const div = document.querySelector('.tutorial-container');
+      div.classList.toggle('hidden');
+    }
+    function toggleSettings() {
+      const div = document.querySelector('.setting-container');
+      div.classList.toggle('hidden');
+    }
+
+    // Variables
     const circleRows = [2, 4, 6, 9, 11, 14, 16, 18, 21, 23];
     const rowsContainer = document.getElementById('rows');
     const baseJson = {
@@ -332,6 +125,7 @@
     const audioElements = Array(24).fill(null);
     const audioData = Array(24).fill(null);
 
+    // Setup Rows
     function createRow(rowNumber) {
       const placeholder = {
         1: "(kick)",
@@ -445,6 +239,8 @@
     for (let i = 1; i <= 24; i++) {
       rowsContainer.appendChild(createRow(i));
     }
+
+    // Keyboard Responders
     var octave = 0
     keyMap = {
       a: 0,
@@ -479,21 +275,45 @@
         }
     });
 
+    // Generate Patch
+
     document.getElementById('generateButton').addEventListener('click', async () => {
       const patchJson = { ...baseJson, regions: [] };
+
+      const targetSampleRate = [
+        null,
+        11025,
+        22050,
+        44100
+      ][document.getElementById('sample-rate').selectedIndex];
       const zip = new JSZip();
 
       const fileReadPromises = files.map((file, index) => {
-        return new Promise((resolve) => {
+        return new Promise(async (resolve, reject) => {
           if (file) {
-            const reader = new FileReader();
-            reader.onload = (e) => {
-              const rowNumber = index + 1;
-              audioMeta = audioData[index];
-              patchJson.regions.push({
+            const rowNumber = index + 1;
+            const audioMeta = audioData[index];
+            var framecount = Math.floor(audioMeta['d'] * audioMeta['s']);
+            if (targetSampleRate != null && audioMeta['s'] != targetSampleRate) {
+              console.log('Re-encoding' + file.name);
+              framecount = Math.floor(audioMeta['d'] * framecount);
+              const wavBlob = await resampleAudio(file, targetSampleRate);
+              zip.file(file.name, wavBlob);
+              resolve();
+            } else {
+              const reader = new FileReader();
+              reader.onload = (e) => {
+                // Add the file content to the ZIP
+                zip.file(file.name, e.target.result);
+                resolve();
+              };
+              reader.readAsArrayBuffer(file);
+            }
+            
+            patchJson.regions.push({
                 "fade.in": 0,
                 "fade.out": 0,
-                "framecount": Math.floor(audioMeta['d'] * audioMeta['s']),
+                "framecount": framecount,
                 hikey: 52 + rowNumber,
                 lokey: 52 + rowNumber,
                 pan: 0,
@@ -504,12 +324,6 @@
                 transpose: 0,
                 tune: 0,
               });
-
-              // Add the file content to the ZIP
-              zip.file(file.name, e.target.result);
-              resolve();
-            };
-            reader.readAsArrayBuffer(file);
           } else {
             resolve(); // Skip empty slots
           }
