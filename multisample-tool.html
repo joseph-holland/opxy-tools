@@ -1,0 +1,504 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Patch Generator</title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+  <script src="audio_tools.js"></script>
+  <link rel="stylesheet" href="style.css">
+  <style>
+  .centerLabel {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-size: 18px;
+    color: #666;
+    font-weight: bold;
+    pointer-events: none;
+  }
+  </style>
+</head>
+<body>
+  <header>OP-XY Multisample Patch Generator<button id="generateButton" class="button">Generate Patch</button></header>
+  <div class="colapsable-container">
+    <div class="top-line">
+      <span class="section-header">how to</span>
+      <a href="#" class="right-link" onclick="toggleTutorial()">expand / collapse</a>
+    </div><div class="tutorial-container" style="font-size: 0.9rem;">
+      Drag and drop samples below.
+
+      Use the <b style="color: #ff4940">Red Markers</b> to adjust start and end points for the sample.
+      Use the <b style="color: #007bff">Blue Markers</b> to adjust loop start and loop end points.
+      <b>Double Click</b> on a marker to apply its point to all samples.
+
+      When you are finished press <b>Generate Patch</b> to download a zip file containing the preset.
+      Unzip into a folder named like <b>PresetName.preset</b>.
+      Check <a href="https://www.youtube.com/watch?v=u3f3tF35JwQ&t=5m30s"> this video</a> for more information about loading samples onto the OP-XY.
+
+    —
+      <a href="https://buba447.github.io/opxy-drum-tool/">OP-XY Drum Path Generator</a>
+    </div>
+  </div>
+
+  <div class="colapsable-container">
+    <div class="top-line">
+      <span class="section-header">op-xy sample requirements</span>
+      <a href="#" class="right-link" onclick="toggleRequirement()">expand / collapse</a>
+    </div><div class="requirments-container hidden" style="font-size: 0.9rem;">
+      - 20 seconds max per sample.
+      - Max 24 samples.
+      - Multiple velocities are not supported.
+      - It is recommended that samples be re-encoded to 22kHz or less.
+
+      Sample names should have a dash followed by either a midi note number (0-127) or a note name like C#3.
+      <i>Examples: "My Awesome Sample-60.wav" "My Cool Sound-C3.wav" "SickFuzz-G#4-127.wav"</i>
+    </div>
+  </div>
+
+  <div class="colapsable-container">
+    <div class="top-line">
+      <span class="section-header">settings</span>
+      <a href="#" class="right-link" onclick="toggleSettings()">expand / collapse</a>
+    </div><div class="setting-container" style="font-size: 0.9rem;">
+      Preset Name: <input id="preset-name" type="text" value="MyAwesomeSample">
+      Sample Rate: <select name="sample rate" id="sample-rate">
+        <option value="0">keep original</option>
+        <option value="1">re-encode 11kHz</option>
+        <option value="2">re-encode 22kHz</option>
+        <option value="3">re-encode 44kHz</option>
+      </select>
+
+      <i>It is recommended that samples be re-encoded to 22kHz or less. If you experience issues with missing notes, try lowering the sample rate.</i>
+    </div>
+  </div>
+  <div class="container">
+    <div id="dropLabel" class="centerLabel">Drop samples here</div>
+    <div id="rows" style="min-height: 300px;"></div>
+  </div>
+  <footer>made by <a href="https://linktr.ee/Zeitgeese">zeitgeese</a></footer>
+
+  <script>
+    // Toggle UI
+    const WAVEFORM_WIDTH = 500;
+    function toggleTutorial() {
+      const div = document.querySelector('.tutorial-container');
+      div.classList.toggle('hidden');
+    }
+    function toggleSettings() {
+      const div = document.querySelector('.setting-container');
+      div.classList.toggle('hidden');
+    }
+    function toggleRequirement() {
+      const div = document.querySelector('.requirments-container');
+      div.classList.toggle('hidden');
+    }
+
+    // Variables
+    const rowsContainer = document.getElementById('rows');
+    const sampleFiles = Array(128).fill(null);
+    const baseJson = {
+      "engine": {
+        "bendrange": 13653,
+        "highpass": 0,
+        "modulation": {
+          "aftertouch": {
+            "amount": 30719,
+            "target": 4096
+          },
+          "modwheel": {
+            "amount": 32767,
+            "target": 10240
+          },
+          "pitchbend": {
+            "amount": 16383,
+            "target": 0
+          },
+          "velocity": {
+            "amount": 16383,
+            "target": 0
+          }
+        },
+        "params": [
+          16384,
+          16384,
+          16384,
+          16384,
+          16384,
+          16384,
+          16384,
+          16384
+        ],
+        "playmode": "poly",
+        "portamento.amount": 0,
+        "portamento.type": 32767,
+        "transpose": 0,
+        "tuning.root": 0,
+        "tuning.scale": 0,
+        "velocity.sensitivity": 10240,
+        "volume": 16466,
+        "width": 3072
+      },
+      "envelope": {
+        "amp": {
+          "attack": 0,
+          "decay": 20295,
+          "release": 16383,
+          "sustain": 14989
+        },
+        "filter": {
+          "attack": 0,
+          "decay": 16895,
+          "release": 19968,
+          "sustain": 16896
+        }
+      },
+      "fx": {
+        "active": false,
+        "params": [
+          19661,
+          0,
+          7391,
+          24063,
+          0,
+          32767,
+          0,
+          0
+        ],
+        "type": "svf"
+      },
+      "lfo": {
+        "active": false,
+        "params": [
+          19024,
+          32255,
+          4048,
+          17408,
+          0,
+          0,
+          0,
+          0
+        ],
+        "type": "element"
+      },
+      "octave": 0,
+      "platform": "OP-XY",
+      "regions": [],
+      "type": "multisampler",
+      "version": 4
+    };
+
+    // Setup Rows
+    function addMarkerInteractions(inMarker, startMarker, endMarker, outMarker, sampleIndex) {
+
+      function onDragMarker(event, marker) {
+        event.preventDefault()
+        const onMove = (e) => {
+          const containerWidth = marker.parentElement.clientWidth;
+
+          const rect = marker.parentElement.getBoundingClientRect();
+          let x = e.clientX - rect.left;
+          x = Math.max(0, Math.min(x, containerWidth)); // Clamp within container
+          marker.style.left = `${(x / containerWidth) * 100}%`;
+        };
+
+        const onUp = () => {
+          sample = sampleFiles[sampleIndex];
+          sample[marker.dataset.field] = (parseFloat(marker.style.left) / 100) * sample['d'];
+          window.removeEventListener('mousemove', onMove);
+          window.removeEventListener('mouseup', onUp);
+        };
+
+        window.addEventListener('mousemove', onMove);
+        window.addEventListener('mouseup', onUp);
+      }
+
+      function dblClick(event, marker) {
+        const markerPoint = sampleFiles[sampleIndex][marker.dataset.field] / sampleFiles[sampleIndex]['d'];
+        for (let i = 0; i < 128; i++) {
+          if (sampleFiles[i]) {
+            sampleFiles[i][marker.dataset.field] = markerPoint * sampleFiles[i]['d'];
+          }
+        }
+        reloadRows()
+      }
+
+      inMarker.addEventListener('mousedown', (e) => onDragMarker(e, inMarker));
+      startMarker.addEventListener('mousedown', (e) => onDragMarker(e, startMarker));
+      endMarker.addEventListener('mousedown', (e) => onDragMarker(e, endMarker));
+      outMarker.addEventListener('mousedown', (e) => onDragMarker(e, outMarker));
+
+      inMarker.addEventListener('dblclick', (e) => dblClick(e, inMarker));
+      startMarker.addEventListener('dblclick', (e) => dblClick(e, startMarker));
+      endMarker.addEventListener('dblclick', (e) => dblClick(e, endMarker));
+      outMarker.addEventListener('dblclick', (e) => dblClick(e, outMarker));
+    }
+
+    function addRow(sampleIndex) {
+      const row = document.createElement('div');
+      row.className = 'row';
+      sampleData = sampleFiles[sampleIndex];
+      const sampleNote = sampleData['m'];
+      const sampleName = sampleData['n'];
+      row.setAttribute('data-sort', sampleNote);
+
+      const label = document.createElement('div');
+      label.className = 'label';
+      label.textContent  = `${midiNoteToString(sampleNote)} (${sampleNote})`;
+
+      const fileName = document.createElement('span');
+      fileName.className = 'file-name';
+      fileName.textContent = `(${sampleName})`;
+      const clearButton = document.createElement('button');
+      clearButton.textContent = 'X';
+      clearButton.className = 'button clear-button';
+      clearButton.style.display = 'inline-block'; // Show the button
+      clearButton.addEventListener('click', () => {
+        sampleFiles[sampleIndex] = null;
+        reloadRows()
+      });
+
+      const waveformContainer = document.createElement('div');
+      waveformContainer.classList.add('waveform-container');
+      waveformContainer.style.width = WAVEFORM_WIDTH;
+
+      // Use pre-rendered waveform image
+      const waveformImage = document.createElement('img');
+      waveformImage.src = sampleData['i'];
+      waveformContainer.appendChild(waveformImage);
+
+      // Markers
+      const inMarker = document.createElement('div');
+      inMarker.dataset.field = 'iP';
+      inMarker.classList.add('marker');
+      inMarker.style.left = `${(sampleData['iP'] / sampleData['d']) * 100}%`;
+      inMarker.style.backgroundColor = '#ff6f61'
+      waveformContainer.appendChild(inMarker);
+
+      const startMarker = document.createElement('div');
+      startMarker.dataset.field = 'lS';
+      startMarker.classList.add('marker');
+      startMarker.style.left = `${(sampleData['lS'] / sampleData['d']) * 100}%`;
+      waveformContainer.appendChild(startMarker);
+
+      const endMarker = document.createElement('div');
+      endMarker.dataset.field = 'lE';
+      endMarker.classList.add('marker');
+      endMarker.style.left = `${(sampleData['lE'] / sampleData['d']) * 100}%`;
+      waveformContainer.appendChild(endMarker);
+
+      const outMarker = document.createElement('div');
+      outMarker.dataset.field = 'oP';
+      outMarker.classList.add('marker');
+      outMarker.style.left = `${(sampleData['oP'] / sampleData['d']) * 100}%`;
+      outMarker.style.backgroundColor = '#ff6f61'
+      waveformContainer.appendChild(outMarker);
+
+      row.appendChild(label);
+      row.appendChild(waveformContainer);
+      // row.appendChild(fileName);
+      row.appendChild(clearButton); // Add the button to the row
+      addMarkerInteractions(inMarker, startMarker, endMarker, outMarker, sampleIndex)
+      return row;
+    }
+
+    function reloadRows() {
+      rowsContainer.innerHTML = "";
+      let divs = [];
+      for (let i = 0; i < 128; i++) {
+        if (sampleFiles[i]) {
+          divs.push(addRow(i));
+        }
+      }
+
+      const dropLabel = document.getElementById('dropLabel');
+      if (divs.length > 0) {
+        dropLabel.style.display = 'none';
+      } else {
+        dropLabel.style.display = 'inline-block';
+      }
+      divs.sort((a, b) => {
+        return parseInt(a.dataset.sort) - parseInt(b.dataset.sort); // Sort by data-sort
+      });
+      // Append the sorted divs back to the container
+      divs.forEach(div => rowsContainer.appendChild(div));
+    }
+
+    rowsContainer.addEventListener('dragover', (e) => {
+      e.preventDefault(); // Allow drop
+      rowsContainer.parentElement.style.backgroundColor = '#b6b6b6';
+    });
+
+    rowsContainer.addEventListener('dragleave', () => {
+      rowsContainer.parentElement.style.backgroundColor = '';
+    });
+
+    rowsContainer.addEventListener('drop', (e) => {
+      e.preventDefault();
+      rowsContainer.parentElement.style.backgroundColor = '';
+
+      const files = e.dataTransfer.files;
+
+      const fileProcessingPromises = [];
+      for (const file of files) {
+        if (file && file.name.endsWith('.wav')) {
+          const fileProcessingPromise = new Promise((resolve, reject) => {
+            const reader = new FileReader();
+            reader.onload = async () => {
+              try {
+                const audioContext = new AudioContext();
+                const arrayBuffer = await fetch(reader.result).then((res) => res.arrayBuffer());
+                const audioBuffer = await audioContext.decodeAudioData(arrayBuffer);
+                const duration = audioBuffer.duration;
+                const sampleRate = audioBuffer.sampleRate;
+                const fileInfo = parseFilename(file.name);
+
+                const canvas = document.createElement('canvas');
+                const width = WAVEFORM_WIDTH; // Define a fixed width for the waveform
+                const height = 50; // Define a fixed height for the waveform
+                canvas.width = width;
+                canvas.height = height;
+
+                const ctx = canvas.getContext('2d');
+                const data = audioBuffer.getChannelData(0); // Use the first channel
+                const step = Math.ceil(data.length / width);
+                const amp = height / 2;
+
+                ctx.fillStyle = '#ececec';
+                ctx.fillRect(0, 0, width, height);
+                ctx.fillStyle = '#868686';
+                ctx.fillRect(0, 0, 1, height);
+                ctx.fillRect(width-1, 0, width, height);
+                ctx.strokeStyle = '#c0c0c0';
+                ctx.beginPath();
+
+                for (let i = 0; i < width; i++) {
+                  const min = Math.min(...data.slice(i * step, (i + 1) * step));
+                  const max = Math.max(...data.slice(i * step, (i + 1) * step));
+                  ctx.moveTo(i, (1 + min) * amp);
+                  ctx.lineTo(i, (1 + max) * amp);
+                }
+                ctx.stroke();
+
+
+                imageUrl = canvas.toDataURL();
+
+                sampleFiles[fileInfo[1]] = {
+                  d: duration,
+                  s: sampleRate,
+                  f: file,
+                  i: imageUrl,
+                  fC: Math.floor(duration*sampleRate),
+                  n: sanitizeName(file.name),
+                  m: fileInfo[1],
+                  iP: 0,
+                  oP: duration,
+                  lS: duration * 0.1,
+                  lE: duration * 0.9,
+                };
+                resolve();
+              } catch (error) {
+                reject(error);
+              }
+            };
+            reader.readAsDataURL(file);
+          });
+          fileProcessingPromises.push(fileProcessingPromise);
+        }
+      }
+
+      // Wait for all file processing promises to resolve, then call reloadRows
+      Promise.all(fileProcessingPromises)
+        .then(() => {
+          reloadRows();
+        })
+        .catch((error) => {
+          console.error('Error during file processing', error);
+        });
+    });
+
+    // Generate Patch
+
+    document.getElementById('generateButton').addEventListener('click', async () => {
+      const patchJson = { ...baseJson, regions: [] };
+
+      const targetSampleRate = [
+        null,
+        11025,
+        22050,
+        44100
+      ][document.getElementById('sample-rate').selectedIndex];
+      const presetName = sanitizeName(document.getElementById('preset-name').value)
+      const zip = new JSZip();
+
+      let lastKey = 0;
+      const fileReadPromises = sampleFiles.map((sampleData, index) => {
+        return new Promise(async (resolve, reject) => {
+          if (sampleData) {
+            const file = sampleData['f'];
+            const outputName = sampleData['n'];
+            const sampleNote = sampleData['m'];
+            const duration = sampleData['d'];
+            let sampleRate = sampleData['s'];
+
+            if (targetSampleRate != null && sampleRate !== targetSampleRate) {
+              console.log('Re-encoding' + file.name);
+              sampleRate = targetSampleRate;
+              const wavBlob = await resampleAudio(file, targetSampleRate);
+              zip.file(outputName, wavBlob);
+              resolve();
+            } else {
+              const reader = new FileReader();
+              reader.onload = (e) => {
+                // Add the file content to the ZIP
+                zip.file(outputName, e.target.result);
+                resolve();
+              };
+              reader.readAsArrayBuffer(file);
+            }
+
+            const framecount = Math.floor(duration * sampleRate);
+            patchJson.regions.push({
+                framecount: framecount,
+                gain: 0,
+                hikey: sampleNote,
+                lokey: lastKey,
+                "loop.crossfade": 0,
+                "loop.end": Math.floor(framecount * (sampleData['lE'] / duration)),
+                "loop.onrelease": true,
+                "loop.start": Math.floor(framecount * (sampleData['lS'] / duration)),
+                "pitch.keycenter": sampleNote,
+                reverse: false,
+                sample: outputName,
+                "sample.end": Math.floor(framecount * (sampleData['oP'] / duration)),
+                "sample.start": Math.floor(framecount * (sampleData['iP'] / duration)),
+                tune: 0
+            });
+            lastKey = sampleNote + 1
+          } else {
+            resolve(); // Skip empty slots
+          }
+        });
+      });
+      // Wait for all file reading to finish
+      await Promise.all(fileReadPromises);
+
+      // Add patch.json to the ZIP
+      zip.file("patch.json", JSON.stringify(patchJson, null, 2));
+
+      // Generate ZIP and download
+      const zipBlob = await zip.generateAsync({ type: "blob" });
+      const url = URL.createObjectURL(zipBlob);
+
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `${presetName}.preset.zip`;
+      a.click() ;
+      URL.revokeObjectURL(url);
+    });
+
+
+  </script>
+</body>
+</html>

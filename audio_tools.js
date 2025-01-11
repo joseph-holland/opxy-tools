@@ -115,3 +115,88 @@ function audioBufferToWav(audioBuffer) {
     return new Blob([uint8], { type: 'audio/x-wav' });
 }
 
+// Sanitize a string to allow only valid characters for filenames and folder names
+function sanitizeName(name) {
+    return name.replace(/[^a-zA-Z0-9 #\-().]+/g, '');
+}
+
+// Parse the filename to extract the base name and key
+function parseFilename(filename) {
+    const [firstPart, remainder] = filename.split("-", 2);
+    const baseName = sanitizeName(firstPart);
+
+    const notePattern = /\b[A-G](?:b|#|-)?-?\d\b/;
+    const numberPattern = /\b\d+\b/;
+
+    // Try to find a note first
+    const noteMatch = remainder.toUpperCase().match(notePattern);
+    if (noteMatch) {
+        return [baseName, noteStringToMidiValue(noteMatch[0])];
+    }
+
+    // If no note, find the first number
+    const numberMatch = remainder.match(numberPattern);
+    if (numberMatch) {
+        return [baseName, parseInt(numberMatch[0], 10)];
+    }
+
+    throw new Error(`Filename '${filename}' does not match the expected pattern.`);
+}
+
+// Generate the JSON metadata for the given WAV file and key
+function sampleMetadata(frameCount, outputBasename, hiKey, lowKey, center, sampleStart = 0, loopCrossfade = 0, loopStart = null, loopEnd = null) {
+    if (loopStart === null) {
+        loopStart = Math.floor(frameCount / 4); // Arbitrary, first 25% of the sample
+    }
+    if (loopEnd === null) {
+        loopEnd = Math.floor((frameCount * 3) / 4); // Arbitrary, last 25% of the sample
+    }
+
+    return {
+        framecount: frameCount,
+        gain: 0,
+        hikey: hiKey,
+        lokey: lowKey,
+        "loop.crossfade": loopCrossfade,
+        "loop.end": loopEnd,
+        "loop.onrelease": true,
+        "loop.start": loopStart,
+        "pitch.keycenter": center,
+        reverse: false,
+        sample: outputBasename,
+        "sample.end": frameCount,
+        "sample.start": sampleStart,
+        tune: 0
+    };
+}
+
+const NOTE_OFFSET = [33, 35, 24, 26, 28, 29, 31];
+const NOTE_NAMES = ['C', 'C#', 'D', 'D#', 'E', 'F', 'F#', 'G', 'G#', 'A', 'A#', 'B'];
+
+// Convert MIDI note value to note string
+function midiNoteToString(value) {
+    const octave = Math.floor(value / 12);
+    const noteNumber = value % 12;
+    return `${NOTE_NAMES[noteNumber]}${octave - 2}`;
+}
+
+// Convert note string to MIDI value
+function noteStringToMidiValue(note) {
+    const string = note.replace(' ', '');
+    if (string.length < 2) {
+        throw new Error("Bad note format");
+    }
+
+    const noteIdx = string[0].toUpperCase().charCodeAt(0) - 65;
+    if (noteIdx < 0 || noteIdx > 6) {
+        throw new Error("Bad note");
+    }
+
+    let sharpen = 0;
+    if (string[1] === "#") {
+        sharpen = 1;
+    } else if (string[1].toLowerCase() === "b") {
+        sharpen = -1;
+    }
+    return parseInt(string.slice(1 + Math.abs(sharpen)), 10) * 12 + NOTE_OFFSET[noteIdx] + sharpen;
+}

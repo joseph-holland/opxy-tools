@@ -293,23 +293,26 @@
           if (file) {
             const rowNumber = index + 1;
             const audioMeta = audioData[index];
-            var framecount = Math.floor(audioMeta['d'] * audioMeta['s']);
-            if (targetSampleRate != null && audioMeta['s'] != targetSampleRate) {
+            const duration = audioMeta['d'];
+            const outputName = sanitizeName(file.name);
+            let sampleRate = audioMeta['s'];
+
+            if (targetSampleRate != null && sampleRate !== targetSampleRate) {
               console.log('Re-encoding' + file.name);
-              framecount = Math.floor(targetSampleRate * framecount);
+              sampleRate = targetSampleRate;
               const wavBlob = await resampleAudio(file, targetSampleRate);
-              zip.file(file.name, wavBlob);
+              zip.file(outputName, wavBlob);
               resolve();
             } else {
               const reader = new FileReader();
               reader.onload = (e) => {
                 // Add the file content to the ZIP
-                zip.file(file.name, e.target.result);
+                zip.file(outputName, e.target.result);
                 resolve();
               };
               reader.readAsArrayBuffer(file);
             }
-            
+            const framecount = Math.floor(duration * sampleRate);
             patchJson.regions.push({
                 "fade.in": 0,
                 "fade.out": 0,
@@ -320,7 +323,7 @@
                 "pitch.keycenter": 60,
                 playmode: "oneshot",
                 reverse: false,
-                sample: file.name,
+                sample: outputName,
                 transpose: 0,
                 tune: 0,
               });
