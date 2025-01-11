@@ -296,7 +296,7 @@
             var framecount = Math.floor(audioMeta['d'] * audioMeta['s']);
             if (targetSampleRate != null && audioMeta['s'] != targetSampleRate) {
               console.log('Re-encoding' + file.name);
-              framecount = Math.floor(audioMeta['d'] * framecount);
+              framecount = Math.floor(targetSampleRate * framecount);
               const wavBlob = await resampleAudio(file, targetSampleRate);
               zip.file(file.name, wavBlob);
               resolve();
