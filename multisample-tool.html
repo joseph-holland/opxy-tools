@@ -342,7 +342,7 @@
 
       const fileProcessingPromises = [];
       for (const file of files) {
-        if (file && file.name.endsWith('.wav')) {
+        if (file && file.name.toLowerCase().endsWith('.wav')) {
           const fileProcessingPromise = new Promise((resolve, reject) => {
             const reader = new FileReader();
             reader.onload = async () => {

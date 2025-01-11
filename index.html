@@ -209,7 +209,7 @@
         row.classList.remove('highlight');
 
         const file = e.dataTransfer.files[0];
-        if (file && file.name.endsWith('.wav')) {
+        if (file && file.name.toLowerCase().endsWith('.wav')) {
           //label.textContent = file.name;
           fileName.textContent = `(${file.name})`;
           files[rowNumber - 1] = file; // Store the File object
