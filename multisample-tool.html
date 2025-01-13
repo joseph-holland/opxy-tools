@@ -78,12 +78,8 @@
     <div id="rows" style="min-height: 300px;"></div>
   </div>
   <footer>made by <a href="https://linktr.ee/Zeitgeese">zeitgeese</a></footer>
+  <script>
 
-  <script type="module">
-    import musicMetadataBrowser from 'https://cdn.jsdelivr.net/npm/music-metadata-browser@2.5.11/+esm'
-
-    // Toggle UI
-    const WAVEFORM_WIDTH = 500;
     function toggleTutorial() {
       const div = document.querySelector('.tutorial-container');
       div.classList.toggle('hidden');
@@ -96,6 +92,13 @@
       const div = document.querySelector('.requirments-container');
       div.classList.toggle('hidden');
     }
+  </script>
+  <script type="module">
+    import musicMetadataBrowser from 'https://cdn.jsdelivr.net/npm/music-metadata-browser@2.5.11/+esm'
+
+    // Toggle UI
+    const WAVEFORM_WIDTH = 500;
+
 
     // Variables
     const rowsContainer = document.getElementById('rows');

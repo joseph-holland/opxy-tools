@@ -75,11 +75,7 @@
         <div id="rows"></div>
   </div>
   <footer>made by <a href="https://linktr.ee/Zeitgeese">zeitgeese</a></footer>
-
-  <script type="module">
-    import musicMetadataBrowser from 'https://cdn.jsdelivr.net/npm/music-metadata-browser@2.5.11/+esm'
-
-    // Toggle UI
+  <script>
     function toggleTutorial() {
       const div = document.querySelector('.tutorial-container');
       div.classList.toggle('hidden');
@@ -88,6 +84,9 @@
       const div = document.querySelector('.setting-container');
       div.classList.toggle('hidden');
     }
+  </script>
+  <script type="module">
+    import musicMetadataBrowser from 'https://cdn.jsdelivr.net/npm/music-metadata-browser@2.5.11/+esm'
 
     // Variables
     const circleRows = [2, 4, 6, 9, 11, 14, 16, 18, 21, 23];
