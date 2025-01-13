@@ -3,9 +3,9 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Patch Generator</title>
+  <title>OP-XY Drum Patch Generator</title>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
-  <script src="audio_tools.js"></script>
+  <script src="lib/audio_tools.js"></script>
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
@@ -76,7 +76,9 @@
   </div>
   <footer>made by <a href="https://linktr.ee/Zeitgeese">zeitgeese</a></footer>
 
-  <script>
+  <script type="module">
+    import musicMetadataBrowser from 'https://cdn.jsdelivr.net/npm/music-metadata-browser@2.5.11/+esm'
+
     // Toggle UI
     function toggleTutorial() {
       const div = document.querySelector('.tutorial-container');
@@ -217,11 +219,9 @@
           // Create a new audio object and set it up
           const reader = new FileReader();
           reader.onload = async () => {
-            const audioContext = new AudioContext();
-            const arrayBuffer = await fetch(reader.result).then((res) => res.arrayBuffer());
-            const audioBuffer = await audioContext.decodeAudioData(arrayBuffer);
-            const duration = audioBuffer.duration;
-            const sampleRate = audioBuffer.sampleRate;
+            const metadata = await musicMetadataBrowser.parseBlob(file);
+            const duration = metadata.format.duration;
+            const sampleRate = metadata.format.sampleRate;
             audioData[rowNumber - 1] = {'d': duration, 's': sampleRate};
             const audio = new Audio(reader.result);
             audioElements[rowNumber - 1] = audio; // Store the audio element
@@ -245,7 +245,7 @@
 
     // Keyboard Responders
     var octave = 0
-    keyMap = {
+    const keyMap = {
       a: 0,
       w: 1,
       s: 2,

@@ -3,9 +3,9 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Patch Generator</title>
+  <title>OP-XY Multisample Patch Generator</title>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
-  <script src="audio_tools.js"></script>
+  <script src="lib/audio_tools.js"></script>
   <link rel="stylesheet" href="style.css">
   <style>
   .centerLabel {
@@ -79,7 +79,9 @@
   </div>
   <footer>made by <a href="https://linktr.ee/Zeitgeese">zeitgeese</a></footer>
 
-  <script>
+  <script type="module">
+    import musicMetadataBrowser from 'https://cdn.jsdelivr.net/npm/music-metadata-browser@2.5.11/+esm'
+
     // Toggle UI
     const WAVEFORM_WIDTH = 500;
     function toggleTutorial() {
@@ -204,7 +206,7 @@
         };
 
         const onUp = () => {
-          sample = sampleFiles[sampleIndex];
+          const sample = sampleFiles[sampleIndex];
           sample[marker.dataset.field] = (parseFloat(marker.style.left) / 100) * sample['d'];
           window.removeEventListener('mousemove', onMove);
           window.removeEventListener('mouseup', onUp);
@@ -238,7 +240,7 @@
     function addRow(sampleIndex) {
       const row = document.createElement('div');
       row.className = 'row';
-      sampleData = sampleFiles[sampleIndex];
+      const sampleData = sampleFiles[sampleIndex];
       const sampleNote = sampleData['m'];
       const sampleName = sampleData['n'];
       row.setAttribute('data-sort', sampleNote);
@@ -347,11 +349,12 @@
             const reader = new FileReader();
             reader.onload = async () => {
               try {
+                const metadata = await musicMetadataBrowser.parseBlob(file);
+                const duration = metadata.format.duration;
+                const sampleRate = metadata.format.sampleRate;
                 const audioContext = new AudioContext();
                 const arrayBuffer = await fetch(reader.result).then((res) => res.arrayBuffer());
                 const audioBuffer = await audioContext.decodeAudioData(arrayBuffer);
-                const duration = audioBuffer.duration;
-                const sampleRate = audioBuffer.sampleRate;
                 const fileInfo = parseFilename(file.name);
 
                 const canvas = document.createElement('canvas');
@@ -382,8 +385,7 @@
                 ctx.stroke();
 
 
-                imageUrl = canvas.toDataURL();
-
+                const imageUrl = canvas.toDataURL();
                 sampleFiles[fileInfo[1]] = {
                   d: duration,
                   s: sampleRate,
