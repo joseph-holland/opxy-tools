@@ -166,6 +166,12 @@ header .status {
   color: #888;
 }
 
+.row .edit-label {
+  flex: 1;
+  font-weight: bold;
+  color: #007bff;
+}
+
 .row .file-name {
   flex: 1;
   color: #555;
