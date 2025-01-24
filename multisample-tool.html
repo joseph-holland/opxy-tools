@@ -65,12 +65,13 @@
   </div><div class="setting-container" style="font-size: 0.9rem;">
   Preset Name: <input id="preset-name" type="text" value="MyAwesomeSample">
   Loop Enabled: <input type="checkbox" id="loop-enabled" checked>
+  Preset Gain: <input type="range" id="gain-slider" min="-20" max="20" value="0" step="1"/><span id="gain-value">0</span>
   Sample Rate: <select name="sample rate" id="sample-rate">
-  <option value="0">keep original</option>
-  <option value="1">re-encode 11kHz</option>
-  <option value="2">re-encode 22kHz</option>
-  <option value="3">re-encode 44kHz</option>
-</select>
+    <option value="0">keep original</option>
+    <option value="1">re-encode 11kHz</option>
+    <option value="2">re-encode 22kHz</option>
+    <option value="3">re-encode 44kHz</option>
+  </select>
 
   <i>For best results, set the Sample Rate to 22kHz or lower. Setting the sample rate will automatically re-encode the files. If notes are missing during playback, try reducing the sample rate further.</i>
 </div>
@@ -105,6 +106,16 @@
   // Variables
   const rowsContainer = document.getElementById('rows');
   const sampleFiles = Array(SAMPLE_COUNT).fill(null);
+  let sampleGain = 0
+
+  const gainSlider = document.getElementById('gain-slider');
+  const gainValue = document.getElementById('gain-value');
+
+  // Update the displayed value when the slider is moved
+  gainSlider.addEventListener('input', () => {
+    gainValue.textContent = gainSlider.value;
+    sampleGain = gainSlider.value;
+  });
 
   // Setup Rows
   function addMarkerInteractions(inMarker, startMarker, endMarker, outMarker, sampleIndex) {
@@ -446,7 +457,7 @@
           const framecount = Math.floor(duration * sampleRate);
           patchJson.regions.push({
             framecount: framecount,
-            gain: 0,
+            gain: Number(sampleGain),
             hikey: sampleNote,
             lokey: lastKey,
             "loop.crossfade": 0,
