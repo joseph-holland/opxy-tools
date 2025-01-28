@@ -238,7 +238,7 @@
         if (!(key in keyMap)) {
           return;
         }
-        rowNumber = keyMap[key] + (12 * octave);
+        const rowNumber = keyMap[key] + (12 * octave);
 
         if (audioElements[rowNumber]) {
           audioElements[rowNumber].play();
