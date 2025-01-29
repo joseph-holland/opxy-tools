@@ -6,6 +6,7 @@
   <title>OP-XY Multisample Patch Generator</title>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
   <script src="lib/audio_tools.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/wavefile-parser"></script>
   <link rel="stylesheet" href="style.css">
   <style>
     .centerLabel {
@@ -30,7 +31,8 @@
   Drag and drop samples below.
 
   Samples are auto-assigned to notes based on their names. Click a note name to change it using a MIDI number (e.g., 60 for Middle C) or note name (e.g., C3, G#5, Bb2). All samples must have a note assigned!
-
+  Notes and Loop Points will be automatically set if the wav files include the proper metadata.
+  
   <b style="color: #ff4940">Red Markers:</b> Adjust sample start and end points
   <b style="color: #007bff">Blue Markers:</b> Adjust loop start and end points.
   <b>Double Click a marker:</b> Apply its position to all samples.
@@ -96,9 +98,7 @@
     div.classList.toggle('hidden');
   }
 </script>
-<script type="module">
-  import musicMetadataBrowser from 'https://cdn.jsdelivr.net/npm/music-metadata-browser@2.5.11/+esm'
-
+<script>
   // Toggle UI
   const WAVEFORM_WIDTH = 500;
   const SAMPLE_COUNT = 24;
@@ -327,20 +327,37 @@
       if (file && file.name.toLowerCase().endsWith('.wav')) {
         const fileProcessingPromise = new Promise((resolve, reject) => {
           const reader = new FileReader();
-          reader.onload = async () => {
+          reader.onload = async (e) => {
             try {
-              const metadata = await musicMetadataBrowser.parseBlob(file);
-              const duration = metadata.format.duration;
-              const sampleRate = metadata.format.sampleRate;
+              const arrayBuffer = e.target.result;
+              const wavBuffer = new Uint8Array(arrayBuffer);
+              const wav = new window.wavefileParser.WaveFileParser();
+              wav.fromBuffer(wavBuffer);
+
+              const numFrames = wav.data.samples.length / (wav.fmt.bitsPerSample / 8) / wav.fmt.numChannels;
+              const duration = numFrames / wav.fmt.sampleRate;
+              const sampleRate = wav.fmt.sampleRate;
+
               const audioContext = new AudioContext();
-              const arrayBuffer = await fetch(reader.result).then((res) => res.arrayBuffer());
               const audioBuffer = await audioContext.decodeAudioData(arrayBuffer);
               let midiNote = -1;
-              try {
-                midiNote = parseFilename(file.name)[1];
-              } catch {
-                midiNote = -1;
+              let loopStart = duration * 0.1;
+              let loopEnd = duration * 0.9;
+              if (wav.smpl.chunkId === "smpl") {
+                midiNote = Number(wav.smpl.dwMIDIUnityNote);
+                if (wav.smpl.loops.length) {
+                  let loop = wav.smpl.loops[0];
+                  loopStart = loop.dwStart / wav.fmt.sampleRate;
+                  loopEnd = loop.dwEnd / wav.fmt.sampleRate;
+                }
+              } else {
+                try {
+                  midiNote = parseFilename(file.name)[1];
+                } catch {
+                  midiNote = -1;
+                }
               }
+
               const canvas = document.createElement('canvas');
               const width = WAVEFORM_WIDTH; // Define a fixed width for the waveform
               const height = 50; // Define a fixed height for the waveform
@@ -368,7 +385,6 @@
               }
               ctx.stroke();
 
-
               const imageUrl = canvas.toDataURL();
               const nextIndex = sampleFiles.findIndex(item => item === null);
               console.log(nextIndex, midiNote);
@@ -377,20 +393,20 @@
                 s: sampleRate,
                 f: file,
                 i: imageUrl,
-                fC: Math.floor(duration*sampleRate),
+                fC: numFrames,
                 n: sanitizeName(file.name),
                 m: midiNote,
                 iP: 0,
                 oP: duration,
-                lS: duration * 0.1,
-                lE: duration * 0.9,
+                lS: loopStart,
+                lE: loopEnd,
               };
               resolve();
             } catch (error) {
               reject(error);
             }
           };
-          reader.readAsDataURL(file);
+          reader.readAsArrayBuffer(file);
         });
         fileProcessingPromises.push(fileProcessingPromise);
       }
