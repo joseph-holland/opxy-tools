@@ -32,7 +32,7 @@
 
   Samples are auto-assigned to notes based on their names. Click a note name to change it using a MIDI number (e.g., 60 for Middle C) or note name (e.g., C3, G#5, Bb2). All samples must have a note assigned!
   Notes and Loop Points will be automatically set if the wav files include the proper metadata.
-  
+
   <b style="color: #ff4940">Red Markers:</b> Adjust sample start and end points
   <b style="color: #007bff">Blue Markers:</b> Adjust loop start and end points.
   <b>Double Click a marker:</b> Apply its position to all samples.
@@ -387,7 +387,6 @@
 
               const imageUrl = canvas.toDataURL();
               const nextIndex = sampleFiles.findIndex(item => item === null);
-              console.log(nextIndex, midiNote);
               sampleFiles[nextIndex] = {
                 d: duration,
                 s: sampleRate,
@@ -440,7 +439,50 @@
 
     // Then, sort the filtered list by 'age'
     filteredList.sort((a, b) => a.m - b.m);
+
     let lastKey = 0;
+    filteredList.forEach(sampleData => {
+      const sampleNote = sampleData['m'];
+      sampleData['lK'] = lastKey;
+      sampleData['hK'] = sampleNote;
+      lastKey = sampleNote + 1
+    });
+    filteredList[filteredList.length - 1]['hK'] = 127
+
+    filteredList.forEach(sampleData => {
+      const outputName = sampleData['n'];
+      const sampleNote = sampleData['m'];
+      if (sampleNote < 0) {
+        resolve(); // Reject Missing Notes
+        return;
+      }
+      const duration = sampleData['d'];
+      let sampleRate = sampleData['s'];
+      const lowKey = sampleData['lK'];
+      const hiKey = sampleData['hK'];
+      if (targetSampleRate != null && sampleRate !== targetSampleRate) {
+        sampleRate = targetSampleRate;
+      }
+      const framecount = Math.floor(duration * sampleRate);
+      patchJson.regions.push({
+        framecount: framecount,
+        gain: Number(sampleGain),
+        hikey: hiKey,
+        lokey: lowKey,
+        "loop.crossfade": 0,
+        "loop.end": Math.floor(framecount * (sampleData['lE'] / duration)),
+        "loop.onrelease": loopEnabled,
+        "loop.enabled": loopEnabled,
+        "loop.start": Math.floor(framecount * (sampleData['lS'] / duration)),
+        "pitch.keycenter": sampleNote,
+        reverse: false,
+        sample: outputName,
+        "sample.end": Math.floor(framecount * (sampleData['oP'] / duration)),
+        "sample.start": Math.floor(framecount * (sampleData['iP'] / duration)),
+        tune: 0
+      });
+    });
+
     const fileReadPromises = filteredList.map((sampleData, index) => {
       return new Promise(async (resolve, reject) => {
         if (sampleData) {
@@ -451,44 +493,16 @@
             resolve(); // Reject Missing Notes
             return;
           }
-          const duration = sampleData['d'];
           let sampleRate = sampleData['s'];
-
           if (targetSampleRate != null && sampleRate !== targetSampleRate) {
             console.log('Re-encoding' + file.name);
-            sampleRate = targetSampleRate;
             const wavBlob = await resampleAudio(file, targetSampleRate);
             zip.file(outputName, wavBlob);
-            resolve();
           } else {
-            const reader = new FileReader();
-            reader.onload = (e) => {
-              // Add the file content to the ZIP
-              zip.file(outputName, e.target.result);
-              resolve();
-            };
-            reader.readAsArrayBuffer(file);
+            const arrayBuffer = await file.arrayBuffer();
+            zip.file(outputName, arrayBuffer);
           }
-
-          const framecount = Math.floor(duration * sampleRate);
-          patchJson.regions.push({
-            framecount: framecount,
-            gain: Number(sampleGain),
-            hikey: sampleNote,
-            lokey: lastKey,
-            "loop.crossfade": 0,
-            "loop.end": Math.floor(framecount * (sampleData['lE'] / duration)),
-            "loop.onrelease": loopEnabled,
-            "loop.enabled": loopEnabled,
-            "loop.start": Math.floor(framecount * (sampleData['lS'] / duration)),
-            "pitch.keycenter": sampleNote,
-            reverse: false,
-            sample: outputName,
-            "sample.end": Math.floor(framecount * (sampleData['oP'] / duration)),
-            "sample.start": Math.floor(framecount * (sampleData['iP'] / duration)),
-            tune: 0
-          });
-          lastKey = sampleNote + 1
+          resolve();
         } else {
           resolve(); // Skip empty slots
         }
