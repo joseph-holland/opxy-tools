@@ -10,6 +10,8 @@
   <link href="https://fonts.googleapis.com/css?family=IBM+Plex+Mono:400,700|Montserrat:400,700&display=swap" rel="stylesheet">
   <!-- Bootstrap Icons -->
   <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
+  <!-- Font Awesome Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
   <link rel="stylesheet" href="style.css">
   <style>
     body {
@@ -193,16 +195,16 @@
             </div>
             <div class="key-wrapper key-r">
               <div class="kbd bg-light border rounded">R</div>
-              <div class="small text-muted">RIM2</div>
+              <div class="small text-muted">CP</div>
             </div>
             <!-- T is omitted to simulate the piano gap -->
             <div class="key-wrapper key-y">
               <div class="kbd bg-light border rounded">Y</div>
-              <div class="small text-muted">CHH</div>
+              <div class="small text-muted">HH2</div>
             </div>
             <div class="key-wrapper key-u">
               <div class="kbd bg-light border rounded">U</div>
-              <div class="small text-muted">OHH</div>
+              <div class="small text-muted">OH</div>
             </div>
             <!-- Bottom row -->
             <div class="key-wrapper key-a">
@@ -215,23 +217,23 @@
             </div>
             <div class="key-wrapper key-d">
               <div class="kbd bg-light border rounded">D</div>
-              <div class="small text-muted">RIM1</div>
+              <div class="small text-muted">RIM</div>
             </div>
             <div class="key-wrapper key-f">
               <div class="kbd bg-light border rounded">F</div>
-              <div class="small text-muted">PERC</div>
+              <div class="small text-muted">TB</div>
             </div>
             <div class="key-wrapper key-g">
               <div class="kbd bg-light border rounded">G</div>
-              <div class="small text-muted">SHAKER</div>
+              <div class="small text-muted">SH</div>
             </div>
             <div class="key-wrapper key-h">
               <div class="kbd bg-light border rounded">H</div>
-              <div class="small text-muted">TOM</div>
+              <div class="small text-muted">HH1</div>
             </div>
             <div class="key-wrapper key-j">
               <div class="kbd bg-light border rounded">J</div>
-              <div class="small text-muted">RIDE</div>
+              <div class="small text-muted">CLV</div>
             </div>
           </div>
           <div class="octave-controls">
@@ -258,30 +260,30 @@
                   </tr>
                 </thead>
                 <tbody>
-                  <tr><td>Kick</td><td><input type="file" accept=".wav" class="form-control form-control-sm" id="sample-1"><div class="small text-muted" id="sample-name-1"></div></td><td><button type="button" class="btn btn-outline-secondary btn-sm" id="play-1" disabled><i class="bi bi-play-fill"></i></button> <button type="button" class="btn btn-outline-danger btn-sm" id="clear-1" disabled><i class="bi bi-x-lg"></i></button></td></tr>
-                  <tr><td>Kick Alt</td><td><input type="file" accept=".wav" class="form-control form-control-sm" id="sample-2"><div class="small text-muted" id="sample-name-2"></div></td><td><button type="button" class="btn btn-outline-secondary btn-sm" id="play-2" disabled><i class="bi bi-play-fill"></i></button> <button type="button" class="btn btn-outline-danger btn-sm" id="clear-2" disabled><i class="bi bi-x-lg"></i></button></td></tr>
-                  <tr><td>Snare</td><td><input type="file" accept=".wav" class="form-control form-control-sm" id="sample-3"><div class="small text-muted" id="sample-name-3"></div></td><td><button type="button" class="btn btn-outline-secondary btn-sm" id="play-3" disabled><i class="bi bi-play-fill"></i></button> <button type="button" class="btn btn-outline-danger btn-sm" id="clear-3" disabled><i class="bi bi-x-lg"></i></button></td></tr>
-                  <tr><td>Snare Alt</td><td><input type="file" accept=".wav" class="form-control form-control-sm" id="sample-4"><div class="small text-muted" id="sample-name-4"></div></td><td><button type="button" class="btn btn-outline-secondary btn-sm" id="play-4" disabled><i class="bi bi-play-fill"></i></button> <button type="button" class="btn btn-outline-danger btn-sm" id="clear-4" disabled><i class="bi bi-x-lg"></i></button></td></tr>
-                  <tr><td>Rim</td><td><input type="file" accept=".wav" class="form-control form-control-sm" id="sample-5"><div class="small text-muted" id="sample-name-5"></div></td><td><button type="button" class="btn btn-outline-secondary btn-sm" id="play-5" disabled><i class="bi bi-play-fill"></i></button> <button type="button" class="btn btn-outline-danger btn-sm" id="clear-5" disabled><i class="bi bi-x-lg"></i></button></td></tr>
-                  <tr><td>Clap / Snap</td><td><input type="file" accept=".wav" class="form-control form-control-sm" id="sample-6"><div class="small text-muted" id="sample-name-6"></div></td><td><button type="button" class="btn btn-outline-secondary btn-sm" id="play-6" disabled><i class="bi bi-play-fill"></i></button> <button type="button" class="btn btn-outline-danger btn-sm" id="clear-6" disabled><i class="bi bi-x-lg"></i></button></td></tr>
-                  <tr><td>Perc</td><td><input type="file" accept=".wav" class="form-control form-control-sm" id="sample-7"><div class="small text-muted" id="sample-name-7"></div></td><td><button type="button" class="btn btn-outline-secondary btn-sm" id="play-7" disabled><i class="bi bi-play-fill"></i></button> <button type="button" class="btn btn-outline-danger btn-sm" id="clear-7" disabled><i class="bi bi-x-lg"></i></button></td></tr>
-                  <tr><td>Shaker</td><td><input type="file" accept=".wav" class="form-control form-control-sm" id="sample-8"><div class="small text-muted" id="sample-name-8"></div></td><td><button type="button" class="btn btn-outline-secondary btn-sm" id="play-8" disabled><i class="bi bi-play-fill"></i></button> <button type="button" class="btn btn-outline-danger btn-sm" id="clear-8" disabled><i class="bi bi-x-lg"></i></button></td></tr>
-                  <tr><td>Closed Hi-Hat</td><td><input type="file" accept=".wav" class="form-control form-control-sm" id="sample-9"><div class="small text-muted" id="sample-name-9"></div></td><td><button type="button" class="btn btn-outline-secondary btn-sm" id="play-9" disabled><i class="bi bi-play-fill"></i></button> <button type="button" class="btn btn-outline-danger btn-sm" id="clear-9" disabled><i class="bi bi-x-lg"></i></button></td></tr>
-                  <tr><td>Closed Hi-Hat Alt</td><td><input type="file" accept=".wav" class="form-control form-control-sm" id="sample-10"><div class="small text-muted" id="sample-name-10"></div></td><td><button type="button" class="btn btn-outline-secondary btn-sm" id="play-10" disabled><i class="bi bi-play-fill"></i></button> <button type="button" class="btn btn-outline-danger btn-sm" id="clear-10" disabled><i class="bi bi-x-lg"></i></button></td></tr>
-                  <tr><td>Open Hi-Hat</td><td><input type="file" accept=".wav" class="form-control form-control-sm" id="sample-11"><div class="small text-muted" id="sample-name-11"></div></td><td><button type="button" class="btn btn-outline-secondary btn-sm" id="play-11" disabled><i class="bi bi-play-fill"></i></button> <button type="button" class="btn btn-outline-danger btn-sm" id="clear-11" disabled><i class="bi bi-x-lg"></i></button></td></tr>
-                  <tr><td>Clave</td><td><input type="file" accept=".wav" class="form-control form-control-sm" id="sample-12"><div class="small text-muted" id="sample-name-12"></div></td><td><button type="button" class="btn btn-outline-secondary btn-sm" id="play-12" disabled><i class="bi bi-play-fill"></i></button> <button type="button" class="btn btn-outline-danger btn-sm" id="clear-12" disabled><i class="bi bi-x-lg"></i></button></td></tr>
-                  <tr><td>Low Tom</td><td><input type="file" accept=".wav" class="form-control form-control-sm" id="sample-13"><div class="small text-muted" id="sample-name-13"></div></td><td><button type="button" class="btn btn-outline-secondary btn-sm" id="play-13" disabled><i class="bi bi-play-fill"></i></button> <button type="button" class="btn btn-outline-danger btn-sm" id="clear-13" disabled><i class="bi bi-x-lg"></i></button></td></tr>
-                  <tr><td>Ride</td><td><input type="file" accept=".wav" class="form-control form-control-sm" id="sample-14"><div class="small text-muted" id="sample-name-14"></div></td><td><button type="button" class="btn btn-outline-secondary btn-sm" id="play-14" disabled><i class="bi bi-play-fill"></i></button> <button type="button" class="btn btn-outline-danger btn-sm" id="clear-14" disabled><i class="bi bi-x-lg"></i></button></td></tr>
-                  <tr><td>Mid Tom</td><td><input type="file" accept=".wav" class="form-control form-control-sm" id="sample-15"><div class="small text-muted" id="sample-name-15"></div></td><td><button type="button" class="btn btn-outline-secondary btn-sm" id="play-15" disabled><i class="bi bi-play-fill"></i></button> <button type="button" class="btn btn-outline-danger btn-sm" id="clear-15" disabled><i class="bi bi-x-lg"></i></button></td></tr>
-                  <tr><td>Crash</td><td><input type="file" accept=".wav" class="form-control form-control-sm" id="sample-16"><div class="small text-muted" id="sample-name-16"></div></td><td><button type="button" class="btn btn-outline-secondary btn-sm" id="play-16" disabled><i class="bi bi-play-fill"></i></button> <button type="button" class="btn btn-outline-danger btn-sm" id="clear-16" disabled><i class="bi bi-x-lg"></i></button></td></tr>
-                  <tr><td>Hi Tom</td><td><input type="file" accept=".wav" class="form-control form-control-sm" id="sample-17"><div class="small text-muted" id="sample-name-17"></div></td><td><button type="button" class="btn btn-outline-secondary btn-sm" id="play-17" disabled><i class="bi bi-play-fill"></i></button> <button type="button" class="btn btn-outline-danger btn-sm" id="clear-17" disabled><i class="bi bi-x-lg"></i></button></td></tr>
-                  <tr><td>Triangle</td><td><input type="file" accept=".wav" class="form-control form-control-sm" id="sample-18"><div class="small text-muted" id="sample-name-18"></div></td><td><button type="button" class="btn btn-outline-secondary btn-sm" id="play-18" disabled><i class="bi bi-play-fill"></i></button> <button type="button" class="btn btn-outline-danger btn-sm" id="clear-18" disabled><i class="bi bi-x-lg"></i></button></td></tr>
-                  <tr><td>Low Congo</td><td><input type="file" accept=".wav" class="form-control form-control-sm" id="sample-19"><div class="small text-muted" id="sample-name-19"></div></td><td><button type="button" class="btn btn-outline-secondary btn-sm" id="play-19" disabled><i class="bi bi-play-fill"></i></button> <button type="button" class="btn btn-outline-danger btn-sm" id="clear-19" disabled><i class="bi bi-x-lg"></i></button></td></tr>
-                  <tr><td>High Congo</td><td><input type="file" accept=".wav" class="form-control form-control-sm" id="sample-20"><div class="small text-muted" id="sample-name-20"></div></td><td><button type="button" class="btn btn-outline-secondary btn-sm" id="play-20" disabled><i class="bi bi-play-fill"></i></button> <button type="button" class="btn btn-outline-danger btn-sm" id="clear-20" disabled><i class="bi bi-x-lg"></i></button></td></tr>
-                  <tr><td>Cowbell</td><td><input type="file" accept=".wav" class="form-control form-control-sm" id="sample-21"><div class="small text-muted" id="sample-name-21"></div></td><td><button type="button" class="btn btn-outline-secondary btn-sm" id="play-21" disabled><i class="bi bi-play-fill"></i></button> <button type="button" class="btn btn-outline-danger btn-sm" id="clear-21" disabled><i class="bi bi-x-lg"></i></button></td></tr>
-                  <tr><td>Guiro</td><td><input type="file" accept=".wav" class="form-control form-control-sm" id="sample-22"><div class="small text-muted" id="sample-name-22"></div></td><td><button type="button" class="btn btn-outline-secondary btn-sm" id="play-22" disabled><i class="bi bi-play-fill"></i></button> <button type="button" class="btn btn-outline-danger btn-sm" id="clear-22" disabled><i class="bi bi-x-lg"></i></button></td></tr>
-                  <tr><td>Metal</td><td><input type="file" accept=".wav" class="form-control form-control-sm" id="sample-23"><div class="small text-muted" id="sample-name-23"></div></td><td><button type="button" class="btn btn-outline-secondary btn-sm" id="play-23" disabled><i class="bi bi-play-fill"></i></button> <button type="button" class="btn btn-outline-danger btn-sm" id="clear-23" disabled><i class="bi bi-x-lg"></i></button></td></tr>
-                  <tr><td>Chi</td><td><input type="file" accept=".wav" class="form-control form-control-sm" id="sample-24"><div class="small text-muted" id="sample-name-24"></div></td><td><button type="button" class="btn btn-outline-secondary btn-sm" id="play-24" disabled><i class="bi bi-play-fill"></i></button> <button type="button" class="btn btn-outline-danger btn-sm" id="clear-24" disabled><i class="bi bi-x-lg"></i></button></td></tr>
+                  <tr><td>Kick</td><td><div class="input-group input-group-sm"><label class="input-group-text" for="sample-1"><i class="fa fa-search"></i></label><input type="file" accept=".wav" class="form-control form-control-sm" id="sample-1" style="display:none;"><div class="small text-muted" id="sample-name-1"></div></div></td><td><button type="button" class="btn btn-outline-secondary btn-sm" id="play-1" disabled><i class="bi bi-play-fill"></i></button> <button type="button" class="btn btn-outline-danger btn-sm" id="clear-1" disabled><i class="bi bi-x-lg"></i></button></td></tr>
+                  <tr><td>Kick Alt</td><td><div class="input-group input-group-sm"><label class="input-group-text" for="sample-2"><i class="fa fa-search"></i></label><input type="file" accept=".wav" class="form-control form-control-sm" id="sample-2" style="display:none;"><div class="small text-muted" id="sample-name-2"></div></div></td><td><button type="button" class="btn btn-outline-secondary btn-sm" id="play-2" disabled><i class="bi bi-play-fill"></i></button> <button type="button" class="btn btn-outline-danger btn-sm" id="clear-2" disabled><i class="bi bi-x-lg"></i></button></td></tr>
+                  <tr><td>Snare</td><td><div class="input-group input-group-sm"><label class="input-group-text" for="sample-3"><i class="fa fa-search"></i></label><input type="file" accept=".wav" class="form-control form-control-sm" id="sample-3" style="display:none;"><div class="small text-muted" id="sample-name-3"></div></div></td><td><button type="button" class="btn btn-outline-secondary btn-sm" id="play-3" disabled><i class="bi bi-play-fill"></i></button> <button type="button" class="btn btn-outline-danger btn-sm" id="clear-3" disabled><i class="bi bi-x-lg"></i></button></td></tr>
+                  <tr><td>Snare Alt</td><td><div class="input-group input-group-sm"><label class="input-group-text" for="sample-4"><i class="fa fa-search"></i></label><input type="file" accept=".wav" class="form-control form-control-sm" id="sample-4" style="display:none;"><div class="small text-muted" id="sample-name-4"></div></div></td><td><button type="button" class="btn btn-outline-secondary btn-sm" id="play-4" disabled><i class="bi bi-play-fill"></i></button> <button type="button" class="btn btn-outline-danger btn-sm" id="clear-4" disabled><i class="bi bi-x-lg"></i></button></td></tr>
+                  <tr><td>Rim</td><td><div class="input-group input-group-sm"><label class="input-group-text" for="sample-5"><i class="fa fa-search"></i></label><input type="file" accept=".wav" class="form-control form-control-sm" id="sample-5" style="display:none;"><div class="small text-muted" id="sample-name-5"></div></div></td><td><button type="button" class="btn btn-outline-secondary btn-sm" id="play-5" disabled><i class="bi bi-play-fill"></i></button> <button type="button" class="btn btn-outline-danger btn-sm" id="clear-5" disabled><i class="bi bi-x-lg"></i></button></td></tr>
+                  <tr><td>Clap</td><td><div class="input-group input-group-sm"><label class="input-group-text" for="sample-6"><i class="fa fa-search"></i></label><input type="file" accept=".wav" class="form-control form-control-sm" id="sample-6" style="display:none;"><div class="small text-muted" id="sample-name-6"></div></div></td><td><button type="button" class="btn btn-outline-secondary btn-sm" id="play-6" disabled><i class="bi bi-play-fill"></i></button> <button type="button" class="btn btn-outline-danger btn-sm" id="clear-6" disabled><i class="bi bi-x-lg"></i></button></td></tr>
+                  <tr><td>Tambourine</td><td><div class="input-group input-group-sm"><label class="input-group-text" for="sample-7"><i class="fa fa-search"></i></label><input type="file" accept=".wav" class="form-control form-control-sm" id="sample-7" style="display:none;"><div class="small text-muted" id="sample-name-7"></div></div></td><td><button type="button" class="btn btn-outline-secondary btn-sm" id="play-7" disabled><i class="bi bi-play-fill"></i></button> <button type="button" class="btn btn-outline-danger btn-sm" id="clear-7" disabled><i class="bi bi-x-lg"></i></button></td></tr>
+                  <tr><td>Shaker</td><td><div class="input-group input-group-sm"><label class="input-group-text" for="sample-8"><i class="fa fa-search"></i></label><input type="file" accept=".wav" class="form-control form-control-sm" id="sample-8" style="display:none;"><div class="small text-muted" id="sample-name-8"></div></div></td><td><button type="button" class="btn btn-outline-secondary btn-sm" id="play-8" disabled><i class="bi bi-play-fill"></i></button> <button type="button" class="btn btn-outline-danger btn-sm" id="clear-8" disabled><i class="bi bi-x-lg"></i></button></td></tr>
+                  <tr><td>Closed Hi-Hat</td><td><div class="input-group input-group-sm"><label class="input-group-text" for="sample-9"><i class="fa fa-search"></i></label><input type="file" accept=".wav" class="form-control form-control-sm" id="sample-9" style="display:none;"><div class="small text-muted" id="sample-name-9"></div></div></td><td><button type="button" class="btn btn-outline-secondary btn-sm" id="play-9" disabled><i class="bi bi-play-fill"></i></button> <button type="button" class="btn btn-outline-danger btn-sm" id="clear-9" disabled><i class="bi bi-x-lg"></i></button></td></tr>
+                  <tr><td>Closed Hi-Hat Alt</td><td><div class="input-group input-group-sm"><label class="input-group-text" for="sample-10"><i class="fa fa-search"></i></label><input type="file" accept=".wav" class="form-control form-control-sm" id="sample-10" style="display:none;"><div class="small text-muted" id="sample-name-10"></div></div></td><td><button type="button" class="btn btn-outline-secondary btn-sm" id="play-10" disabled><i class="bi bi-play-fill"></i></button> <button type="button" class="btn btn-outline-danger btn-sm" id="clear-10" disabled><i class="bi bi-x-lg"></i></button></td></tr>
+                  <tr><td>Open Hi-Hat</td><td><div class="input-group input-group-sm"><label class="input-group-text" for="sample-11"><i class="fa fa-search"></i></label><input type="file" accept=".wav" class="form-control form-control-sm" id="sample-11" style="display:none;"><div class="small text-muted" id="sample-name-11"></div></div></td><td><button type="button" class="btn btn-outline-secondary btn-sm" id="play-11" disabled><i class="bi bi-play-fill"></i></button> <button type="button" class="btn btn-outline-danger btn-sm" id="clear-11" disabled><i class="bi bi-x-lg"></i></button></td></tr>
+                  <tr><td>Clave</td><td><div class="input-group input-group-sm"><label class="input-group-text" for="sample-12"><i class="fa fa-search"></i></label><input type="file" accept=".wav" class="form-control form-control-sm" id="sample-12" style="display:none;"><div class="small text-muted" id="sample-name-12"></div></div></td><td><button type="button" class="btn btn-outline-secondary btn-sm" id="play-12" disabled><i class="bi bi-play-fill"></i></button> <button type="button" class="btn btn-outline-danger btn-sm" id="clear-12" disabled><i class="bi bi-x-lg"></i></button></td></tr>
+                  <tr><td>Low Tom</td><td><div class="input-group input-group-sm"><label class="input-group-text" for="sample-13"><i class="fa fa-search"></i></label><input type="file" accept=".wav" class="form-control form-control-sm" id="sample-13" style="display:none;"><div class="small text-muted" id="sample-name-13"></div></div></td><td><button type="button" class="btn btn-outline-secondary btn-sm" id="play-13" disabled><i class="bi bi-play-fill"></i></button> <button type="button" class="btn btn-outline-danger btn-sm" id="clear-13" disabled><i class="bi bi-x-lg"></i></button></td></tr>
+                  <tr><td>Ride</td><td><div class="input-group input-group-sm"><label class="input-group-text" for="sample-14"><i class="fa fa-search"></i></label><input type="file" accept=".wav" class="form-control form-control-sm" id="sample-14" style="display:none;"><div class="small text-muted" id="sample-name-14"></div></div></td><td><button type="button" class="btn btn-outline-secondary btn-sm" id="play-14" disabled><i class="bi bi-play-fill"></i></button> <button type="button" class="btn btn-outline-danger btn-sm" id="clear-14" disabled><i class="bi bi-x-lg"></i></button></td></tr>
+                  <tr><td>Mid Tom</td><td><div class="input-group input-group-sm"><label class="input-group-text" for="sample-15"><i class="fa fa-search"></i></label><input type="file" accept=".wav" class="form-control form-control-sm" id="sample-15" style="display:none;"><div class="small text-muted" id="sample-name-15"></div></div></td><td><button type="button" class="btn btn-outline-secondary btn-sm" id="play-15" disabled><i class="bi bi-play-fill"></i></button> <button type="button" class="btn btn-outline-danger btn-sm" id="clear-15" disabled><i class="bi bi-x-lg"></i></button></td></tr>
+                  <tr><td>Crash</td><td><div class="input-group input-group-sm"><label class="input-group-text" for="sample-16"><i class="fa fa-search"></i></label><input type="file" accept=".wav" class="form-control form-control-sm" id="sample-16" style="display:none;"><div class="small text-muted" id="sample-name-16"></div></div></td><td><button type="button" class="btn btn-outline-secondary btn-sm" id="play-16" disabled><i class="bi bi-play-fill"></i></button> <button type="button" class="btn btn-outline-danger btn-sm" id="clear-16" disabled><i class="bi bi-x-lg"></i></button></td></tr>
+                  <tr><td>Hi Tom</td><td><div class="input-group input-group-sm"><label class="input-group-text" for="sample-17"><i class="fa fa-search"></i></label><input type="file" accept=".wav" class="form-control form-control-sm" id="sample-17" style="display:none;"><div class="small text-muted" id="sample-name-17"></div></div></td><td><button type="button" class="btn btn-outline-secondary btn-sm" id="play-17" disabled><i class="bi bi-play-fill"></i></button> <button type="button" class="btn btn-outline-danger btn-sm" id="clear-17" disabled><i class="bi bi-x-lg"></i></button></td></tr>
+                  <tr><td>Triangle</td><td><div class="input-group input-group-sm"><label class="input-group-text" for="sample-18"><i class="fa fa-search"></i></label><input type="file" accept=".wav" class="form-control form-control-sm" id="sample-18" style="display:none;"><div class="small text-muted" id="sample-name-18"></div></div></td><td><button type="button" class="btn btn-outline-secondary btn-sm" id="play-18" disabled><i class="bi bi-play-fill"></i></button> <button type="button" class="btn btn-outline-danger btn-sm" id="clear-18" disabled><i class="bi bi-x-lg"></i></button></td></tr>
+                  <tr><td>Low Congo</td><td><div class="input-group input-group-sm"><label class="input-group-text" for="sample-19"><i class="fa fa-search"></i></label><input type="file" accept=".wav" class="form-control form-control-sm" id="sample-19" style="display:none;"><div class="small text-muted" id="sample-name-19"></div></div></td><td><button type="button" class="btn btn-outline-secondary btn-sm" id="play-19" disabled><i class="bi bi-play-fill"></i></button> <button type="button" class="btn btn-outline-danger btn-sm" id="clear-19" disabled><i class="bi bi-x-lg"></i></button></td></tr>
+                  <tr><td>High Congo</td><td><div class="input-group input-group-sm"><label class="input-group-text" for="sample-20"><i class="fa fa-search"></i></label><input type="file" accept=".wav" class="form-control form-control-sm" id="sample-20" style="display:none;"><div class="small text-muted" id="sample-name-20"></div></div></td><td><button type="button" class="btn btn-outline-secondary btn-sm" id="play-20" disabled><i class="bi bi-play-fill"></i></button> <button type="button" class="btn btn-outline-danger btn-sm" id="clear-20" disabled><i class="bi bi-x-lg"></i></button></td></tr>
+                  <tr><td>Cowbell</td><td><div class="input-group input-group-sm"><label class="input-group-text" for="sample-21"><i class="fa fa-search"></i></label><input type="file" accept=".wav" class="form-control form-control-sm" id="sample-21" style="display:none;"><div class="small text-muted" id="sample-name-21"></div></div></td><td><button type="button" class="btn btn-outline-secondary btn-sm" id="play-21" disabled><i class="bi bi-play-fill"></i></button> <button type="button" class="btn btn-outline-danger btn-sm" id="clear-21" disabled><i class="bi bi-x-lg"></i></button></td></tr>
+                  <tr><td>Guiro</td><td><div class="input-group input-group-sm"><label class="input-group-text" for="sample-22"><i class="fa fa-search"></i></label><input type="file" accept=".wav" class="form-control form-control-sm" id="sample-22" style="display:none;"><div class="small text-muted" id="sample-name-22"></div></div></td><td><button type="button" class="btn btn-outline-secondary btn-sm" id="play-22" disabled><i class="bi bi-play-fill"></i></button> <button type="button" class="btn btn-outline-danger btn-sm" id="clear-22" disabled><i class="bi bi-x-lg"></i></button></td></tr>
+                  <tr><td>Metal</td><td><div class="input-group input-group-sm"><label class="input-group-text" for="sample-23"><i class="fa fa-search"></i></label><input type="file" accept=".wav" class="form-control form-control-sm" id="sample-23" style="display:none;"><div class="small text-muted" id="sample-name-23"></div></div></td><td><button type="button" class="btn btn-outline-secondary btn-sm" id="play-23" disabled><i class="bi bi-play-fill"></i></button> <button type="button" class="btn btn-outline-danger btn-sm" id="clear-23" disabled><i class="bi bi-x-lg"></i></button></td></tr>
+                  <tr><td>Chi</td><td><div class="input-group input-group-sm"><label class="input-group-text" for="sample-24"><i class="fa fa-search"></i></label><input type="file" accept=".wav" class="form-control form-control-sm" id="sample-24" style="display:none;"><div class="small text-muted" id="sample-name-24"></div></div></td><td><button type="button" class="btn btn-outline-secondary btn-sm" id="play-24" disabled><i class="bi bi-play-fill"></i></button> <button type="button" class="btn btn-outline-danger btn-sm" id="clear-24" disabled><i class="bi bi-x-lg"></i></button></td></tr>
                 </tbody>
               </table>
             </div>
@@ -340,33 +342,33 @@
     const drumKeyMap = [
       // Lower octave (octave 0)
       {
-        W: { label: 'Kick Alt', idx: 2 },
-        E: { label: 'Snare Alt', idx: 4 },
-        R: { label: 'Clap / Snap', idx: 6 },
-        Y: { label: 'Closed Hi-Hat Alt', idx: 10 },
-        U: { label: 'Open Hi-Hat', idx: 11 },
-        A: { label: 'Kick', idx: 1 },
-        S: { label: 'Snare', idx: 3 },
-        D: { label: 'Rim', idx: 5 },
-        F: { label: 'Perc', idx: 7 },
-        G: { label: 'Shaker', idx: 8 },
-        H: { label: 'Closed Hi-Hat', idx: 9 },
-        J: { label: 'Clave', idx: 12 }
+        W: { label: 'BD2', idx: 2 },
+        E: { label: 'SD2', idx: 4 },
+        R: { label: 'CP', idx: 6 },
+        Y: { label: 'CH2', idx: 10 },
+        U: { label: 'OH', idx: 11 },
+        A: { label: 'BD', idx: 1 },
+        S: { label: 'SD', idx: 3 },
+        D: { label: 'RIM', idx: 5 },
+        F: { label: 'TB', idx: 7 },
+        G: { label: 'SH', idx: 8 },
+        H: { label: 'CH', idx: 9 },
+        J: { label: 'MISC', idx: 12 } // Clave as misc
       },
       // Upper octave (octave 1)
       {
-        W: { label: 'Low Tom', idx: 13 },
-        E: { label: 'Ride', idx: 14 },
-        R: { label: 'Crash', idx: 16 },
-        Y: { label: 'Low Congo', idx: 19 },
-        U: { label: 'High Congo', idx: 20 },
-        A: { label: 'Mid Tom', idx: 15 },
-        S: { label: 'Hi Tom', idx: 17 },
-        D: { label: 'Triangle', idx: 18 },
-        F: { label: 'Cowbell', idx: 21 },
-        G: { label: 'Guiro', idx: 22 },
-        H: { label: 'Metal', idx: 23 },
-        J: { label: 'Chi', idx: 24 }
+        W: { label: 'RD', idx: 13 },
+        E: { label: 'CR', idx: 14 },
+        R: { label: 'MISC', idx: 16 },
+        Y: { label: 'MISC', idx: 19 }, // Low Congo
+        U: { label: 'MISC', idx: 20 }, // High Congo
+        A: { label: 'LT', idx: 15 },
+        S: { label: 'MT', idx: 17 },
+        D: { label: 'HT', idx: 18 }, // Triangle
+        F: { label: 'CB', idx: 21 },
+        G: { label: 'MISC', idx: 22 }, // Guiro
+        H: { label: 'MISC', idx: 23 }, // Metal
+        J: { label: 'MISC', idx: 24 }  // Chi
       }
     ];
     let currentOctave = 0;
