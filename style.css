@@ -1,10 +1,59 @@
 body {
-  font-family: 'Arial', sans-serif;
-  background-color: #f8f8f8;
-  color: #333;
-  margin: 0;
-  padding: 0;
+  font-family: 'IBM Plex Mono', 'Montserrat', 'Arial', sans-serif;
+  background: #fff;
+  color: #222;
+  font-size: 0.98rem;
+  letter-spacing: 0.01em;
+  line-height: 1.7;
 }
+
+.app-header {
+  font-weight: bold;
+  font-size: 1.2rem;
+  letter-spacing: 0.05em;
+  border-bottom: 1px solid #e0e0e0;
+  padding-bottom: 0.5rem;
+  margin-bottom: 2rem;
+  background: #fff;
+}
+
+.section-block {
+  margin-bottom: 2.5rem;
+  padding-bottom: 1.5rem;
+  border-bottom: 1px solid #f0f0f0;
+}
+
+.accent-btn {
+  border-radius: 6px;
+  font-weight: 500;
+  background: #222;
+  color: #fff;
+  border: none;
+  padding: 0.5rem 1.2rem;
+  transition: background 0.2s;
+}
+.accent-btn:hover {
+  background: #444;
+}
+
+.disclaimer {
+  font-size: 0.9em;
+  color: #888;
+  margin-top: 2rem;
+}
+
+.nav-tabs .nav-link.active {
+  background: #f8f9fa;
+  border-color: #dee2e6 #dee2e6 #fff;
+  color: #222;
+}
+
+.nav-tabs .nav-link {
+  color: #888;
+  font-weight: 500;
+  font-family: inherit;
+}
+
 header {
   display: flex;
   justify-content: space-between;

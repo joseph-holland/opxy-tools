@@ -3,325 +3,427 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>OP-XY Drum Patch Generator</title>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
-  <script src="lib/audio_tools.js"></script>
+  <title>OP-XY Drum & Multisample Tool</title>
+  <!-- Bootstrap CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <!-- Geometric/Monospaced Font -->
+  <link href="https://fonts.googleapis.com/css?family=IBM+Plex+Mono:400,700|Montserrat:400,700&display=swap" rel="stylesheet">
+  <!-- Bootstrap Icons -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
   <link rel="stylesheet" href="style.css">
+  <style>
+    body {
+      font-family: 'IBM Plex Mono', 'Montserrat', 'Arial', sans-serif;
+      background: #fff;
+      color: #222;
+      font-size: 0.98rem;
+      letter-spacing: 0.01em;
+      line-height: 1.7;
+    }
+    .app-header {
+      font-weight: bold;
+      font-size: 1.2rem;
+      letter-spacing: 0.05em;
+      border-bottom: 1px solid #e0e0e0;
+      padding-bottom: 0.5rem;
+      margin-bottom: 2rem;
+      background: #fff;
+    }
+    .section-block {
+      margin-bottom: 2.5rem;
+      padding-bottom: 1.5rem;
+      border-bottom: 1px solid #f0f0f0;
+    }
+    .accent-btn {
+      border-radius: 6px;
+      font-weight: 500;
+      background: #222;
+      color: #fff;
+      border: none;
+      padding: 0.5rem 1.2rem;
+      transition: background 0.2s;
+    }
+    .accent-btn:hover {
+      background: #444;
+    }
+    .disclaimer {
+      font-size: 0.9em;
+      color: #888;
+      margin-top: 2rem;
+    }
+    .nav-tabs .nav-link.active {
+      background: #f8f9fa;
+      border-color: #dee2e6 #dee2e6 #fff;
+      color: #222;
+    }
+    .nav-tabs .nav-link {
+      color: #888;
+      font-weight: 500;
+      font-family: inherit;
+    }
+    .kbd {
+      display: inline-block;
+      width: 2.5rem;
+      height: 2.5rem;
+      line-height: 2.5rem;
+      text-align: center;
+      border: 1px solid #ccc;
+      border-radius: 0.3rem;
+      font-size: 1.2rem;
+      background: #f7f7f7;
+      transition: background 0.2s, transform 0.2s;
+      cursor: pointer;
+      box-shadow: 0 2px 3px rgba(0,0,0,0.1);
+      position: relative;
+    }
+    .kbd:hover {
+      background: #b0b0b0;
+      transform: translateY(-2px);
+    }
+    .kbd:active, .kbd-pressed {
+      background: #222 !important;
+      color: #fff !important;
+      transform: translateY(1px);
+      box-shadow: 0 1px 2px rgba(0,0,0,0.1);
+    }
+    .keyboard-container {
+      padding: 1rem;
+      background: #f8f8f8;
+      border-radius: 8px;
+      box-shadow: inset 0 0 5px rgba(0,0,0,0.1);
+    }
+    .octave-controls {
+      margin-top: 1rem;
+      display: flex;
+      justify-content: center;
+      gap: 1rem;
+    }
+    .keyboard-grid-container {
+      display: grid;
+      grid-template-columns: repeat(14, 1fr);
+      grid-template-rows: auto auto;
+      gap: 0.25rem;
+      max-width: 600px;
+      margin: 0 auto;
+      padding: 1rem;
+      background: #f8f8f8;
+      border-radius: 8px;
+      box-shadow: inset 0 0 5px rgba(0,0,0,0.1);
+    }
+    .key-wrapper {
+      grid-column: span 2;
+      text-align: center;
+    }
+    .key-wrapper .kbd {
+      margin: 0 auto 0.25rem; /* Center the key */
+    }
+    /* Top row keys */
+    .key-w { grid-column: 2 / 4; grid-row: 1; }
+    .key-e { grid-column: 4 / 6; grid-row: 1; }
+    .key-r { grid-column: 6 / 8; grid-row: 1; }
+    /* T is skipped */
+    .key-y { grid-column: 10 / 12; grid-row: 1; }
+    .key-u { grid-column: 12 / 14; grid-row: 1; }
+
+    /* Bottom row keys */
+    .key-a { grid-column: 1 / 3; grid-row: 2; }
+    .key-s { grid-column: 3 / 5; grid-row: 2; }
+    .key-d { grid-column: 5 / 7; grid-row: 2; }
+    .key-f { grid-column: 7 / 9; grid-row: 2; }
+    .key-g { grid-column: 9 / 11; grid-row: 2; }
+    .key-h { grid-column: 11 / 13; grid-row: 2; }
+    .key-j { grid-column: 13 / 15; grid-row: 2; }
+  </style>
 </head>
 <body>
-  <header>OP-XY Drum Patch Generator<button id="generateButton" class="button">Generate Patch</button></header>
-  <div class="colapsable-container">
-    <div class="top-line">
-      <span class="section-header">how to</span>
-      <a href="#" class="right-link" onclick="toggleTutorial()">expand / collapse</a>
-    </div><div class="tutorial-container" style="font-size: 0.9rem;">
-      Drag and drop samples onto each row.
-
-      You can use your keyboard to play each sample:
-      <div class="keyboard-container" style="padding-top: 10px">
-        <div class="keyboard-section">
-          <div class="keyboard-row">
-            <div class="keyboard-key">W</div>
-            <div class="keyboard-key">E</div>
-            <div class="keyboard-key">R</div>
+  <div class="container py-4">
+    <div class="app-header text-center mb-4">
+      OP-XY Drum & Multisample Tool
+    </div>
+    <ul class="nav nav-tabs justify-content-center mb-4" id="toolTabs" role="tablist">
+      <li class="nav-item" role="presentation">
+        <button class="nav-link active" id="drum-tab" data-bs-toggle="tab" data-bs-target="#drum" type="button" role="tab" aria-controls="drum" aria-selected="true">
+          Drum
+        </button>
+      </li>
+      <li class="nav-item" role="presentation">
+        <button class="nav-link" id="multi-tab" data-bs-toggle="tab" data-bs-target="#multi" type="button" role="tab" aria-controls="multi" aria-selected="false">
+          Multisample
+        </button>
+      </li>
+    </ul>
+    <div class="tab-content">
+      <div class="tab-pane fade show active" id="drum" role="tabpanel" aria-labelledby="drum-tab">
+        <div class="section-block">
+          <h5 class="mb-3">How to use (Drum)</h5>
+          <p>Drag and drop samples onto each row. Use your keyboard to play each sample. When finished, press <b>Generate Patch</b> to download a zip file containing the preset. Unzip into a folder named like <b>PresetName.preset</b>.</p>
+        </div>
+        <div class="section-block">
+          <h5 class="mb-3">Settings</h5>
+          <!-- Drum tool settings -->
+          <label for="preset-name-drum" class="form-label">Preset Name</label>
+          <input id="preset-name-drum" type="text" class="form-control mb-2" value="MyDrumPreset">
+          <label for="sample-rate-drum" class="form-label">Sample Rate</label>
+          <select class="form-select mb-2" id="sample-rate-drum">
+            <option value="0">keep original</option>
+            <option value="1">re-encode 11kHz</option>
+            <option value="2">re-encode 22kHz</option>
+            <option value="3">re-encode 44kHz</option>
+          </select>
+          <div class="form-text mb-2">For best results, set the Sample Rate to 22kHz or lower. If notes are missing during playback, try reducing the sample rate further.</div>
+        </div>
+        <div class="section-block">
+          <h5 class="mb-3">Samples</h5>
+          <!-- Drum tool sample list placeholder -->
+          <div class="alert alert-secondary">Sample list and drag-and-drop area will go here.</div>
+          <button class="accent-btn mt-3">Generate Patch</button>
+        </div>
+        <div class="section-block">
+          <h5 class="mb-3">Keyboard Layout</h5>
+          <div class="mb-2">Below is the mapping of computer keys to drum sounds. Click or use your keyboard to audition each drum:</div>
+          <div class="keyboard-grid-container mb-4 position-relative" id="drum-keyboard">
+            <!-- Top row (offset like a real keyboard) -->
+            <div class="key-wrapper key-w">
+              <div class="kbd bg-light border rounded">W</div>
+              <div class="small text-muted">BD2</div>
+            </div>
+            <div class="key-wrapper key-e">
+              <div class="kbd bg-light border rounded">E</div>
+              <div class="small text-muted">SD2</div>
+            </div>
+            <div class="key-wrapper key-r">
+              <div class="kbd bg-light border rounded">R</div>
+              <div class="small text-muted">RIM2</div>
+            </div>
+            <!-- T is omitted to simulate the piano gap -->
+            <div class="key-wrapper key-y">
+              <div class="kbd bg-light border rounded">Y</div>
+              <div class="small text-muted">CHH</div>
+            </div>
+            <div class="key-wrapper key-u">
+              <div class="kbd bg-light border rounded">U</div>
+              <div class="small text-muted">OHH</div>
+            </div>
+            <!-- Bottom row -->
+            <div class="key-wrapper key-a">
+              <div class="kbd bg-light border rounded">A</div>
+              <div class="small text-muted">BD1</div>
+            </div>
+            <div class="key-wrapper key-s">
+              <div class="kbd bg-light border rounded">S</div>
+              <div class="small text-muted">SD1</div>
+            </div>
+            <div class="key-wrapper key-d">
+              <div class="kbd bg-light border rounded">D</div>
+              <div class="small text-muted">RIM1</div>
+            </div>
+            <div class="key-wrapper key-f">
+              <div class="kbd bg-light border rounded">F</div>
+              <div class="small text-muted">PERC</div>
+            </div>
+            <div class="key-wrapper key-g">
+              <div class="kbd bg-light border rounded">G</div>
+              <div class="small text-muted">SHAKER</div>
+            </div>
+            <div class="key-wrapper key-h">
+              <div class="kbd bg-light border rounded">H</div>
+              <div class="small text-muted">TOM</div>
+            </div>
+            <div class="key-wrapper key-j">
+              <div class="kbd bg-light border rounded">J</div>
+              <div class="small text-muted">RIDE</div>
+            </div>
           </div>
-          <div class="keyboard-row">
-            <div class="keyboard-key">A</div>
-            <div class="keyboard-key">S</div>
-            <div class="keyboard-key">D</div>
-            <div class="keyboard-key">F</div>
+          <div class="octave-controls">
+            <div class="text-center">
+              <div class="kbd bg-light border rounded mb-1">Z</div>
+              <div class="small text-muted">Octave Down</div>
+            </div>
+            <div class="text-center">
+              <div class="kbd bg-light border rounded mb-1">X</div>
+              <div class="small text-muted">Octave Up</div>
+            </div>
           </div>
         </div>
-        <div class="keyboard-section">
-          <div class="keyboard-row">
-            <div class="keyboard-key">Y</div>
-            <div class="keyboard-key">U</div>
-          </div>
-          <div class="keyboard-row">
-            <div class="keyboard-key">G</div>
-            <div class="keyboard-key">H</div>
-            <div class="keyboard-key">J</div>
-          </div>
+        <div class="section-block">
+          <h5 class="mb-3">Drum Sample Inputs</h5>
+          <form id="drum-sample-form">
+            <div class="table-responsive">
+              <table class="table align-middle table-sm mb-0">
+                <thead>
+                  <tr>
+                    <th>Drum</th>
+                    <th>Sample</th>
+                    <th>Actions</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr><td>Kick</td><td><input type="file" accept=".wav" class="form-control form-control-sm" id="sample-1"><div class="small text-muted" id="sample-name-1"></div></td><td><button type="button" class="btn btn-outline-secondary btn-sm" id="play-1" disabled><i class="bi bi-play-fill"></i></button> <button type="button" class="btn btn-outline-danger btn-sm" id="clear-1" disabled><i class="bi bi-x-lg"></i></button></td></tr>
+                  <tr><td>Kick Alt</td><td><input type="file" accept=".wav" class="form-control form-control-sm" id="sample-2"><div class="small text-muted" id="sample-name-2"></div></td><td><button type="button" class="btn btn-outline-secondary btn-sm" id="play-2" disabled><i class="bi bi-play-fill"></i></button> <button type="button" class="btn btn-outline-danger btn-sm" id="clear-2" disabled><i class="bi bi-x-lg"></i></button></td></tr>
+                  <tr><td>Snare</td><td><input type="file" accept=".wav" class="form-control form-control-sm" id="sample-3"><div class="small text-muted" id="sample-name-3"></div></td><td><button type="button" class="btn btn-outline-secondary btn-sm" id="play-3" disabled><i class="bi bi-play-fill"></i></button> <button type="button" class="btn btn-outline-danger btn-sm" id="clear-3" disabled><i class="bi bi-x-lg"></i></button></td></tr>
+                  <tr><td>Snare Alt</td><td><input type="file" accept=".wav" class="form-control form-control-sm" id="sample-4"><div class="small text-muted" id="sample-name-4"></div></td><td><button type="button" class="btn btn-outline-secondary btn-sm" id="play-4" disabled><i class="bi bi-play-fill"></i></button> <button type="button" class="btn btn-outline-danger btn-sm" id="clear-4" disabled><i class="bi bi-x-lg"></i></button></td></tr>
+                  <tr><td>Rim</td><td><input type="file" accept=".wav" class="form-control form-control-sm" id="sample-5"><div class="small text-muted" id="sample-name-5"></div></td><td><button type="button" class="btn btn-outline-secondary btn-sm" id="play-5" disabled><i class="bi bi-play-fill"></i></button> <button type="button" class="btn btn-outline-danger btn-sm" id="clear-5" disabled><i class="bi bi-x-lg"></i></button></td></tr>
+                  <tr><td>Clap / Snap</td><td><input type="file" accept=".wav" class="form-control form-control-sm" id="sample-6"><div class="small text-muted" id="sample-name-6"></div></td><td><button type="button" class="btn btn-outline-secondary btn-sm" id="play-6" disabled><i class="bi bi-play-fill"></i></button> <button type="button" class="btn btn-outline-danger btn-sm" id="clear-6" disabled><i class="bi bi-x-lg"></i></button></td></tr>
+                  <tr><td>Perc</td><td><input type="file" accept=".wav" class="form-control form-control-sm" id="sample-7"><div class="small text-muted" id="sample-name-7"></div></td><td><button type="button" class="btn btn-outline-secondary btn-sm" id="play-7" disabled><i class="bi bi-play-fill"></i></button> <button type="button" class="btn btn-outline-danger btn-sm" id="clear-7" disabled><i class="bi bi-x-lg"></i></button></td></tr>
+                  <tr><td>Shaker</td><td><input type="file" accept=".wav" class="form-control form-control-sm" id="sample-8"><div class="small text-muted" id="sample-name-8"></div></td><td><button type="button" class="btn btn-outline-secondary btn-sm" id="play-8" disabled><i class="bi bi-play-fill"></i></button> <button type="button" class="btn btn-outline-danger btn-sm" id="clear-8" disabled><i class="bi bi-x-lg"></i></button></td></tr>
+                  <tr><td>Closed Hi-Hat</td><td><input type="file" accept=".wav" class="form-control form-control-sm" id="sample-9"><div class="small text-muted" id="sample-name-9"></div></td><td><button type="button" class="btn btn-outline-secondary btn-sm" id="play-9" disabled><i class="bi bi-play-fill"></i></button> <button type="button" class="btn btn-outline-danger btn-sm" id="clear-9" disabled><i class="bi bi-x-lg"></i></button></td></tr>
+                  <tr><td>Closed Hi-Hat Alt</td><td><input type="file" accept=".wav" class="form-control form-control-sm" id="sample-10"><div class="small text-muted" id="sample-name-10"></div></td><td><button type="button" class="btn btn-outline-secondary btn-sm" id="play-10" disabled><i class="bi bi-play-fill"></i></button> <button type="button" class="btn btn-outline-danger btn-sm" id="clear-10" disabled><i class="bi bi-x-lg"></i></button></td></tr>
+                  <tr><td>Open Hi-Hat</td><td><input type="file" accept=".wav" class="form-control form-control-sm" id="sample-11"><div class="small text-muted" id="sample-name-11"></div></td><td><button type="button" class="btn btn-outline-secondary btn-sm" id="play-11" disabled><i class="bi bi-play-fill"></i></button> <button type="button" class="btn btn-outline-danger btn-sm" id="clear-11" disabled><i class="bi bi-x-lg"></i></button></td></tr>
+                  <tr><td>Clave</td><td><input type="file" accept=".wav" class="form-control form-control-sm" id="sample-12"><div class="small text-muted" id="sample-name-12"></div></td><td><button type="button" class="btn btn-outline-secondary btn-sm" id="play-12" disabled><i class="bi bi-play-fill"></i></button> <button type="button" class="btn btn-outline-danger btn-sm" id="clear-12" disabled><i class="bi bi-x-lg"></i></button></td></tr>
+                  <tr><td>Low Tom</td><td><input type="file" accept=".wav" class="form-control form-control-sm" id="sample-13"><div class="small text-muted" id="sample-name-13"></div></td><td><button type="button" class="btn btn-outline-secondary btn-sm" id="play-13" disabled><i class="bi bi-play-fill"></i></button> <button type="button" class="btn btn-outline-danger btn-sm" id="clear-13" disabled><i class="bi bi-x-lg"></i></button></td></tr>
+                  <tr><td>Ride</td><td><input type="file" accept=".wav" class="form-control form-control-sm" id="sample-14"><div class="small text-muted" id="sample-name-14"></div></td><td><button type="button" class="btn btn-outline-secondary btn-sm" id="play-14" disabled><i class="bi bi-play-fill"></i></button> <button type="button" class="btn btn-outline-danger btn-sm" id="clear-14" disabled><i class="bi bi-x-lg"></i></button></td></tr>
+                  <tr><td>Mid Tom</td><td><input type="file" accept=".wav" class="form-control form-control-sm" id="sample-15"><div class="small text-muted" id="sample-name-15"></div></td><td><button type="button" class="btn btn-outline-secondary btn-sm" id="play-15" disabled><i class="bi bi-play-fill"></i></button> <button type="button" class="btn btn-outline-danger btn-sm" id="clear-15" disabled><i class="bi bi-x-lg"></i></button></td></tr>
+                  <tr><td>Crash</td><td><input type="file" accept=".wav" class="form-control form-control-sm" id="sample-16"><div class="small text-muted" id="sample-name-16"></div></td><td><button type="button" class="btn btn-outline-secondary btn-sm" id="play-16" disabled><i class="bi bi-play-fill"></i></button> <button type="button" class="btn btn-outline-danger btn-sm" id="clear-16" disabled><i class="bi bi-x-lg"></i></button></td></tr>
+                  <tr><td>Hi Tom</td><td><input type="file" accept=".wav" class="form-control form-control-sm" id="sample-17"><div class="small text-muted" id="sample-name-17"></div></td><td><button type="button" class="btn btn-outline-secondary btn-sm" id="play-17" disabled><i class="bi bi-play-fill"></i></button> <button type="button" class="btn btn-outline-danger btn-sm" id="clear-17" disabled><i class="bi bi-x-lg"></i></button></td></tr>
+                  <tr><td>Triangle</td><td><input type="file" accept=".wav" class="form-control form-control-sm" id="sample-18"><div class="small text-muted" id="sample-name-18"></div></td><td><button type="button" class="btn btn-outline-secondary btn-sm" id="play-18" disabled><i class="bi bi-play-fill"></i></button> <button type="button" class="btn btn-outline-danger btn-sm" id="clear-18" disabled><i class="bi bi-x-lg"></i></button></td></tr>
+                  <tr><td>Low Congo</td><td><input type="file" accept=".wav" class="form-control form-control-sm" id="sample-19"><div class="small text-muted" id="sample-name-19"></div></td><td><button type="button" class="btn btn-outline-secondary btn-sm" id="play-19" disabled><i class="bi bi-play-fill"></i></button> <button type="button" class="btn btn-outline-danger btn-sm" id="clear-19" disabled><i class="bi bi-x-lg"></i></button></td></tr>
+                  <tr><td>High Congo</td><td><input type="file" accept=".wav" class="form-control form-control-sm" id="sample-20"><div class="small text-muted" id="sample-name-20"></div></td><td><button type="button" class="btn btn-outline-secondary btn-sm" id="play-20" disabled><i class="bi bi-play-fill"></i></button> <button type="button" class="btn btn-outline-danger btn-sm" id="clear-20" disabled><i class="bi bi-x-lg"></i></button></td></tr>
+                  <tr><td>Cowbell</td><td><input type="file" accept=".wav" class="form-control form-control-sm" id="sample-21"><div class="small text-muted" id="sample-name-21"></div></td><td><button type="button" class="btn btn-outline-secondary btn-sm" id="play-21" disabled><i class="bi bi-play-fill"></i></button> <button type="button" class="btn btn-outline-danger btn-sm" id="clear-21" disabled><i class="bi bi-x-lg"></i></button></td></tr>
+                  <tr><td>Guiro</td><td><input type="file" accept=".wav" class="form-control form-control-sm" id="sample-22"><div class="small text-muted" id="sample-name-22"></div></td><td><button type="button" class="btn btn-outline-secondary btn-sm" id="play-22" disabled><i class="bi bi-play-fill"></i></button> <button type="button" class="btn btn-outline-danger btn-sm" id="clear-22" disabled><i class="bi bi-x-lg"></i></button></td></tr>
+                  <tr><td>Metal</td><td><input type="file" accept=".wav" class="form-control form-control-sm" id="sample-23"><div class="small text-muted" id="sample-name-23"></div></td><td><button type="button" class="btn btn-outline-secondary btn-sm" id="play-23" disabled><i class="bi bi-play-fill"></i></button> <button type="button" class="btn btn-outline-danger btn-sm" id="clear-23" disabled><i class="bi bi-x-lg"></i></button></td></tr>
+                  <tr><td>Chi</td><td><input type="file" accept=".wav" class="form-control form-control-sm" id="sample-24"><div class="small text-muted" id="sample-name-24"></div></td><td><button type="button" class="btn btn-outline-secondary btn-sm" id="play-24" disabled><i class="bi bi-play-fill"></i></button> <button type="button" class="btn btn-outline-danger btn-sm" id="clear-24" disabled><i class="bi bi-x-lg"></i></button></td></tr>
+                </tbody>
+              </table>
+            </div>
+          </form>
         </div>
       </div>
-
-      Octave Up / Down
-      <div class="keyboard-row" style="width: 100px; padding-top: 10px;">
-      <div class="keyboard-key">Z</div>
-      <div class="keyboard-key">X</div>
+      <div class="tab-pane fade" id="multi" role="tabpanel" aria-labelledby="multi-tab">
+        <div class="section-block">
+          <h5 class="mb-3">How to use (Multisample)</h5>
+          <p>Drag and drop samples below. Samples are auto-assigned to notes based on their names. When done, click <b>Generate Patch</b> to download a zip file containing the preset. Unzip into a folder named like <b>PresetName.preset</b>.</p>
+        </div>
+        <div class="section-block">
+          <h5 class="mb-3">Settings</h5>
+          <!-- Multisample tool settings placeholder -->
+          <label for="preset-name" class="form-label">Preset Name</label>
+          <input id="preset-name" type="text" class="form-control mb-2" value="MyAwesomeSample">
+          <label for="loop-enabled" class="form-label">Loop Enabled</label>
+          <input type="checkbox" id="loop-enabled" class="form-check-input mb-2" checked>
+          <label for="gain-slider" class="form-label">Preset Gain</label>
+          <input type="range" id="gain-slider" class="form-range mb-2" min="-20" max="20" value="0" step="1"/>
+          <span id="gain-value">0</span>
+          <label for="sample-rate-multi" class="form-label mt-2">Sample Rate</label>
+          <select class="form-select mb-2" id="sample-rate-multi">
+            <option value="0">keep original</option>
+            <option value="1">re-encode 11kHz</option>
+            <option value="2">re-encode 22kHz</option>
+            <option value="3">re-encode 44kHz</option>
+          </select>
+          <div class="form-text mb-2">For best results, set the Sample Rate to 22kHz or lower. If notes are missing during playback, try reducing the sample rate further.</div>
+        </div>
+        <div class="section-block">
+          <h5 class="mb-3">Samples</h5>
+          <!-- Multisample tool sample list placeholder -->
+          <div class="alert alert-secondary">Sample list and drag-and-drop area will go here.</div>
+          <button class="accent-btn mt-3">Generate Patch</button>
+        </div>
       </div>
-      When you are finished press <b>Generate Patch</b> to download a zip file containing the preset. 
-      Unzip into a folder named like <b>PresetName.preset</b>.
-      Check <a href="https://www.youtube.com/watch?v=u3f3tF35JwQ&t=5m30s"> this video</a> for more information about loading samples onto the OP-XY.
-
-  —
-      <a href="https://buba447.github.io/opxy-drum-tool/multisample-tool.html">OP-XY Multisample Patch Generator</a>
     </div>
+    <footer class="text-center disclaimer">
+      OP-XY is a trademark of Teenage Engineering. This is an unofficial tool and is not affiliated with or endorsed by Teenage Engineering.
+    </footer>
   </div>
-  <div class="colapsable-container">
-    <div class="top-line">
-      <span class="section-header">settings</span>
-      <a href="#" class="right-link" onclick="toggleSettings()">expand / collapse</a>
-    </div><div class="setting-container hidden" style="font-size: 0.9rem;">
-      Sample Rate: <select name="sample rate" id="sample-rate">
-        <option value="0">keep original</option>
-        <option value="1">re-encode 11kHz</option>
-        <option value="2">re-encode 22kHz</option>
-        <option value="3">re-encode 44kHz</option>
-      </select>
-    <i>For best results, set the Sample Rate to 22kHz or lower. Setting the sample rate will automatically re-encode the files. If notes are missing during playback, try reducing the sample rate further.</i>
-    </div>
-  </div>
-  <div class="container">
-        <div id="rows"></div>
-  </div>
-  <footer>
-    made by <a href="https://linktr.ee/Zeitgeese">zeitgeese</a> |
-    <a href="https://github.com/buba447/opxy-drum-tool" target="_blank" title="View on GitHub">GitHub repo</a>
-  </footer>
+  <!-- Bootstrap JS (for tabs) -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
   <script>
-    function toggleTutorial() {
-      const div = document.querySelector('.tutorial-container');
-      div.classList.toggle('hidden');
+    // Example: update gain value display
+    const gainSlider = document.getElementById('gain-slider');
+    const gainValue = document.getElementById('gain-value');
+    if (gainSlider && gainValue) {
+      gainSlider.addEventListener('input', () => {
+        gainValue.textContent = gainSlider.value;
+      });
     }
-    function toggleSettings() {
-      const div = document.querySelector('.setting-container');
-      div.classList.toggle('hidden');
-    }
-  </script>
-  <script type="module">
-    import musicMetadataBrowser from 'https://cdn.jsdelivr.net/npm/music-metadata-browser@2.5.11/+esm'
 
-    // Variables
-    const circleRows = [2, 4, 6, 9, 11, 14, 16, 18, 21, 23];
-    const rowsContainer = document.getElementById('rows');
-
-    const files = Array(24).fill(null);
-    const audioElements = Array(24).fill(null);
-    const audioData = Array(24).fill(null);
-
-    // Setup Rows
-    function createRow(rowNumber) {
-      const placeholder = {
-        1: "(kick)",
-        2: "(kick alt)",
-        3: "(snare)",
-        4: "(snare)",
-        5: "(rim)",
-        6: "(clap / snap)",
-        7: "(tamp / perc)",
-        8: "(shaker)",
-        9: "(closed hi-hat)",
-        10: "(closed hi-hat)",
-        11: "(open hi-hat)",
-        12: "(clave)",
-        13: "(low tom)",
-        14: "(ride)",
-        15: "(mid tom)",
-        16: "(crash)",
-        17: "(hi tom)",
-        18: "(triangle)",
-        19: "(low congo)",
-        20: "(high congo)",
-        21: "(cowbell)",
-        22: "(guiro)",
-        23: "(metal)",
-        24: "(chi)",
+    // Drum key mapping for two octaves
+    const drumKeyMap = [
+      // Lower octave (octave 0)
+      {
+        W: { label: 'Kick Alt', idx: 2 },
+        E: { label: 'Snare Alt', idx: 4 },
+        R: { label: 'Clap / Snap', idx: 6 },
+        Y: { label: 'Closed Hi-Hat Alt', idx: 10 },
+        U: { label: 'Open Hi-Hat', idx: 11 },
+        A: { label: 'Kick', idx: 1 },
+        S: { label: 'Snare', idx: 3 },
+        D: { label: 'Rim', idx: 5 },
+        F: { label: 'Perc', idx: 7 },
+        G: { label: 'Shaker', idx: 8 },
+        H: { label: 'Closed Hi-Hat', idx: 9 },
+        J: { label: 'Clave', idx: 12 }
+      },
+      // Upper octave (octave 1)
+      {
+        W: { label: 'Low Tom', idx: 13 },
+        E: { label: 'Ride', idx: 14 },
+        R: { label: 'Crash', idx: 16 },
+        Y: { label: 'Low Congo', idx: 19 },
+        U: { label: 'High Congo', idx: 20 },
+        A: { label: 'Mid Tom', idx: 15 },
+        S: { label: 'Hi Tom', idx: 17 },
+        D: { label: 'Triangle', idx: 18 },
+        F: { label: 'Cowbell', idx: 21 },
+        G: { label: 'Guiro', idx: 22 },
+        H: { label: 'Metal', idx: 23 },
+        J: { label: 'Chi', idx: 24 }
       }
-      const row = document.createElement('div');
-      row.className = 'row';
-      row.dataset.row = rowNumber;
+    ];
+    let currentOctave = 0;
 
-      const number = document.createElement('div');
-      number.className = 'number';
-      number.textContent = rowNumber;
-
-      const circle = document.createElement('div');
-      circle.className = 'circle';
-      circle.style.visibility = circleRows.includes(rowNumber) ? 'visible' : 'hidden';
-
-      const label = document.createElement('div');
-      label.className = 'label';
-      label.textContent  = rowNumber in placeholder ? placeholder[rowNumber] : "wav file";
-
-      const fileName = document.createElement('span');
-      fileName.className = 'file-name';
-
-      const clearButton = document.createElement('button');
-      clearButton.textContent = 'Clear';
-      clearButton.style.display = 'none'; // Initially hidden
-      clearButton.className = 'button clear-button';
-      clearButton.addEventListener('click', () => {
-        label.textContent = rowNumber in placeholder ? placeholder[rowNumber] : "wav file";
-        fileName.textContent = '';
-        clearButton.style.display = 'none'; // Hide button
-        files[rowNumber - 1] = null; // Clear the file
-        audioElements[rowNumber - 1] = null; // Clear the file
-        audioData[rowNumber - 1] = null;
-      });
-
-      row.appendChild(number);
-      row.appendChild(circle);
-      row.appendChild(label);
-      row.appendChild(fileName);
-      row.appendChild(clearButton); // Add the button to the row
-
-      row.addEventListener('dragover', (e) => {
-        e.preventDefault();
-        row.classList.add('highlight');
-      });
-
-      row.addEventListener('dragleave', () => {
-        row.classList.remove('highlight');
-      });
-
-    
-      row.addEventListener('drop', (e) => {
-        e.preventDefault();
-        row.classList.remove('highlight');
-
-        const file = e.dataTransfer.files[0];
-        if (file && file.name.toLowerCase().endsWith('.wav')) {
-          //label.textContent = file.name;
-          fileName.textContent = `(${file.name})`;
-          files[rowNumber - 1] = file; // Store the File object
-          clearButton.style.display = 'inline-block'; // Show the button
-          // Create a new audio object and set it up
-          const reader = new FileReader();
-          reader.onload = async () => {
-            const metadata = await musicMetadataBrowser.parseBlob(file);
-            const duration = metadata.format.duration;
-            const sampleRate = metadata.format.sampleRate;
-            audioData[rowNumber - 1] = {'d': duration, 's': sampleRate};
-            const audio = new Audio(reader.result);
-            audioElements[rowNumber - 1] = audio; // Store the audio element
-          };
-          reader.readAsDataURL(file);
-        }
-      });
-
-      row.addEventListener('click', () => {
-        if (audioElements[rowNumber - 1]) {
-          audioElements[rowNumber - 1].play();
-        }
-      });
-
-      return row;
-    }
-
-    for (let i = 1; i <= 24; i++) {
-      rowsContainer.appendChild(createRow(i));
-    }
-
-    // Keyboard Responders
-    var octave = 0
-    const keyMap = {
-      a: 0,
-      w: 1,
-      s: 2,
-      e: 3,
-      d: 4,
-      r: 5,
-      f: 6,
-      g: 7,
-      k: 8,
-      y: 9,
-      h: 10,
-      j: 11
-    }
-
-    document.addEventListener('keydown', (e) => {
-        const key = e.key.toLowerCase();
-        if (key == "z") {
-          octave = 0;
-        }
-        if (key == "x") {
-          octave = 1;
-        }
-        if (!(key in keyMap)) {
-          return;
-        }
-        const rowNumber = keyMap[key] + (12 * octave);
-
-        if (audioElements[rowNumber]) {
-          audioElements[rowNumber].play();
-        }
-    });
-
-    // Generate Patch
-
-    document.getElementById('generateButton').addEventListener('click', async () => {
-      const patchJson = { ...baseDrumJson, regions: [] };
-
-      const targetSampleRate = [
-        null,
-        11025,
-        22050,
-        44100
-      ][document.getElementById('sample-rate').selectedIndex];
-      const zip = new JSZip();
-
-      const fileReadPromises = files.map((file, index) => {
-        return new Promise(async (resolve, reject) => {
-          if (file) {
-            const rowNumber = index + 1;
-            const audioMeta = audioData[index];
-            const duration = audioMeta['d'];
-            const outputName = sanitizeName(file.name);
-            let sampleRate = audioMeta['s'];
-
-            if (targetSampleRate != null && sampleRate !== targetSampleRate) {
-              console.log('Re-encoding' + file.name);
-              sampleRate = targetSampleRate;
-              const wavBlob = await resampleAudio(file, targetSampleRate);
-              zip.file(outputName, wavBlob);
-              resolve();
-            } else {
-              const reader = new FileReader();
-              reader.onload = (e) => {
-                // Add the file content to the ZIP
-                zip.file(outputName, e.target.result);
-                resolve();
-              };
-              reader.readAsArrayBuffer(file);
-            }
-            const framecount = Math.floor(duration * sampleRate);
-            patchJson.regions.push({
-                "fade.in": 0,
-                "fade.out": 0,
-                "framecount": framecount,
-                hikey: 52 + rowNumber,
-                lokey: 52 + rowNumber,
-                pan: 0,
-                "pitch.keycenter": 60,
-                playmode: "oneshot",
-                reverse: false,
-                sample: outputName,
-                transpose: 0,
-                tune: 0,
-              });
-          } else {
-            resolve(); // Skip empty slots
+    function updateKeyboardLabels() {
+      const map = drumKeyMap[currentOctave];
+      Object.entries(map).forEach(([key, { label }]) => {
+        const wrapper = document.querySelector('.key-' + key.toLowerCase());
+        if (wrapper) {
+          let labelDiv = wrapper.querySelector('.small.text-muted');
+          if (!labelDiv) {
+            labelDiv = document.createElement('div');
+            labelDiv.className = 'small text-muted';
+            wrapper.appendChild(labelDiv);
           }
-        });
+          labelDiv.textContent = label;
+        }
       });
-      // Wait for all file reading to finish
-      await Promise.all(fileReadPromises);
+    }
 
-      // Add patch.json to the ZIP
-      zip.file("patch.json", JSON.stringify(patchJson, null, 2));
+    // Initial label update
+    updateKeyboardLabels();
 
-      // Generate ZIP and download
-      const zipBlob = await zip.generateAsync({ type: "blob" });
-      const url = URL.createObjectURL(zipBlob);
-
-      const a = document.createElement('a');
-      a.href = url;
-      a.download = 'Drums.preset.zip';
-      a.click() ;
-      URL.revokeObjectURL(url);
+    // Octave controls
+    function setOctave(oct) {
+      currentOctave = oct;
+      updateKeyboardLabels();
+    }
+    document.querySelectorAll('.octave-controls .kbd').forEach((el) => {
+      el.addEventListener('click', () => {
+        if (el.textContent.trim().toUpperCase() === 'Z') setOctave(0);
+        if (el.textContent.trim().toUpperCase() === 'X') setOctave(1);
+      });
     });
 
+    // Keyboard interaction for drum machine visual feedback and octave switching
+    document.addEventListener('keydown', (e) => {
+      if (document.getElementById('drum-tab').classList.contains('active')) {
+        const key = e.key.toUpperCase();
+        if (key === 'Z') setOctave(0);
+        if (key === 'X') setOctave(1);
+        const keyEl = Array.from(document.querySelectorAll('#drum .kbd')).find(k => k.textContent.trim().toUpperCase() === key);
+        if (keyEl) {
+          keyEl.classList.add('kbd-pressed');
+        }
+      }
+    });
+
+    document.addEventListener('keyup', (e) => {
+      if (document.getElementById('drum-tab').classList.contains('active')) {
+        const key = e.key.toUpperCase();
+        const keyEl = Array.from(document.querySelectorAll('#drum .kbd')).find(k => k.textContent.trim().toUpperCase() === key);
+        if (keyEl) {
+          keyEl.classList.remove('kbd-pressed');
+        }
+      }
+    });
   </script>
 </body>
 </html>
