@@ -686,16 +686,26 @@
             const ctx = canvas.getContext('2d');
             ctx.fillStyle = '#ececec';
             ctx.fillRect(0, 0, width, height);
-            ctx.strokeStyle = '#868686';
+            // Draw continuous line waveform
+            ctx.strokeStyle = '#000000';
+            ctx.lineWidth = 1;
             ctx.beginPath();
             const data = buffer.getChannelData(0);
             const step = Math.ceil(data.length / width);
             const amp = height / 2;
-            for (let x = 0; x < width; x++) {
-              const min = Math.min(...data.slice(x * step, (x + 1) * step));
-              const max = Math.max(...data.slice(x * step, (x + 1) * step));
-              ctx.moveTo(x, amp + min * amp);
-              ctx.lineTo(x, amp + max * amp);
+            // Start path at the first point
+            let firstAvg = 0;
+            if (step > 0) {
+              const firstSamples = data.slice(0, step);
+              firstAvg = firstSamples.reduce((sum, v) => sum + v, 0) / firstSamples.length;
+            }
+            ctx.moveTo(0, amp + firstAvg * amp);
+            for (let x = 1; x < width; x++) {
+              const start = x * step;
+              const end = Math.min((x + 1) * step, data.length);
+              const samples = data.slice(start, end);
+              const avg = samples.length ? samples.reduce((sum, v) => sum + v, 0) / samples.length : 0;
+              ctx.lineTo(x, amp + avg * amp);
             }
             ctx.stroke();
             // Markers
@@ -711,13 +721,22 @@
               ctx.clearRect(0, 0, width, height);
               ctx.fillStyle = '#ececec';
               ctx.fillRect(0, 0, width, height);
-              ctx.strokeStyle = '#868686';
+              // Draw continuous line waveform
+              ctx.strokeStyle = '#000000';
+              ctx.lineWidth = 1;
               ctx.beginPath();
-              for (let x = 0; x < width; x++) {
-                const min = Math.min(...data.slice(x * step, (x + 1) * step));
-                const max = Math.max(...data.slice(x * step, (x + 1) * step));
-                ctx.moveTo(x, amp + min * amp);
-                ctx.lineTo(x, amp + max * amp);
+              let firstAvg = 0;
+              if (step > 0) {
+                const firstSamples = data.slice(0, step);
+                firstAvg = firstSamples.reduce((sum, v) => sum + v, 0) / firstSamples.length;
+              }
+              ctx.moveTo(0, amp + firstAvg * amp);
+              for (let x = 1; x < width; x++) {
+                const start = x * step;
+                const end = Math.min((x + 1) * step, data.length);
+                const samples = data.slice(start, end);
+                const avg = samples.length ? samples.reduce((sum, v) => sum + v, 0) / samples.length : 0;
+                ctx.lineTo(x, amp + avg * amp);
               }
               ctx.stroke();
               // Start marker
@@ -773,13 +792,13 @@
               playCurrentSelection();
             };
             // Debounced play function for modal
-            let playTimeout = null;
-            function playCurrentSelection() {
+            let playCurrentSelection = null;
+            playCurrentSelection = () => {
               if (playTimeout) clearTimeout(playTimeout);
               playTimeout = setTimeout(() => {
                 modal.querySelector('.adv-play-modal').click();
               }, 80); // Debounce for smoother dragging
-            }
+            };
             // --- FIXED DRAG LOGIC ---
             let draggingMarker = null;
             let dragMoveHandler = null;
