@@ -458,6 +458,31 @@
         semitones = parseInt(advancedBtn.dataset.tune, 10) || 0;
       }
 
+      // === Apply waveform start/end selection ===
+      let sampleStart = 0;
+      let sampleEnd = buffer.length;
+      if (advancedBtn) {
+        if (advancedBtn.dataset.sampleStart) {
+          sampleStart = Math.max(0, Math.min(parseInt(advancedBtn.dataset.sampleStart, 10) || 0, buffer.length - 1));
+        }
+        if (advancedBtn.dataset.sampleEnd) {
+          sampleEnd = Math.max(sampleStart + 1, Math.min(parseInt(advancedBtn.dataset.sampleEnd, 10) || buffer.length, buffer.length));
+        }
+      }
+      // If selection is not the full buffer, create a new buffer for the selection
+      if (sampleStart !== 0 || sampleEnd !== buffer.length) {
+        const selectionLength = sampleEnd - sampleStart;
+        const selectionBuffer = ctx.createBuffer(buffer.numberOfChannels, selectionLength, buffer.sampleRate);
+        for (let ch = 0; ch < buffer.numberOfChannels; ch++) {
+          const srcData = buffer.getChannelData(ch);
+          const dstData = selectionBuffer.getChannelData(ch);
+          for (let i = 0; i < selectionLength; i++) {
+            dstData[i] = srcData[sampleStart + i];
+          }
+        }
+        buffer = selectionBuffer;
+      }
+
       // Check reverse state and apply if needed
       if (isReverse) {
         const revBuffer = ctx.createBuffer(buffer.numberOfChannels, buffer.length, buffer.sampleRate);
@@ -577,6 +602,7 @@
                 </div>
                 <div class="modal-footer">
                   <button type="button" class="btn btn-secondary btn-sm adv-cancel">Cancel</button>
+                  <button type="button" class="btn btn-outline-primary btn-sm adv-play-modal"><i class="fa fa-play"></i> Play</button>
                   <button type="button" class="btn btn-primary btn-sm adv-save">Save</button>
                 </div>
               </div>
@@ -695,47 +721,225 @@
               }
               ctx.stroke();
               // Start marker
+              ctx.save();
               ctx.strokeStyle = '#ff4940';
+              ctx.lineWidth = 3;
               ctx.beginPath();
               const sx = Math.floor((startInput.value / data.length) * width);
               ctx.moveTo(sx, 0);
               ctx.lineTo(sx, height);
               ctx.stroke();
+              // Draw handle
+              ctx.fillStyle = '#ff4940';
+              ctx.beginPath();
+              ctx.arc(sx, height/2, 7, 0, 2*Math.PI);
+              ctx.fill();
+              ctx.restore();
               // End marker
+              ctx.save();
               ctx.strokeStyle = '#007bff';
+              ctx.lineWidth = 3;
               ctx.beginPath();
               const ex = Math.floor((endInput.value / data.length) * width);
               ctx.moveTo(ex, 0);
               ctx.lineTo(ex, height);
               ctx.stroke();
+              // Draw handle
+              ctx.fillStyle = '#007bff';
+              ctx.beginPath();
+              ctx.arc(ex, height/2, 7, 0, 2*Math.PI);
+              ctx.fill();
+              ctx.restore();
             }
             drawMarkers();
             startInput.oninput = endInput.oninput = function() {
+              const MIN_DISTANCE = 10;
+              function clampMarkers() {
+                let s = Math.max(0, Math.min(parseInt(startInput.value, 10) || 0, data.length-1));
+                let e = Math.max(s+MIN_DISTANCE, Math.min(parseInt(endInput.value, 10) || data.length, data.length));
+                // Only clamp if user tries to cross the markers
+                if (e - s < MIN_DISTANCE) {
+                  if (draggingMarker === 'start') {
+                    s = Math.max(0, e-MIN_DISTANCE);
+                  } else if (draggingMarker === 'end') {
+                    e = Math.min(data.length, s+MIN_DISTANCE);
+                  }
+                }
+                startInput.value = s;
+                endInput.value = e;
+              }
+              clampMarkers();
+              drawMarkers();
+              playCurrentSelection();
+            };
+            // Debounced play function for modal
+            let playCurrentSelectionTimeout = null;
+            function playCurrentSelection() {
+              if (playCurrentSelectionTimeout) clearTimeout(playCurrentSelectionTimeout);
+              playCurrentSelectionTimeout = setTimeout(() => {
+                modal.querySelector('.adv-play-modal').click();
+              }, 80); // Debounce for smoother dragging
+            }
+            // Drag markers
+            let draggingMarker = null;
+            let isDragging = false;
+            const MIN_DISTANCE = 10;
+            function clampMarkers() {
               let s = Math.max(0, Math.min(parseInt(startInput.value, 10) || 0, data.length-1));
-              let e = Math.max(s+1, Math.min(parseInt(endInput.value, 10) || data.length, data.length));
+              let e = Math.max(s+MIN_DISTANCE, Math.min(parseInt(endInput.value, 10) || data.length, data.length));
+              // Only clamp if user tries to cross the markers
+              if (e - s < MIN_DISTANCE) {
+                if (draggingMarker === 'start') {
+                  s = Math.max(0, e-MIN_DISTANCE);
+                } else if (draggingMarker === 'end') {
+                  e = Math.min(data.length, s+MIN_DISTANCE);
+                }
+              }
               startInput.value = s;
               endInput.value = e;
-              drawMarkers();
-            };
-            // Click to move marker
+            }
             canvas.addEventListener('mousedown', function(e) {
               const rect = canvas.getBoundingClientRect();
               const x = e.clientX - rect.left;
-              const frame = Math.round((x / width) * data.length);
-              // Nearest marker
-              if (Math.abs(frame - startInput.value) < Math.abs(frame - endInput.value)) {
-                startInput.value = Math.max(0, Math.min(frame, data.length-1));
+              const sx = Math.floor((startInput.value / data.length) * width);
+              const ex = Math.floor((endInput.value / data.length) * width);
+              if (Math.abs(x - sx) < 12) {
+                draggingMarker = 'start';
+                isDragging = true;
+              } else if (Math.abs(x - ex) < 12) {
+                draggingMarker = 'end';
+                isDragging = true;
               } else {
-                endInput.value = Math.max(parseInt(startInput.value,10)+1, Math.min(frame, data.length));
+                // Snap to closest marker
+                if (Math.abs(x - sx) < Math.abs(x - ex)) {
+                  startInput.value = Math.max(0, Math.min(Math.round((x / width) * data.length), data.length-1));
+                  draggingMarker = 'start';
+                  isDragging = true;
+                } else {
+                  endInput.value = Math.max(parseInt(startInput.value,10)+MIN_DISTANCE, Math.min(Math.round((x / width) * data.length), data.length));
+                  draggingMarker = 'end';
+                  isDragging = true;
+                }
+                clampMarkers();
+                drawMarkers();
+                playCurrentSelection();
               }
-              drawMarkers();
             });
+            window.addEventListener('mousemove', function(e) {
+              if (!isDragging || !draggingMarker) return;
+              const rect = canvas.getBoundingClientRect();
+              const x = e.clientX - rect.left;
+              const frame = Math.round((x / width) * data.length);
+              if (draggingMarker === 'start') {
+                startInput.value = Math.max(0, Math.min(frame, endInput.value-MIN_DISTANCE));
+              } else if (draggingMarker === 'end') {
+                endInput.value = Math.max(parseInt(startInput.value,10)+MIN_DISTANCE, Math.min(frame, data.length));
+              }
+              clampMarkers();
+              drawMarkers();
+              playCurrentSelection();
+            });
+            window.addEventListener('mouseup', function() {
+              isDragging = false;
+              draggingMarker = null;
+            });
+            // Draw marker lines (make them thicker and add a handle)
+            function drawMarkers() {
+              ctx.clearRect(0, 0, width, height);
+              ctx.fillStyle = '#ececec';
+              ctx.fillRect(0, 0, width, height);
+              ctx.strokeStyle = '#868686';
+              ctx.beginPath();
+              for (let x = 0; x < width; x++) {
+                const min = Math.min(...data.slice(x * step, (x + 1) * step));
+                const max = Math.max(...data.slice(x * step, (x + 1) * step));
+                ctx.moveTo(x, amp + min * amp);
+                ctx.lineTo(x, amp + max * amp);
+              }
+              ctx.stroke();
+              // Start marker
+              ctx.save();
+              ctx.strokeStyle = '#ff4940';
+              ctx.lineWidth = 3;
+              ctx.beginPath();
+              const sx = Math.floor((startInput.value / data.length) * width);
+              ctx.moveTo(sx, 0);
+              ctx.lineTo(sx, height);
+              ctx.stroke();
+              // Draw handle
+              ctx.fillStyle = '#ff4940';
+              ctx.beginPath();
+              ctx.arc(sx, height/2, 7, 0, 2*Math.PI);
+              ctx.fill();
+              ctx.restore();
+              // End marker
+              ctx.save();
+              ctx.strokeStyle = '#007bff';
+              ctx.lineWidth = 3;
+              ctx.beginPath();
+              const ex = Math.floor((endInput.value / data.length) * width);
+              ctx.moveTo(ex, 0);
+              ctx.lineTo(ex, height);
+              ctx.stroke();
+              // Draw handle
+              ctx.fillStyle = '#007bff';
+              ctx.beginPath();
+              ctx.arc(ex, height/2, 7, 0, 2*Math.PI);
+              ctx.fill();
+              ctx.restore();
+            }
+            drawMarkers();
           } else {
             waveformDiv.innerHTML = '<div class="text-muted small">No sample loaded</div>';
             startInput.value = 0;
             endInput.value = 0;
             lengthLabel.textContent = '';
           }
+
+          // === FIX: Attach play button handler here, in correct scope ===
+          modal.querySelector('.adv-play-modal').onclick = () => {
+            if (!buffer) return;
+            const ctx = getAudioContext();
+            const src = ctx.createBufferSource();
+            let playBuffer = buffer;
+            // Get modal settings
+            let sampleStart = parseInt(modal.querySelector('.adv-sample-start').value, 10) || 0;
+            let sampleEnd = parseInt(modal.querySelector('.adv-sample-end').value, 10) || buffer.length;
+            sampleStart = Math.max(0, Math.min(sampleStart, buffer.length - 1));
+            sampleEnd = Math.max(sampleStart + 1, Math.min(sampleEnd, buffer.length));
+            if (sampleStart !== 0 || sampleEnd !== buffer.length) {
+              const selectionLength = sampleEnd - sampleStart;
+              const selectionBuffer = ctx.createBuffer(buffer.numberOfChannels, selectionLength, buffer.sampleRate);
+              for (let ch = 0; ch < buffer.numberOfChannels; ch++) {
+                const srcData = buffer.getChannelData(ch);
+                const dstData = selectionBuffer.getChannelData(ch);
+                for (let i = 0; i < selectionLength; i++) {
+                  dstData[i] = srcData[sampleStart + i];
+                }
+              }
+              playBuffer = selectionBuffer;
+            }
+            // Reverse
+            const advReverseLabel = modal.querySelector('.adv-reverse-label');
+            const isReverse = advReverseLabel && advReverseLabel.textContent.trim() === 'Reverse';
+            if (isReverse) {
+              const revBuffer = ctx.createBuffer(playBuffer.numberOfChannels, playBuffer.length, playBuffer.sampleRate);
+              for (let ch = 0; ch < playBuffer.numberOfChannels; ch++) {
+                const srcData = playBuffer.getChannelData(ch);
+                const dstData = revBuffer.getChannelData(ch);
+                for (let i = 0, j = srcData.length - 1; i < srcData.length; i++, j--) {
+                  dstData[i] = srcData[j];
+                }
+              }
+              playBuffer = revBuffer;
+            }
+            // Tuning
+            let semitones = parseInt(modal.querySelector('.adv-tune').value, 10) || 0;
+            src.buffer = playBuffer;
+            src.playbackRate.value = Math.pow(2, semitones / 12);
+            src.connect(ctx.destination);
+            src.start(0);
+          };
         });
       }
     }
