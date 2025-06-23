@@ -52,9 +52,6 @@
           <div class="form-text mb-2">For best results, set the Sample Rate to 22kHz or lower. If notes are missing during playback, try reducing the sample rate further.</div>
         </div>
         <div class="section-block">
-          <h5 class="mb-3">Samples</h5>
-          <!-- Drum tool sample list placeholder -->
-          <div class="alert alert-secondary">Sample list and drag-and-drop area will go here.</div>
           <button class="accent-btn mt-3">Generate Patch</button>
         </div>
         <div class="section-block">
@@ -134,33 +131,35 @@
                     <th>Drum</th>
                     <th>Sample</th>
                     <th>Actions</th>
+                    <th>Playmode</th>
+                    <th>Direction</th>
                   </tr>
                 </thead>
                 <tbody>
-                  <tr><td>Kick</td><td><div class="input-group input-group-sm"><label class="input-group-text" for="sample-1"><i class="fa fa-search"></i></label><input type="file" accept=".wav" class="form-control form-control-sm" id="sample-1" style="display:none;"><div class="small text-muted" id="sample-name-1"></div></div></td><td><button type="button" class="btn btn-outline-secondary btn-sm" id="play-1" disabled><i class="bi bi-play-fill"></i></button> <button type="button" class="btn btn-outline-danger btn-sm" id="clear-1" disabled><i class="bi bi-x-lg"></i></button></td></tr>
-                  <tr><td>Kick Alt</td><td><div class="input-group input-group-sm"><label class="input-group-text" for="sample-2"><i class="fa fa-search"></i></label><input type="file" accept=".wav" class="form-control form-control-sm" id="sample-2" style="display:none;"><div class="small text-muted" id="sample-name-2"></div></div></td><td><button type="button" class="btn btn-outline-secondary btn-sm" id="play-2" disabled><i class="bi bi-play-fill"></i></button> <button type="button" class="btn btn-outline-danger btn-sm" id="clear-2" disabled><i class="bi bi-x-lg"></i></button></td></tr>
-                  <tr><td>Snare</td><td><div class="input-group input-group-sm"><label class="input-group-text" for="sample-3"><i class="fa fa-search"></i></label><input type="file" accept=".wav" class="form-control form-control-sm" id="sample-3" style="display:none;"><div class="small text-muted" id="sample-name-3"></div></div></td><td><button type="button" class="btn btn-outline-secondary btn-sm" id="play-3" disabled><i class="bi bi-play-fill"></i></button> <button type="button" class="btn btn-outline-danger btn-sm" id="clear-3" disabled><i class="bi bi-x-lg"></i></button></td></tr>
-                  <tr><td>Snare Alt</td><td><div class="input-group input-group-sm"><label class="input-group-text" for="sample-4"><i class="fa fa-search"></i></label><input type="file" accept=".wav" class="form-control form-control-sm" id="sample-4" style="display:none;"><div class="small text-muted" id="sample-name-4"></div></div></td><td><button type="button" class="btn btn-outline-secondary btn-sm" id="play-4" disabled><i class="bi bi-play-fill"></i></button> <button type="button" class="btn btn-outline-danger btn-sm" id="clear-4" disabled><i class="bi bi-x-lg"></i></button></td></tr>
-                  <tr><td>Rim</td><td><div class="input-group input-group-sm"><label class="input-group-text" for="sample-5"><i class="fa fa-search"></i></label><input type="file" accept=".wav" class="form-control form-control-sm" id="sample-5" style="display:none;"><div class="small text-muted" id="sample-name-5"></div></div></td><td><button type="button" class="btn btn-outline-secondary btn-sm" id="play-5" disabled><i class="bi bi-play-fill"></i></button> <button type="button" class="btn btn-outline-danger btn-sm" id="clear-5" disabled><i class="bi bi-x-lg"></i></button></td></tr>
-                  <tr><td>Clap</td><td><div class="input-group input-group-sm"><label class="input-group-text" for="sample-6"><i class="fa fa-search"></i></label><input type="file" accept=".wav" class="form-control form-control-sm" id="sample-6" style="display:none;"><div class="small text-muted" id="sample-name-6"></div></div></td><td><button type="button" class="btn btn-outline-secondary btn-sm" id="play-6" disabled><i class="bi bi-play-fill"></i></button> <button type="button" class="btn btn-outline-danger btn-sm" id="clear-6" disabled><i class="bi bi-x-lg"></i></button></td></tr>
-                  <tr><td>Tambourine</td><td><div class="input-group input-group-sm"><label class="input-group-text" for="sample-7"><i class="fa fa-search"></i></label><input type="file" accept=".wav" class="form-control form-control-sm" id="sample-7" style="display:none;"><div class="small text-muted" id="sample-name-7"></div></div></td><td><button type="button" class="btn btn-outline-secondary btn-sm" id="play-7" disabled><i class="bi bi-play-fill"></i></button> <button type="button" class="btn btn-outline-danger btn-sm" id="clear-7" disabled><i class="bi bi-x-lg"></i></button></td></tr>
-                  <tr><td>Shaker</td><td><div class="input-group input-group-sm"><label class="input-group-text" for="sample-8"><i class="fa fa-search"></i></label><input type="file" accept=".wav" class="form-control form-control-sm" id="sample-8" style="display:none;"><div class="small text-muted" id="sample-name-8"></div></div></td><td><button type="button" class="btn btn-outline-secondary btn-sm" id="play-8" disabled><i class="bi bi-play-fill"></i></button> <button type="button" class="btn btn-outline-danger btn-sm" id="clear-8" disabled><i class="bi bi-x-lg"></i></button></td></tr>
-                  <tr><td>Closed Hi-Hat</td><td><div class="input-group input-group-sm"><label class="input-group-text" for="sample-9"><i class="fa fa-search"></i></label><input type="file" accept=".wav" class="form-control form-control-sm" id="sample-9" style="display:none;"><div class="small text-muted" id="sample-name-9"></div></div></td><td><button type="button" class="btn btn-outline-secondary btn-sm" id="play-9" disabled><i class="bi bi-play-fill"></i></button> <button type="button" class="btn btn-outline-danger btn-sm" id="clear-9" disabled><i class="bi bi-x-lg"></i></button></td></tr>
-                  <tr><td>Clave</td><td><div class="input-group input-group-sm"><label class="input-group-text" for="sample-10"><i class="fa fa-search"></i></label><input type="file" accept=".wav" class="form-control form-control-sm" id="sample-10" style="display:none;"><div class="small text-muted" id="sample-name-10"></div></div></td><td><button type="button" class="btn btn-outline-secondary btn-sm" id="play-10" disabled><i class="bi bi-play-fill"></i></button> <button type="button" class="btn btn-outline-danger btn-sm" id="clear-10" disabled><i class="bi bi-x-lg"></i></button></td></tr>
-                  <tr><td>Open Hi-Hat</td><td><div class="input-group input-group-sm"><label class="input-group-text" for="sample-11"><i class="fa fa-search"></i></label><input type="file" accept=".wav" class="form-control form-control-sm" id="sample-11" style="display:none;"><div class="small text-muted" id="sample-name-11"></div></div></td><td><button type="button" class="btn btn-outline-secondary btn-sm" id="play-11" disabled><i class="bi bi-play-fill"></i></button> <button type="button" class="btn btn-outline-danger btn-sm" id="clear-11" disabled><i class="bi bi-x-lg"></i></button></td></tr>
-                  <tr><td>Cabasa</td><td><div class="input-group input-group-sm"><label class="input-group-text" for="sample-12"><i class="fa fa-search"></i></label><input type="file" accept=".wav" class="form-control form-control-sm" id="sample-12" style="display:none;"><div class="small text-muted" id="sample-name-12"></div></div></td><td><button type="button" class="btn btn-outline-secondary btn-sm" id="play-12" disabled><i class="bi bi-play-fill"></i></button> <button type="button" class="btn btn-outline-danger btn-sm" id="clear-12" disabled><i class="bi bi-x-lg"></i></button></td></tr>
-                  <tr><td>Low Tom</td><td><div class="input-group input-group-sm"><label class="input-group-text" for="sample-13"><i class="fa fa-search"></i></label><input type="file" accept=".wav" class="form-control form-control-sm" id="sample-13" style="display:none;"><div class="small text-muted" id="sample-name-13"></div></div></td><td><button type="button" class="btn btn-outline-secondary btn-sm" id="play-13" disabled><i class="bi bi-play-fill"></i></button> <button type="button" class="btn btn-outline-danger btn-sm" id="clear-13" disabled><i class="bi bi-x-lg"></i></button></td></tr>
-                  <tr><td>Ride</td><td><div class="input-group input-group-sm"><label class="input-group-text" for="sample-14"><i class="fa fa-search"></i></label><input type="file" accept=".wav" class="form-control form-control-sm" id="sample-14" style="display:none;"><div class="small text-muted" id="sample-name-14"></div></div></td><td><button type="button" class="btn btn-outline-secondary btn-sm" id="play-14" disabled><i class="bi bi-play-fill"></i></button> <button type="button" class="btn btn-outline-danger btn-sm" id="clear-14" disabled><i class="bi bi-x-lg"></i></button></td></tr>
-                  <tr><td>Mid Tom</td><td><div class="input-group input-group-sm"><label class="input-group-text" for="sample-15"><i class="fa fa-search"></i></label><input type="file" accept=".wav" class="form-control form-control-sm" id="sample-15" style="display:none;"><div class="small text-muted" id="sample-name-15"></div></div></td><td><button type="button" class="btn btn-outline-secondary btn-sm" id="play-15" disabled><i class="bi bi-play-fill"></i></button> <button type="button" class="btn btn-outline-danger btn-sm" id="clear-15" disabled><i class="bi bi-x-lg"></i></button></td></tr>
-                  <tr><td>Crash</td><td><div class="input-group input-group-sm"><label class="input-group-text" for="sample-16"><i class="fa fa-search"></i></label><input type="file" accept=".wav" class="form-control form-control-sm" id="sample-16" style="display:none;"><div class="small text-muted" id="sample-name-16"></div></div></td><td><button type="button" class="btn btn-outline-secondary btn-sm" id="play-16" disabled><i class="bi bi-play-fill"></i></button> <button type="button" class="btn btn-outline-danger btn-sm" id="clear-16" disabled><i class="bi bi-x-lg"></i></button></td></tr>
-                  <tr><td>Hi Tom</td><td><div class="input-group input-group-sm"><label class="input-group-text" for="sample-17"><i class="fa fa-search"></i></label><input type="file" accept=".wav" class="form-control form-control-sm" id="sample-17" style="display:none;"><div class="small text-muted" id="sample-name-17"></div></div></td><td><button type="button" class="btn btn-outline-secondary btn-sm" id="play-17" disabled><i class="bi bi-play-fill"></i></button> <button type="button" class="btn btn-outline-danger btn-sm" id="clear-17" disabled><i class="bi bi-x-lg"></i></button></td></tr>
-                  <tr><td>Cowbell</td><td><div class="input-group input-group-sm"><label class="input-group-text" for="sample-18"><i class="fa fa-search"></i></label><input type="file" accept=".wav" class="form-control form-control-sm" id="sample-18" style="display:none;"><div class="small text-muted" id="sample-name-18"></div></div></td><td><button type="button" class="btn btn-outline-secondary btn-sm" id="play-18" disabled><i class="bi bi-play-fill"></i></button> <button type="button" class="btn btn-outline-danger btn-sm" id="clear-18" disabled><i class="bi bi-x-lg"></i></button></td></tr>
-                  <tr><td>Triangle</td><td><div class="input-group input-group-sm"><label class="input-group-text" for="sample-19"><i class="fa fa-search"></i></label><input type="file" accept=".wav" class="form-control form-control-sm" id="sample-19" style="display:none;"><div class="small text-muted" id="sample-name-19"></div></div></td><td><button type="button" class="btn btn-outline-secondary btn-sm" id="play-19" disabled><i class="bi bi-play-fill"></i></button> <button type="button" class="btn btn-outline-danger btn-sm" id="clear-19" disabled><i class="bi bi-x-lg"></i></button></td></tr>
-                  <tr><td>Low Tom</td><td><div class="input-group input-group-sm"><label class="input-group-text" for="sample-20"><i class="fa fa-search"></i></label><input type="file" accept=".wav" class="form-control form-control-sm" id="sample-20" style="display:none;"><div class="small text-muted" id="sample-name-20"></div></div></td><td><button type="button" class="btn btn-outline-secondary btn-sm" id="play-20" disabled><i class="bi bi-play-fill"></i></button> <button type="button" class="btn btn-outline-danger btn-sm" id="clear-20" disabled><i class="bi bi-x-lg"></i></button></td></tr>
-                  <tr><td>Low Conga</td><td><div class="input-group input-group-sm"><label class="input-group-text" for="sample-21"><i class="fa fa-search"></i></label><input type="file" accept=".wav" class="form-control form-control-sm" id="sample-21" style="display:none;"><div class="small text-muted" id="sample-name-21"></div></div></td><td><button type="button" class="btn btn-outline-secondary btn-sm" id="play-21" disabled><i class="bi bi-play-fill"></i></button> <button type="button" class="btn btn-outline-danger btn-sm" id="clear-21" disabled><i class="bi bi-x-lg"></i></button></td></tr>
-                  <tr><td>Clave</td><td><div class="input-group input-group-sm"><label class="input-group-text" for="sample-22"><i class="fa fa-search"></i></label><input type="file" accept=".wav" class="form-control form-control-sm" id="sample-22" style="display:none;"><div class="small text-muted" id="sample-name-22"></div></div></td><td><button type="button" class="btn btn-outline-secondary btn-sm" id="play-22" disabled><i class="bi bi-play-fill"></i></button> <button type="button" class="btn btn-outline-danger btn-sm" id="clear-22" disabled><i class="bi bi-x-lg"></i></button></td></tr>
-                  <tr><td>High Conga</td><td><div class="input-group input-group-sm"><label class="input-group-text" for="sample-23"><i class="fa fa-search"></i></label><input type="file" accept=".wav" class="form-control form-control-sm" id="sample-23" style="display:none;"><div class="small text-muted" id="sample-name-23"></div></div></td><td><button type="button" class="btn btn-outline-secondary btn-sm" id="play-23" disabled><i class="bi bi-play-fill"></i></button> <button type="button" class="btn btn-outline-danger btn-sm" id="clear-23" disabled><i class="bi bi-x-lg"></i></button></td></tr>
-                  <tr><td>Guiro</td><td><div class="input-group input-group-sm"><label class="input-group-text" for="sample-24"><i class="fa fa-search"></i></label><input type="file" accept=".wav" class="form-control form-control-sm" id="sample-24" style="display:none;"><div class="small text-muted" id="sample-name-24"></div></div></td><td><button type="button" class="btn btn-outline-secondary btn-sm" id="play-24" disabled><i class="bi bi-play-fill"></i></button> <button type="button" class="btn btn-outline-danger btn-sm" id="clear-24" disabled><i class="bi bi-x-lg"></i></button></td></tr>
+                  <tr><td>Kick</td><td><div class="input-group input-group-sm"><label class="input-group-text" for="sample-1"><i class="fa fa-search"></i></label><input type="file" accept=".wav" class="form-control form-control-sm" id="sample-1" style="display:none;"><div class="small text-muted" id="sample-name-1"></div></div></td><td><button type="button" class="btn btn-outline-secondary btn-sm" id="play-1" disabled><i class="bi bi-play-fill"></i></button> <button type="button" class="btn btn-outline-danger btn-sm" id="clear-1" disabled><i class="bi bi-x-lg"></i></button></td><td><select class="form-select form-select-sm playmode-select" data-sample-idx="1"><option value="oneshot">Oneshot</option><option value="group">Group</option></select></td><td><button type="button" class="btn btn-outline-secondary btn-sm reverse-btn" data-sample-idx="1"><i class="fa fa-play" title="Toggle playback direction"></i></button></td></tr>
+                  <tr><td>Kick Alt</td><td><div class="input-group input-group-sm"><label class="input-group-text" for="sample-2"><i class="fa fa-search"></i></label><input type="file" accept=".wav" class="form-control form-control-sm" id="sample-2" style="display:none;"><div class="small text-muted" id="sample-name-2"></div></div></td><td><button type="button" class="btn btn-outline-secondary btn-sm" id="play-2" disabled><i class="bi bi-play-fill"></i></button> <button type="button" class="btn btn-outline-danger btn-sm" id="clear-2" disabled><i class="bi bi-x-lg"></i></button></td><td><select class="form-select form-select-sm playmode-select" data-sample-idx="2"><option value="oneshot">Oneshot</option><option value="group">Group</option></select></td><td><button type="button" class="btn btn-outline-secondary btn-sm reverse-btn" data-sample-idx="2"><i class="fa fa-play" title="Toggle playback direction"></i></button></td></tr>
+                  <tr><td>Snare</td><td><div class="input-group input-group-sm"><label class="input-group-text" for="sample-3"><i class="fa fa-search"></i></label><input type="file" accept=".wav" class="form-control form-control-sm" id="sample-3" style="display:none;"><div class="small text-muted" id="sample-name-3"></div></div></td><td><button type="button" class="btn btn-outline-secondary btn-sm" id="play-3" disabled><i class="bi bi-play-fill"></i></button> <button type="button" class="btn btn-outline-danger btn-sm" id="clear-3" disabled><i class="bi bi-x-lg"></i></button></td><td><select class="form-select form-select-sm playmode-select" data-sample-idx="3"><option value="oneshot">Oneshot</option><option value="group">Group</option></select></td><td><button type="button" class="btn btn-outline-secondary btn-sm reverse-btn" data-sample-idx="3"><i class="fa fa-play" title="Toggle playback direction"></i></button></td></tr>
+                  <tr><td>Snare Alt</td><td><div class="input-group input-group-sm"><label class="input-group-text" for="sample-4"><i class="fa fa-search"></i></label><input type="file" accept=".wav" class="form-control form-control-sm" id="sample-4" style="display:none;"><div class="small text-muted" id="sample-name-4"></div></div></td><td><button type="button" class="btn btn-outline-secondary btn-sm" id="play-4" disabled><i class="bi bi-play-fill"></i></button> <button type="button" class="btn btn-outline-danger btn-sm" id="clear-4" disabled><i class="bi bi-x-lg"></i></button></td><td><select class="form-select form-select-sm playmode-select" data-sample-idx="4"><option value="oneshot">Oneshot</option><option value="group">Group</option></select></td><td><button type="button" class="btn btn-outline-secondary btn-sm reverse-btn" data-sample-idx="4"><i class="fa fa-play" title="Toggle playback direction"></i></button></td></tr>
+                  <tr><td>Rim</td><td><div class="input-group input-group-sm"><label class="input-group-text" for="sample-5"><i class="fa fa-search"></i></label><input type="file" accept=".wav" class="form-control form-control-sm" id="sample-5" style="display:none;"><div class="small text-muted" id="sample-name-5"></div></div></td><td><button type="button" class="btn btn-outline-secondary btn-sm" id="play-5" disabled><i class="bi bi-play-fill"></i></button> <button type="button" class="btn btn-outline-danger btn-sm" id="clear-5" disabled><i class="bi bi-x-lg"></i></button></td><td><select class="form-select form-select-sm playmode-select" data-sample-idx="5"><option value="oneshot">Oneshot</option><option value="group">Group</option></select></td><td><button type="button" class="btn btn-outline-secondary btn-sm reverse-btn" data-sample-idx="5"><i class="fa fa-play" title="Toggle playback direction"></i></button></td></tr>
+                  <tr><td>Clap</td><td><div class="input-group input-group-sm"><label class="input-group-text" for="sample-6"><i class="fa fa-search"></i></label><input type="file" accept=".wav" class="form-control form-control-sm" id="sample-6" style="display:none;"><div class="small text-muted" id="sample-name-6"></div></div></td><td><button type="button" class="btn btn-outline-secondary btn-sm" id="play-6" disabled><i class="bi bi-play-fill"></i></button> <button type="button" class="btn btn-outline-danger btn-sm" id="clear-6" disabled><i class="bi bi-x-lg"></i></button></td><td><select class="form-select form-select-sm playmode-select" data-sample-idx="6"><option value="oneshot">Oneshot</option><option value="group">Group</option></select></td><td><button type="button" class="btn btn-outline-secondary btn-sm reverse-btn" data-sample-idx="6"><i class="fa fa-play" title="Toggle playback direction"></i></button></td></tr>
+                  <tr><td>Tambourine</td><td><div class="input-group input-group-sm"><label class="input-group-text" for="sample-7"><i class="fa fa-search"></i></label><input type="file" accept=".wav" class="form-control form-control-sm" id="sample-7" style="display:none;"><div class="small text-muted" id="sample-name-7"></div></div></td><td><button type="button" class="btn btn-outline-secondary btn-sm" id="play-7" disabled><i class="bi bi-play-fill"></i></button> <button type="button" class="btn btn-outline-danger btn-sm" id="clear-7" disabled><i class="bi bi-x-lg"></i></button></td><td><select class="form-select form-select-sm playmode-select" data-sample-idx="7"><option value="oneshot">Oneshot</option><option value="group">Group</option></select></td><td><button type="button" class="btn btn-outline-secondary btn-sm reverse-btn" data-sample-idx="7"><i class="fa fa-play" title="Toggle playback direction"></i></button></td></tr>
+                  <tr><td>Shaker</td><td><div class="input-group input-group-sm"><label class="input-group-text" for="sample-8"><i class="fa fa-search"></i></label><input type="file" accept=".wav" class="form-control form-control-sm" id="sample-8" style="display:none;"><div class="small text-muted" id="sample-name-8"></div></div></td><td><button type="button" class="btn btn-outline-secondary btn-sm" id="play-8" disabled><i class="bi bi-play-fill"></i></button> <button type="button" class="btn btn-outline-danger btn-sm" id="clear-8" disabled><i class="bi bi-x-lg"></i></button></td><td><select class="form-select form-select-sm playmode-select" data-sample-idx="8"><option value="oneshot">Oneshot</option><option value="group">Group</option></select></td><td><button type="button" class="btn btn-outline-secondary btn-sm reverse-btn" data-sample-idx="8"><i class="fa fa-play" title="Toggle playback direction"></i></button></td></tr>
+                  <tr><td>Closed Hi-Hat</td><td><div class="input-group input-group-sm"><label class="input-group-text" for="sample-9"><i class="fa fa-search"></i></label><input type="file" accept=".wav" class="form-control form-control-sm" id="sample-9" style="display:none;"><div class="small text-muted" id="sample-name-9"></div></div></td><td><button type="button" class="btn btn-outline-secondary btn-sm" id="play-9" disabled><i class="bi bi-play-fill"></i></button> <button type="button" class="btn btn-outline-danger btn-sm" id="clear-9" disabled><i class="bi bi-x-lg"></i></button></td><td><select class="form-select form-select-sm playmode-select" data-sample-idx="9"><option value="oneshot">Oneshot</option><option value="group">Group</option></select></td><td><button type="button" class="btn btn-outline-secondary btn-sm reverse-btn" data-sample-idx="9"><i class="fa fa-play" title="Toggle playback direction"></i></button></td></tr>
+                  <tr><td>Clave</td><td><div class="input-group input-group-sm"><label class="input-group-text" for="sample-10"><i class="fa fa-search"></i></label><input type="file" accept=".wav" class="form-control form-control-sm" id="sample-10" style="display:none;"><div class="small text-muted" id="sample-name-10"></div></div></td><td><button type="button" class="btn btn-outline-secondary btn-sm" id="play-10" disabled><i class="bi bi-play-fill"></i></button> <button type="button" class="btn btn-outline-danger btn-sm" id="clear-10" disabled><i class="bi bi-x-lg"></i></button></td><td><select class="form-select form-select-sm playmode-select" data-sample-idx="10"><option value="oneshot">Oneshot</option><option value="group">Group</option></select></td><td><button type="button" class="btn btn-outline-secondary btn-sm reverse-btn" data-sample-idx="10"><i class="fa fa-play" title="Toggle playback direction"></i></button></td></tr>
+                  <tr><td>Open Hi-Hat</td><td><div class="input-group input-group-sm"><label class="input-group-text" for="sample-11"><i class="fa fa-search"></i></label><input type="file" accept=".wav" class="form-control form-control-sm" id="sample-11" style="display:none;"><div class="small text-muted" id="sample-name-11"></div></div></td><td><button type="button" class="btn btn-outline-secondary btn-sm" id="play-11" disabled><i class="bi bi-play-fill"></i></button> <button type="button" class="btn btn-outline-danger btn-sm" id="clear-11" disabled><i class="bi bi-x-lg"></i></button></td><td><select class="form-select form-select-sm playmode-select" data-sample-idx="11"><option value="oneshot">Oneshot</option><option value="group">Group</option></select></td><td><button type="button" class="btn btn-outline-secondary btn-sm reverse-btn" data-sample-idx="11"><i class="fa fa-play" title="Toggle playback direction"></i></button></td></tr>
+                  <tr><td>Cabasa</td><td><div class="input-group input-group-sm"><label class="input-group-text" for="sample-12"><i class="fa fa-search"></i></label><input type="file" accept=".wav" class="form-control form-control-sm" id="sample-12" style="display:none;"><div class="small text-muted" id="sample-name-12"></div></div></td><td><button type="button" class="btn btn-outline-secondary btn-sm" id="play-12" disabled><i class="bi bi-play-fill"></i></button> <button type="button" class="btn btn-outline-danger btn-sm" id="clear-12" disabled><i class="bi bi-x-lg"></i></button></td><td><select class="form-select form-select-sm playmode-select" data-sample-idx="12"><option value="oneshot">Oneshot</option><option value="group">Group</option></select></td><td><button type="button" class="btn btn-outline-secondary btn-sm reverse-btn" data-sample-idx="12"><i class="fa fa-play" title="Toggle playback direction"></i></button></td></tr>
+                  <tr><td>Low Tom</td><td><div class="input-group input-group-sm"><label class="input-group-text" for="sample-13"><i class="fa fa-search"></i></label><input type="file" accept=".wav" class="form-control form-control-sm" id="sample-13" style="display:none;"><div class="small text-muted" id="sample-name-13"></div></div></td><td><button type="button" class="btn btn-outline-secondary btn-sm" id="play-13" disabled><i class="bi bi-play-fill"></i></button> <button type="button" class="btn btn-outline-danger btn-sm" id="clear-13" disabled><i class="bi bi-x-lg"></i></button></td><td><select class="form-select form-select-sm playmode-select" data-sample-idx="13"><option value="oneshot">Oneshot</option><option value="group">Group</option></select></td><td><button type="button" class="btn btn-outline-secondary btn-sm reverse-btn" data-sample-idx="13"><i class="fa fa-play" title="Toggle playback direction"></i></button></td></tr>
+                  <tr><td>Ride</td><td><div class="input-group input-group-sm"><label class="input-group-text" for="sample-14"><i class="fa fa-search"></i></label><input type="file" accept=".wav" class="form-control form-control-sm" id="sample-14" style="display:none;"><div class="small text-muted" id="sample-name-14"></div></div></td><td><button type="button" class="btn btn-outline-secondary btn-sm" id="play-14" disabled><i class="bi bi-play-fill"></i></button> <button type="button" class="btn btn-outline-danger btn-sm" id="clear-14" disabled><i class="bi bi-x-lg"></i></button></td><td><select class="form-select form-select-sm playmode-select" data-sample-idx="14"><option value="oneshot">Oneshot</option><option value="group">Group</option></select></td><td><button type="button" class="btn btn-outline-secondary btn-sm reverse-btn" data-sample-idx="14"><i class="fa fa-play" title="Toggle playback direction"></i></button></td></tr>
+                  <tr><td>Mid Tom</td><td><div class="input-group input-group-sm"><label class="input-group-text" for="sample-15"><i class="fa fa-search"></i></label><input type="file" accept=".wav" class="form-control form-control-sm" id="sample-15" style="display:none;"><div class="small text-muted" id="sample-name-15"></div></div></td><td><button type="button" class="btn btn-outline-secondary btn-sm" id="play-15" disabled><i class="bi bi-play-fill"></i></button> <button type="button" class="btn btn-outline-danger btn-sm" id="clear-15" disabled><i class="bi bi-x-lg"></i></button></td><td><select class="form-select form-select-sm playmode-select" data-sample-idx="15"><option value="oneshot">Oneshot</option><option value="group">Group</option></select></td><td><button type="button" class="btn btn-outline-secondary btn-sm reverse-btn" data-sample-idx="15"><i class="fa fa-play" title="Toggle playback direction"></i></button></td></tr>
+                  <tr><td>Crash</td><td><div class="input-group input-group-sm"><label class="input-group-text" for="sample-16"><i class="fa fa-search"></i></label><input type="file" accept=".wav" class="form-control form-control-sm" id="sample-16" style="display:none;"><div class="small text-muted" id="sample-name-16"></div></div></td><td><button type="button" class="btn btn-outline-secondary btn-sm" id="play-16" disabled><i class="bi bi-play-fill"></i></button> <button type="button" class="btn btn-outline-danger btn-sm" id="clear-16" disabled><i class="bi bi-x-lg"></i></button></td><td><select class="form-select form-select-sm playmode-select" data-sample-idx="16"><option value="oneshot">Oneshot</option><option value="group">Group</option></select></td><td><button type="button" class="btn btn-outline-secondary btn-sm reverse-btn" data-sample-idx="16"><i class="fa fa-play" title="Toggle playback direction"></i></button></td></tr>
+                  <tr><td>Hi Tom</td><td><div class="input-group input-group-sm"><label class="input-group-text" for="sample-17"><i class="fa fa-search"></i></label><input type="file" accept=".wav" class="form-control form-control-sm" id="sample-17" style="display:none;"><div class="small text-muted" id="sample-name-17"></div></div></td><td><button type="button" class="btn btn-outline-secondary btn-sm" id="play-17" disabled><i class="bi bi-play-fill"></i></button> <button type="button" class="btn btn-outline-danger btn-sm" id="clear-17" disabled><i class="bi bi-x-lg"></i></button></td><td><select class="form-select form-select-sm playmode-select" data-sample-idx="17"><option value="oneshot">Oneshot</option><option value="group">Group</option></select></td><td><button type="button" class="btn btn-outline-secondary btn-sm reverse-btn" data-sample-idx="17"><i class="fa fa-play" title="Toggle playback direction"></i></button></td></tr>
+                  <tr><td>Cowbell</td><td><div class="input-group input-group-sm"><label class="input-group-text" for="sample-18"><i class="fa fa-search"></i></label><input type="file" accept=".wav" class="form-control form-control-sm" id="sample-18" style="display:none;"><div class="small text-muted" id="sample-name-18"></div></div></td><td><button type="button" class="btn btn-outline-secondary btn-sm" id="play-18" disabled><i class="bi bi-play-fill"></i></button> <button type="button" class="btn btn-outline-danger btn-sm" id="clear-18" disabled><i class="bi bi-x-lg"></i></button></td><td><select class="form-select form-select-sm playmode-select" data-sample-idx="18"><option value="oneshot">Oneshot</option><option value="group">Group</option></select></td><td><button type="button" class="btn btn-outline-secondary btn-sm reverse-btn" data-sample-idx="18"><i class="fa fa-play" title="Toggle playback direction"></i></button></td></tr>
+                  <tr><td>Triangle</td><td><div class="input-group input-group-sm"><label class="input-group-text" for="sample-19"><i class="fa fa-search"></i></label><input type="file" accept=".wav" class="form-control form-control-sm" id="sample-19" style="display:none;"><div class="small text-muted" id="sample-name-19"></div></div></td><td><button type="button" class="btn btn-outline-secondary btn-sm" id="play-19" disabled><i class="bi bi-play-fill"></i></button> <button type="button" class="btn btn-outline-danger btn-sm" id="clear-19" disabled><i class="bi bi-x-lg"></i></button></td><td><select class="form-select form-select-sm playmode-select" data-sample-idx="19"><option value="oneshot">Oneshot</option><option value="group">Group</option></select></td><td><button type="button" class="btn btn-outline-secondary btn-sm reverse-btn" data-sample-idx="19"><i class="fa fa-play" title="Toggle playback direction"></i></button></td></tr>
+                  <tr><td>Low Tom</td><td><div class="input-group input-group-sm"><label class="input-group-text" for="sample-20"><i class="fa fa-search"></i></label><input type="file" accept=".wav" class="form-control form-control-sm" id="sample-20" style="display:none;"><div class="small text-muted" id="sample-name-20"></div></div></td><td><button type="button" class="btn btn-outline-secondary btn-sm" id="play-20" disabled><i class="bi bi-play-fill"></i></button> <button type="button" class="btn btn-outline-danger btn-sm" id="clear-20" disabled><i class="bi bi-x-lg"></i></button></td><td><select class="form-select form-select-sm playmode-select" data-sample-idx="20"><option value="oneshot">Oneshot</option><option value="group">Group</option></select></td><td><button type="button" class="btn btn-outline-secondary btn-sm reverse-btn" data-sample-idx="20"><i class="fa fa-play" title="Toggle playback direction"></i></button></td></tr>
+                  <tr><td>Low Conga</td><td><div class="input-group input-group-sm"><label class="input-group-text" for="sample-21"><i class="fa fa-search"></i></label><input type="file" accept=".wav" class="form-control form-control-sm" id="sample-21" style="display:none;"><div class="small text-muted" id="sample-name-21"></div></div></td><td><button type="button" class="btn btn-outline-secondary btn-sm" id="play-21" disabled><i class="bi bi-play-fill"></i></button> <button type="button" class="btn btn-outline-danger btn-sm" id="clear-21" disabled><i class="bi bi-x-lg"></i></button></td><td><select class="form-select form-select-sm playmode-select" data-sample-idx="21"><option value="oneshot">Oneshot</option><option value="group">Group</option></select></td><td><button type="button" class="btn btn-outline-secondary btn-sm reverse-btn" data-sample-idx="21"><i class="fa fa-play" title="Toggle playback direction"></i></button></td></tr>
+                  <tr><td>Clave</td><td><div class="input-group input-group-sm"><label class="input-group-text" for="sample-22"><i class="fa fa-search"></i></label><input type="file" accept=".wav" class="form-control form-control-sm" id="sample-22" style="display:none;"><div class="small text-muted" id="sample-name-22"></div></div></td><td><button type="button" class="btn btn-outline-secondary btn-sm" id="play-22" disabled><i class="bi bi-play-fill"></i></button> <button type="button" class="btn btn-outline-danger btn-sm" id="clear-22" disabled><i class="bi bi-x-lg"></i></button></td><td><select class="form-select form-select-sm playmode-select" data-sample-idx="22"><option value="oneshot">Oneshot</option><option value="group">Group</option></select></td><td><button type="button" class="btn btn-outline-secondary btn-sm reverse-btn" data-sample-idx="22"><i class="fa fa-play" title="Toggle playback direction"></i></button></td></tr>
+                  <tr><td>High Conga</td><td><div class="input-group input-group-sm"><label class="input-group-text" for="sample-23"><i class="fa fa-search"></i></label><input type="file" accept=".wav" class="form-control form-control-sm" id="sample-23" style="display:none;"><div class="small text-muted" id="sample-name-23"></div></div></td><td><button type="button" class="btn btn-outline-secondary btn-sm" id="play-23" disabled><i class="bi bi-play-fill"></i></button> <button type="button" class="btn btn-outline-danger btn-sm" id="clear-23" disabled><i class="bi bi-x-lg"></i></button></td><td><select class="form-select form-select-sm playmode-select" data-sample-idx="23"><option value="oneshot">Oneshot</option><option value="group">Group</option></select></td><td><button type="button" class="btn btn-outline-secondary btn-sm reverse-btn" data-sample-idx="23"><i class="fa fa-play" title="Toggle playback direction"></i></button></td></tr>
+                  <tr><td>Guiro</td><td><div class="input-group input-group-sm"><label class="input-group-text" for="sample-24"><i class="fa fa-search"></i></label><input type="file" accept=".wav" class="form-control form-control-sm" id="sample-24" style="display:none;"><div class="small text-muted" id="sample-name-24"></div></div></td><td><button type="button" class="btn btn-outline-secondary btn-sm" id="play-24" disabled><i class="bi bi-play-fill"></i></button> <button type="button" class="btn btn-outline-danger btn-sm" id="clear-24" disabled><i class="bi bi-x-lg"></i></button></td><td><select class="form-select form-select-sm playmode-select" data-sample-idx="24"><option value="oneshot">Oneshot</option><option value="group">Group</option></select></td><td><button type="button" class="btn btn-outline-secondary btn-sm reverse-btn" data-sample-idx="24"><i class="fa fa-play" title="Toggle playback direction"></i></button></td></tr>
                 </tbody>
               </table>
             </div>
@@ -285,28 +284,378 @@
       });
     });
 
-    // Keyboard interaction for drum machine visual feedback and octave switching
-    document.addEventListener('keydown', (e) => {
-      if (document.getElementById('drum-tab').classList.contains('active')) {
-        const key = e.key.toUpperCase();
-        if (key === 'Z') setOctave(0);
-        if (key === 'X') setOctave(1);
-        const keyEl = Array.from(document.querySelectorAll('#drum .kbd')).find(k => k.textContent.trim().toUpperCase() === key);
-        if (keyEl) {
-          keyEl.classList.add('kbd-pressed');
-        }
-      }
-    });
+    // === Drum Sample Loader & Playback Logic ===
+const NUM_DRUMS = 24;
+const drumSamples = new Array(NUM_DRUMS + 1).fill(null); // 1-based indexing
+const drumSampleNames = new Array(NUM_DRUMS + 1).fill("");
+let audioCtx = null;
 
-    document.addEventListener('keyup', (e) => {
-      if (document.getElementById('drum-tab').classList.contains('active')) {
-        const key = e.key.toUpperCase();
-        const keyEl = Array.from(document.querySelectorAll('#drum .kbd')).find(k => k.textContent.trim().toUpperCase() === key);
-        if (keyEl) {
-          keyEl.classList.remove('kbd-pressed');
-        }
+function getAudioContext() {
+  if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+  return audioCtx;
+}
+
+function loadSample(idx, file) {
+  const reader = new FileReader();
+  reader.onload = function(e) {
+    getAudioContext().decodeAudioData(e.target.result, (buffer) => {
+      drumSamples[idx] = buffer;
+      drumSampleNames[idx] = file.name;
+      document.getElementById(`sample-name-${idx}`).textContent = file.name;
+      document.getElementById(`play-${idx}`).disabled = false;
+      document.getElementById(`clear-${idx}`).disabled = false;
+    });
+  };
+  reader.readAsArrayBuffer(file);
+}
+
+function clearSample(idx) {
+  drumSamples[idx] = null;
+  drumSampleNames[idx] = "";
+  document.getElementById(`sample-name-${idx}`).textContent = "";
+  document.getElementById(`play-${idx}`).disabled = true;
+  document.getElementById(`clear-${idx}`).disabled = true;
+  document.getElementById(`sample-${idx}`).value = "";
+  // Also reset reverse button state
+  const reverseBtn = document.querySelector(`.reverse-btn[data-sample-idx='${idx}']`);
+  if (reverseBtn) {
+    reverseBtn.dataset.reverse = 'false';
+    const icon = reverseBtn.querySelector('i');
+    if (icon) {
+      icon.classList.remove('fa-play-flip');
+      icon.style.transform = '';
+    }
+  }
+}
+
+function playSample(idx) {
+  if (!drumSamples[idx]) return;
+  const ctx = getAudioContext();
+  const src = ctx.createBufferSource();
+  let buffer = drumSamples[idx];
+  // Check reverse state
+  const reverseBtn = document.querySelector(`.reverse-btn[data-sample-idx='${idx}']`);
+  const isReverse = reverseBtn && reverseBtn.dataset.reverse === 'true';
+  if (isReverse) {
+    // Create a reversed copy of the buffer
+    const revBuffer = ctx.createBuffer(buffer.numberOfChannels, buffer.length, buffer.sampleRate);
+    for (let ch = 0; ch < buffer.numberOfChannels; ch++) {
+      const srcData = buffer.getChannelData(ch);
+      const dstData = revBuffer.getChannelData(ch);
+      for (let i = 0, j = srcData.length - 1; i < srcData.length; i++, j--) {
+        dstData[i] = srcData[j];
+      }
+    }
+    buffer = revBuffer;
+  }
+  src.buffer = buffer;
+  src.connect(ctx.destination);
+  src.start(0);
+}
+
+// Wire up file inputs, play, clear, and reverse buttons
+for (let i = 1; i <= NUM_DRUMS; i++) {
+  const fileInput = document.getElementById(`sample-${i}`);
+  const playBtn = document.getElementById(`play-${i}`);
+  const clearBtn = document.getElementById(`clear-${i}`);
+  const reverseBtn = document.querySelector(`.reverse-btn[data-sample-idx='${i}']`);
+  const label = fileInput?.previousElementSibling;
+
+  if (fileInput) {
+    // Show file dialog when label is clicked
+    if (label && label.tagName === 'LABEL') {
+      label.addEventListener('click', () => fileInput.click());
+    }
+    fileInput.addEventListener('change', (e) => {
+      if (e.target.files && e.target.files[0]) {
+        loadSample(i, e.target.files[0]);
       }
     });
+  }
+  if (playBtn) {
+    playBtn.addEventListener('click', () => playSample(i));
+  }
+  if (clearBtn) {
+    clearBtn.addEventListener('click', () => clearSample(i));
+  }
+  if (reverseBtn) {
+    // Initialize state
+    reverseBtn.dataset.reverse = 'false';
+    reverseBtn.addEventListener('click', function() {
+      const isNowReverse = this.dataset.reverse === 'true' ? false : true;
+      this.dataset.reverse = isNowReverse ? 'true' : 'false';
+      const icon = this.querySelector('i');
+      if (icon) {
+        // Flip icon direction using CSS transform
+        icon.style.transform = isNowReverse ? 'scaleX(-1)' : '';
+      }
+      // Do NOT play sample automatically on direction change
+    });
+  }
+}
+
+// Use the already-declared drumKeyMap and currentOctave for keyboard trigger logic
+function getDrumIdxForKey(key) {
+  const mapping = drumKeyMap[currentOctave][key];
+  return mapping ? mapping.idx : null;
+}
+
+document.addEventListener('keydown', (e) => {
+  if (document.getElementById('drum-tab').classList.contains('active')) {
+    const key = e.key.toUpperCase();
+    let octaveSwitched = false;
+    if (key === 'Z') {
+      currentOctave = 0;
+      updateKeyboardLabels();
+      octaveSwitched = true;
+    }
+    if (key === 'X') {
+      currentOctave = 1;
+      updateKeyboardLabels();
+      octaveSwitched = true;
+    }
+    if (!octaveSwitched) {
+      const idx = getDrumIdxForKey(key);
+      if (idx && drumSamples[idx]) {
+        playSample(idx);
+      }
+      // Visual feedback: highlight the onscreen key with the same computer key
+      const keyEl = Array.from(document.querySelectorAll('#drum .kbd')).find(
+        k => k.textContent.trim().toUpperCase() === key
+      );
+      if (keyEl) keyEl.classList.add('kbd-pressed');
+    }
+  }
+});
+document.addEventListener('keyup', (e) => {
+  if (document.getElementById('drum-tab').classList.contains('active')) {
+    const key = e.key.toUpperCase();
+    const keyEl = Array.from(document.querySelectorAll('#drum .kbd')).find(
+      k => k.textContent.trim().toUpperCase() === key
+    );
+    if (keyEl) keyEl.classList.remove('kbd-pressed');
+  }
+});
+
+// === Drum Patch Generation (Generate Patch Button) ===
+// Add JSZip if not already present
+if (typeof JSZip === 'undefined') {
+  const script = document.createElement('script');
+  script.src = 'https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js';
+  document.head.appendChild(script);
+}
+
+function sanitizeName(name) {
+  return name.replace(/[^a-zA-Z0-9_\-.]/g, '_');
+}
+
+async function resampleAudio(file, targetSampleRate) {
+  // Use audio_tools.js if available, else just return the file as-is
+  if (window.resampleAudio) {
+    return await window.resampleAudio(file, targetSampleRate);
+  } else {
+    return file;
+  }
+}
+
+// Generate Patch button logic
+const drumGenerateBtn = Array.from(document.querySelectorAll('#drum .accent-btn')).find(btn => btn.textContent.includes('Generate Patch'));
+if (drumGenerateBtn) {
+  drumGenerateBtn.addEventListener('click', async () => {
+    const presetName = document.getElementById('preset-name-drum').value || 'Drums';
+    const sampleRateIdx = document.getElementById('sample-rate-drum').selectedIndex;
+    const targetSampleRate = [null, 11025, 22050, 44100][sampleRateIdx];
+    const zip = new JSZip();
+    const patchJson = { name: presetName, regions: [] };
+    const fileReadPromises = [];
+    for (let i = 1; i <= NUM_DRUMS; i++) {
+      if (drumSamples[i]) {
+        const fileInput = document.getElementById(`sample-${i}`);
+        const file = fileInput && fileInput.files && fileInput.files[0];
+        if (file) {
+          let outputName = sanitizeName(file.name);
+          let sampleRate = drumSamples[i].sampleRate || 44100;
+          let duration = drumSamples[i].duration;
+          // Get playmode from dropdown
+          let playmode = 'oneshot';
+          const playmodeSelect = document.querySelector(`.playmode-select[data-sample-idx='${i}']`);
+          if (playmodeSelect) playmode = playmodeSelect.value;
+          // Get reverse state
+          let reverse = false;
+          const reverseBtn = document.querySelector(`.reverse-btn[data-sample-idx='${i}']`);
+          if (reverseBtn) reverse = reverseBtn.dataset.reverse === 'true';
+          if (targetSampleRate && sampleRate !== targetSampleRate) {
+            fileReadPromises.push(
+              resampleAudio(file, targetSampleRate).then(wavBlob => {
+                zip.file(outputName, wavBlob);
+                patchJson.regions.push({
+                  idx: i,
+                  sample: outputName,
+                  framecount: Math.floor(duration * targetSampleRate),
+                  sampleRate: targetSampleRate,
+                  playmode: playmode,
+                  reverse: reverse
+                });
+              })
+            );
+          } else {
+            fileReadPromises.push(new Promise((resolve) => {
+              const reader = new FileReader();
+              reader.onload = (e) => {
+                zip.file(outputName, e.target.result);
+                patchJson.regions.push({
+                  idx: i,
+                  sample: outputName,
+                  framecount: Math.floor(duration * sampleRate),
+                  sampleRate: sampleRate,
+                  playmode: playmode,
+                  reverse: reverse
+                });
+                resolve();
+              };
+              reader.readAsArrayBuffer(file);
+            }));
+          }
+        }
+      }
+    }
+    await Promise.all(fileReadPromises);
+    zip.file('patch.json', JSON.stringify(patchJson, null, 2));
+    const zipBlob = await zip.generateAsync({ type: 'blob' });
+    const url = URL.createObjectURL(zipBlob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `${presetName}.preset.zip`;
+    a.click();
+    URL.revokeObjectURL(url);
+  });
+}
+
+// Ensure hi-hats are in group playmode by default
+const hiHatLabels = [
+  'closed hi-hat', 'open hi-hat', 'ch', 'oh', 'hh', 'hat'
+];
+const drumSampleTable = document.querySelector('#drum-sample-form table tbody');
+for (let i = 1; i <= NUM_DRUMS; i++) {
+  const row = drumSampleTable.children[i - 1];
+  if (row) {
+    const playmodeSelect = row.querySelector('.playmode-select');
+    if (playmodeSelect) {
+      const drumLabel = row.children[0]?.textContent?.toLowerCase() || '';
+      if (hiHatLabels.some(hh => drumLabel.includes(hh))) {
+        playmodeSelect.value = 'group';
+      } else {
+        playmodeSelect.value = 'oneshot';
+      }
+    }
+  }
+}
+
+// --- Add reverse button to each drum sample row, and fix placement ---
+for (let i = 1; i <= NUM_DRUMS; i++) {
+  const row = drumSampleTable.children[i - 1];
+  if (row) {
+    // Find the direction cell (5th cell, index 4)
+    const directionCell = row.children[4];
+    if (directionCell && !directionCell.querySelector('.reverse-btn')) {
+      const btn = document.createElement('button');
+      btn.type = 'button';
+      btn.className = 'btn btn-outline-secondary btn-sm reverse-btn';
+      btn.setAttribute('data-sample-idx', i);
+      btn.innerHTML = '<i class="fa fa-play" title="Toggle playback direction"></i>';
+      btn.dataset.reverse = 'false';
+      btn.addEventListener('click', function() {
+        const icon = btn.querySelector('i');
+        if (btn.dataset.reverse === 'false') {
+          btn.dataset.reverse = 'true';
+          icon.style.transform = 'scaleX(-1)';
+        } else {
+          btn.dataset.reverse = 'false';
+          icon.style.transform = '';
+        }
+      });
+      directionCell.appendChild(btn);
+    }
+  }
+}
+
+// --- Patch generation: use reverse state ---
+for (let i = 1; i <= NUM_DRUMS; i++) {
+  if (drumSamples[i]) {
+    const fileInput = document.getElementById(`sample-${i}`);
+    const file = fileInput && fileInput.files && fileInput.files[0];
+    if (file) {
+      let outputName = sanitizeName(file.name);
+      let sampleRate = drumSamples[i].sampleRate || 44100;
+      let duration = drumSamples[i].duration;
+      let playmode = 'oneshot';
+      const playmodeSelect = document.querySelector(`.playmode-select[data-sample-idx='${i}']`);
+      if (playmodeSelect) playmode = playmodeSelect.value;
+      // Get reverse state
+      let reverse = false;
+      const reverseBtn = document.querySelector(`.reverse-btn[data-sample-idx='${i}']`);
+      if (reverseBtn) reverse = reverseBtn.dataset.reverse === 'true';
+      if (targetSampleRate && sampleRate !== targetSampleRate) {
+        fileReadPromises.push(
+          resampleAudio(file, targetSampleRate).then(wavBlob => {
+            zip.file(outputName, wavBlob);
+            patchJson.regions.push({
+              idx: i,
+              sample: outputName,
+              framecount: Math.floor(duration * targetSampleRate),
+              sampleRate: targetSampleRate,
+              playmode: playmode,
+              reverse: reverse
+            });
+          })
+        );
+      } else {
+        fileReadPromises.push(new Promise((resolve) => {
+          const reader = new FileReader();
+          reader.onload = (e) => {
+            zip.file(outputName, e.target.result);
+            patchJson.regions.push({
+              idx: i,
+              sample: outputName,
+              framecount: Math.floor(duration * sampleRate),
+              sampleRate: sampleRate,
+              playmode: playmode,
+              reverse: reverse
+            });
+            resolve();
+          };
+          reader.readAsArrayBuffer(file);
+        }));
+      }
+    }
+  }
+}
+
+// 3. Play sample in reverse if reverse is set
+function playSample(idx) {
+  if (!drumSamples[idx]) return;
+  const ctx = getAudioContext();
+  const src = ctx.createBufferSource();
+  let buffer = drumSamples[idx];
+  // Check reverse state
+  const reverseBtn = document.querySelector(`.reverse-btn[data-sample-idx='${idx}']`);
+  const isReverse = reverseBtn && reverseBtn.dataset.reverse === 'true';
+  if (isReverse) {
+    // Create a reversed copy of the buffer
+    const revBuffer = ctx.createBuffer(buffer.numberOfChannels, buffer.length, buffer.sampleRate);
+    for (let ch = 0; ch < buffer.numberOfChannels; ch++) {
+      const srcData = buffer.getChannelData(ch);
+      const dstData = revBuffer.getChannelData(ch);
+      for (let i = 0, j = srcData.length - 1; i < srcData.length; i++, j--) {
+        dstData[i] = srcData[j];
+      }
+    }
+    buffer = revBuffer;
+  }
+  src.buffer = buffer;
+  src.connect(ctx.destination);
+  src.start(0);
+}
   </script>
 </body>
 </html>
