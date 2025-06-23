@@ -328,6 +328,9 @@ a {
 .waveform-container {
   position: relative;
   border: 1px solid #ccc;
+  background: #f0f0f0;
+  border-radius: 4px;
+  overflow: hidden;
 }
 
 .body {

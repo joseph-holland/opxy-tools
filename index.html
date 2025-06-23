@@ -540,6 +540,8 @@
                     <select class="form-select form-select-sm adv-playmode">
                       <option value="oneshot" ${playmode === 'oneshot' ? 'selected' : ''}>Oneshot</option>
                       <option value="group" ${playmode === 'group' ? 'selected' : ''}>Group</option>
+                      <option value="loop" ${playmode === 'loop' ? 'selected' : ''}>Loop</option>
+                      <option value="gate" ${playmode === 'gate' ? 'selected' : ''}>Gate</option>
                     </select>
                   </div>
                   <div class="mb-3">
@@ -553,7 +555,24 @@
                   </div>
                   <div class="mb-3">
                     <label class="form-label">Tuning (semitones):</label>
-                    <input type="number" class="form-control form-control-sm adv-tune" min="-24" max="24" value="${tune}">
+                    <input type="range" class="form-range adv-tune-slider" min="-48" max="48" value="${tune}" step="1">
+                    <input type="number" class="form-control form-control-sm adv-tune" min="-48" max="48" value="${tune}">
+                  </div>
+                  <div class="mb-3">
+                    <label class="form-label">Pan:</label>
+                    <input type="range" id="advancedPanSlider" class="form-range" min="-100" max="100" value="0" step="1">
+                    <input type="number" id="advancedPanNumber" class="form-control form-control-sm" min="-100" max="100" value="0" step="1">
+                  </div>
+                  <div class="mb-3">
+                    <label class="form-label">Sample Editor:</label>
+                    <div id="waveform-container-modal" style="height:60px;width:100%;background:#ececec;position:relative;"></div>
+                    <div class="d-flex align-items-center mt-2">
+                      <label class="me-2">Start</label>
+                      <input type="number" class="form-control form-control-sm adv-sample-start" min="0" value="0" style="width:80px;">
+                      <label class="mx-2">End</label>
+                      <input type="number" class="form-control form-control-sm adv-sample-end" min="0" value="0" style="width:80px;">
+                      <span class="ms-2 small text-muted adv-sample-length"></span>
+                    </div>
                   </div>
                 </div>
                 <div class="modal-footer">
@@ -574,7 +593,13 @@
               btnToUpdate.dataset.playmode = modal.querySelector('.adv-playmode').value;
               const advReverseLabel = modal.querySelector('.adv-reverse-label');
               btnToUpdate.dataset.reverse = (advReverseLabel.textContent.trim() === 'Reverse') ? 'true' : 'false';
-              btnToUpdate.dataset.tune = modal.querySelector('.adv-tune').value;
+              // Clamp tuning value between -48 and 48
+              let tuneVal = parseInt(modal.querySelector('.adv-tune').value, 10) || 0;
+              tuneVal = Math.max(-48, Math.min(48, tuneVal));
+              btnToUpdate.dataset.tune = tuneVal;
+              btnToUpdate.dataset.pan = modal.querySelector('#advancedPanSlider').value;
+              btnToUpdate.dataset.sampleStart = modal.querySelector('.adv-sample-start').value;
+              btnToUpdate.dataset.sampleEnd = modal.querySelector('.adv-sample-end').value;
             }
             closeModal();
           };
@@ -590,6 +615,127 @@
               label.textContent = 'Normal';
             }
           };
+
+          // Set initial values for pan controls
+          const panValue = this.dataset.pan || 0;
+          modal.querySelector('#advancedPanSlider').value = panValue;
+          modal.querySelector('#advancedPanNumber').value = panValue;
+
+          // Sync slider and number input
+          modal.querySelector('#advancedPanSlider').oninput = function() {
+            modal.querySelector('#advancedPanNumber').value = this.value;
+          };
+          modal.querySelector('#advancedPanNumber').oninput = function() {
+            modal.querySelector('#advancedPanSlider').value = this.value;
+          };
+
+          // Set initial values for tuning controls
+          modal.querySelector('.adv-tune-slider').value = tune;
+          modal.querySelector('.adv-tune').value = tune;
+          // Sync slider and number input for tuning
+          modal.querySelector('.adv-tune-slider').oninput = function() {
+            modal.querySelector('.adv-tune').value = this.value;
+          };
+          modal.querySelector('.adv-tune').oninput = function() {
+            let val = parseInt(this.value, 10) || 0;
+            val = Math.max(-48, Math.min(48, val));
+            this.value = val;
+            modal.querySelector('.adv-tune-slider').value = val;
+          };
+
+          // Sample Editor logic
+          const buffer = drumSamples[i];
+          const waveformDiv = modal.querySelector('#waveform-container-modal');
+          const startInput = modal.querySelector('.adv-sample-start');
+          const endInput = modal.querySelector('.adv-sample-end');
+          const lengthLabel = modal.querySelector('.adv-sample-length');
+          if (buffer) {
+            // Draw waveform (simple, mono only)
+            const width = waveformDiv.offsetWidth || 300;
+            const height = 60;
+            const canvas = document.createElement('canvas');
+            canvas.width = width;
+            canvas.height = height;
+            waveformDiv.appendChild(canvas);
+            const ctx = canvas.getContext('2d');
+            ctx.fillStyle = '#ececec';
+            ctx.fillRect(0, 0, width, height);
+            ctx.strokeStyle = '#868686';
+            ctx.beginPath();
+            const data = buffer.getChannelData(0);
+            const step = Math.ceil(data.length / width);
+            const amp = height / 2;
+            for (let x = 0; x < width; x++) {
+              const min = Math.min(...data.slice(x * step, (x + 1) * step));
+              const max = Math.max(...data.slice(x * step, (x + 1) * step));
+              ctx.moveTo(x, amp + min * amp);
+              ctx.lineTo(x, amp + max * amp);
+            }
+            ctx.stroke();
+            // Markers
+            let startFrame = parseInt(this.dataset.sampleStart, 10);
+            let endFrame = parseInt(this.dataset.sampleEnd, 10);
+            if (isNaN(startFrame)) startFrame = 0;
+            if (isNaN(endFrame) || endFrame <= 0) endFrame = data.length;
+            startInput.value = startFrame;
+            endInput.value = endFrame;
+            lengthLabel.textContent = `/ ${data.length} frames`;
+            // Draw marker lines
+            function drawMarkers() {
+              ctx.clearRect(0, 0, width, height);
+              ctx.fillStyle = '#ececec';
+              ctx.fillRect(0, 0, width, height);
+              ctx.strokeStyle = '#868686';
+              ctx.beginPath();
+              for (let x = 0; x < width; x++) {
+                const min = Math.min(...data.slice(x * step, (x + 1) * step));
+                const max = Math.max(...data.slice(x * step, (x + 1) * step));
+                ctx.moveTo(x, amp + min * amp);
+                ctx.lineTo(x, amp + max * amp);
+              }
+              ctx.stroke();
+              // Start marker
+              ctx.strokeStyle = '#ff4940';
+              ctx.beginPath();
+              const sx = Math.floor((startInput.value / data.length) * width);
+              ctx.moveTo(sx, 0);
+              ctx.lineTo(sx, height);
+              ctx.stroke();
+              // End marker
+              ctx.strokeStyle = '#007bff';
+              ctx.beginPath();
+              const ex = Math.floor((endInput.value / data.length) * width);
+              ctx.moveTo(ex, 0);
+              ctx.lineTo(ex, height);
+              ctx.stroke();
+            }
+            drawMarkers();
+            startInput.oninput = endInput.oninput = function() {
+              let s = Math.max(0, Math.min(parseInt(startInput.value, 10) || 0, data.length-1));
+              let e = Math.max(s+1, Math.min(parseInt(endInput.value, 10) || data.length, data.length));
+              startInput.value = s;
+              endInput.value = e;
+              drawMarkers();
+            };
+            // Click to move marker
+            canvas.addEventListener('mousedown', function(e) {
+              const rect = canvas.getBoundingClientRect();
+              const x = e.clientX - rect.left;
+              const frame = Math.round((x / width) * data.length);
+              // Nearest marker
+              if (Math.abs(frame - startInput.value) < Math.abs(frame - endInput.value)) {
+                startInput.value = Math.max(0, Math.min(frame, data.length-1));
+              } else {
+                endInput.value = Math.max(parseInt(startInput.value,10)+1, Math.min(frame, data.length));
+              }
+              drawMarkers();
+            });
+          } else {
+            waveformDiv.innerHTML = '<div class="text-muted small">No sample loaded</div>';
+            startInput.value = 0;
+            endInput.value = 0;
+            lengthLabel.textContent = '';
+          }
         });
       }
     }
@@ -681,6 +827,10 @@
               if (advancedBtn && advancedBtn.dataset.tune) {
                 tune = parseInt(advancedBtn.dataset.tune, 10) || 0;
               }
+              let pan = 0;
+              if (advancedBtn && advancedBtn.dataset.pan) {
+                pan = parseInt(advancedBtn.dataset.pan, 10) || 0;
+              }
 
               const region = {
                 idx: i,
@@ -688,7 +838,10 @@
                 playmode: playmode,
                 reverse: reverse,
                 tune: tune,
+                pan: pan,
               };
+              if (advancedBtn && advancedBtn.dataset.sampleStart) region['sample.start'] = parseInt(advancedBtn.dataset.sampleStart,10)||0;
+              if (advancedBtn && advancedBtn.dataset.sampleEnd) region['sample.end'] = parseInt(advancedBtn.dataset.sampleEnd,10)||0;
 
               if (targetSampleRate && sampleRate !== targetSampleRate) {
                 fileReadPromises.push(
