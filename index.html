@@ -539,10 +539,10 @@
         advancedBtn.dataset.tune = '0';
 
         advancedBtn.addEventListener('click', function() {
-          const playmode = this.dataset.playmode;
+          // FIX: Define playmode, isReverse, and tune before using them in the modal template
+          const playmode = this.dataset.playmode || 'oneshot';
           const isReverse = this.dataset.reverse === 'true';
           const tune = parseInt(this.dataset.tune, 10) || 0;
-
           let modal = document.getElementById('advanced-modal');
           if (modal) modal.remove();
 
@@ -773,31 +773,17 @@
               playCurrentSelection();
             };
             // Debounced play function for modal
-            let playCurrentSelectionTimeout = null;
+            let playTimeout = null;
             function playCurrentSelection() {
-              if (playCurrentSelectionTimeout) clearTimeout(playCurrentSelectionTimeout);
-              playCurrentSelectionTimeout = setTimeout(() => {
+              if (playTimeout) clearTimeout(playTimeout);
+              playTimeout = setTimeout(() => {
                 modal.querySelector('.adv-play-modal').click();
               }, 80); // Debounce for smoother dragging
             }
-            // Drag markers
+            // --- FIXED DRAG LOGIC ---
             let draggingMarker = null;
-            let isDragging = false;
-            const MIN_DISTANCE = 10;
-            function clampMarkers() {
-              let s = Math.max(0, Math.min(parseInt(startInput.value, 10) || 0, data.length-1));
-              let e = Math.max(s+MIN_DISTANCE, Math.min(parseInt(endInput.value, 10) || data.length, data.length));
-              // Only clamp if user tries to cross the markers
-              if (e - s < MIN_DISTANCE) {
-                if (draggingMarker === 'start') {
-                  s = Math.max(0, e-MIN_DISTANCE);
-                } else if (draggingMarker === 'end') {
-                  e = Math.min(data.length, s+MIN_DISTANCE);
-                }
-              }
-              startInput.value = s;
-              endInput.value = e;
-            }
+            let dragMoveHandler = null;
+            let dragUpHandler = null;
             canvas.addEventListener('mousedown', function(e) {
               const rect = canvas.getBoundingClientRect();
               const x = e.clientX - rect.left;
@@ -805,90 +791,40 @@
               const ex = Math.floor((endInput.value / data.length) * width);
               if (Math.abs(x - sx) < 12) {
                 draggingMarker = 'start';
-                isDragging = true;
               } else if (Math.abs(x - ex) < 12) {
                 draggingMarker = 'end';
-                isDragging = true;
               } else {
-                // Snap to closest marker
                 if (Math.abs(x - sx) < Math.abs(x - ex)) {
                   startInput.value = Math.max(0, Math.min(Math.round((x / width) * data.length), data.length-1));
-                  draggingMarker = 'start';
-                  isDragging = true;
                 } else {
-                  endInput.value = Math.max(parseInt(startInput.value,10)+MIN_DISTANCE, Math.min(Math.round((x / width) * data.length), data.length));
-                  draggingMarker = 'end';
-                  isDragging = true;
+                  endInput.value = Math.max(parseInt(startInput.value,10)+10, Math.min(Math.round((x / width) * data.length), data.length));
                 }
-                clampMarkers();
                 drawMarkers();
                 playCurrentSelection();
+                draggingMarker = null;
+                return;
               }
+              // Attach move and up listeners only when dragging
+              dragMoveHandler = function(e) {
+                const rect = canvas.getBoundingClientRect();
+                const x = e.clientX - rect.left;
+                const frame = Math.round((x / width) * data.length);
+                if (draggingMarker === 'start') {
+                  startInput.value = Math.max(0, Math.min(frame, endInput.value-10));
+                } else if (draggingMarker === 'end') {
+                  endInput.value = Math.max(parseInt(startInput.value,10)+10, Math.min(frame, data.length));
+                }
+                drawMarkers();
+                playCurrentSelection();
+              };
+              dragUpHandler = function() {
+                draggingMarker = null;
+                window.removeEventListener('mousemove', dragMoveHandler);
+                window.removeEventListener('mouseup', dragUpHandler);
+              };
+              window.addEventListener('mousemove', dragMoveHandler);
+              window.addEventListener('mouseup', dragUpHandler);
             });
-            window.addEventListener('mousemove', function(e) {
-              if (!isDragging || !draggingMarker) return;
-              const rect = canvas.getBoundingClientRect();
-              const x = e.clientX - rect.left;
-              const frame = Math.round((x / width) * data.length);
-              if (draggingMarker === 'start') {
-                startInput.value = Math.max(0, Math.min(frame, endInput.value-MIN_DISTANCE));
-              } else if (draggingMarker === 'end') {
-                endInput.value = Math.max(parseInt(startInput.value,10)+MIN_DISTANCE, Math.min(frame, data.length));
-              }
-              clampMarkers();
-              drawMarkers();
-              playCurrentSelection();
-            });
-            window.addEventListener('mouseup', function() {
-              isDragging = false;
-              draggingMarker = null;
-            });
-            // Draw marker lines (make them thicker and add a handle)
-            function drawMarkers() {
-              ctx.clearRect(0, 0, width, height);
-              ctx.fillStyle = '#ececec';
-              ctx.fillRect(0, 0, width, height);
-              ctx.strokeStyle = '#868686';
-              ctx.beginPath();
-              for (let x = 0; x < width; x++) {
-                const min = Math.min(...data.slice(x * step, (x + 1) * step));
-                const max = Math.max(...data.slice(x * step, (x + 1) * step));
-                ctx.moveTo(x, amp + min * amp);
-                ctx.lineTo(x, amp + max * amp);
-              }
-              ctx.stroke();
-              // Start marker
-              ctx.save();
-              ctx.strokeStyle = '#ff4940';
-              ctx.lineWidth = 3;
-              ctx.beginPath();
-              const sx = Math.floor((startInput.value / data.length) * width);
-              ctx.moveTo(sx, 0);
-              ctx.lineTo(sx, height);
-              ctx.stroke();
-              // Draw handle
-              ctx.fillStyle = '#ff4940';
-              ctx.beginPath();
-              ctx.arc(sx, height/2, 7, 0, 2*Math.PI);
-              ctx.fill();
-              ctx.restore();
-              // End marker
-              ctx.save();
-              ctx.strokeStyle = '#007bff';
-              ctx.lineWidth = 3;
-              ctx.beginPath();
-              const ex = Math.floor((endInput.value / data.length) * width);
-              ctx.moveTo(ex, 0);
-              ctx.lineTo(ex, height);
-              ctx.stroke();
-              // Draw handle
-              ctx.fillStyle = '#007bff';
-              ctx.beginPath();
-              ctx.arc(ex, height/2, 7, 0, 2*Math.PI);
-              ctx.fill();
-              ctx.restore();
-            }
-            drawMarkers();
           } else {
             waveformDiv.innerHTML = '<div class="text-muted small">No sample loaded</div>';
             startInput.value = 0;
