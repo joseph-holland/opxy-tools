@@ -838,7 +838,7 @@ key-wrapper.key-r .kbd {
 .key-wrapper.key-w .small,
 .key-wrapper.key-e .small,
 .key-wrapper.key-r .small,
-key-wrapper.key-y .small,
+.key-wrapper.key-y .small,
 .key-wrapper.key-u .small {
   margin-bottom: 0.25rem !important;
 }
