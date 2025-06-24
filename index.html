@@ -114,11 +114,11 @@
           </div>
           <div class="octave-controls">
             <div class="text-center">
-              <div class="kbd bg-light border rounded mb-1"><span class="osk-circle"></span><span class="osk-letter">z</span></div>
+              <div class="kbd bg-light border rounded mb-1 octave-kbd" tabindex="0" role="button"><span class="osk-circle"></span><span class="osk-letter">z</span></div>
               <div class="small text-muted">octave down</div>
             </div>
             <div class="text-center">
-              <div class="kbd bg-light border rounded mb-1"><span class="osk-circle"></span><span class="osk-letter">x</span></div>
+              <div class="kbd bg-light border rounded mb-1 octave-kbd" tabindex="0" role="button"><span class="osk-circle"></span><span class="osk-letter">x</span></div>
               <div class="small text-muted">octave up</div>
             </div>
           </div>
@@ -442,5 +442,56 @@
 
   <script src="lib/audio_tools.js"></script>
   <script src="lib/drum_sample_tool.js"></script>
+  <script>
+  // Add mouse-only pressed style for octave up/down keys
+  function setOctaveKbdMouseActive() {
+    document.querySelectorAll('.octave-kbd').forEach(function(el) {
+      el.addEventListener('mousedown', function() {
+        el.classList.add('mouse-active');
+      });
+      el.addEventListener('mouseup', function() {
+        el.classList.remove('mouse-active');
+      });
+      el.addEventListener('mouseleave', function() {
+        el.classList.remove('mouse-active');
+      });
+    });
+    // Keyboard pressed visual feedback for octave up/down
+    document.addEventListener('keydown', function(e) {
+      if (e.repeat) return;
+      if (e.key === 'z' || e.key === 'Z') {
+        var zKey = document.querySelector('.octave-kbd .osk-letter');
+        if (zKey && zKey.textContent.trim().toLowerCase() === 'z') {
+          zKey.parentElement.classList.add('kbd-pressed');
+        }
+      }
+      if (e.key === 'x' || e.key === 'X') {
+        var xKey = document.querySelectorAll('.octave-kbd .osk-letter');
+        xKey.forEach(function(el) {
+          if (el.textContent.trim().toLowerCase() === 'x') {
+            el.parentElement.classList.add('kbd-pressed');
+          }
+        });
+      }
+    });
+    document.addEventListener('keyup', function(e) {
+      if (e.key === 'z' || e.key === 'Z') {
+        var zKey = document.querySelector('.octave-kbd .osk-letter');
+        if (zKey && zKey.textContent.trim().toLowerCase() === 'z') {
+          zKey.parentElement.classList.remove('kbd-pressed');
+        }
+      }
+      if (e.key === 'x' || e.key === 'X') {
+        var xKey = document.querySelectorAll('.octave-kbd .osk-letter');
+        xKey.forEach(function(el) {
+          if (el.textContent.trim().toLowerCase() === 'x') {
+            el.parentElement.classList.remove('kbd-pressed');
+          }
+        });
+      }
+    });
+  }
+  document.addEventListener('DOMContentLoaded', setOctaveKbdMouseActive);
+  </script>
 </body>
 </html>

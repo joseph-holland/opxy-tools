@@ -455,6 +455,27 @@ a {
   justify-content: center;
   padding: 0;
 }
+.kbd.bg-light.border.rounded:active, .kbd.bg-light.border.rounded.kbd-pressed {
+  background: #bdbdbd !important; /* lighter grey for pressed */
+}
+.kbd.bg-light.border.rounded:active .osk-circle, .kbd.bg-light.border.rounded.kbd-pressed .osk-circle {
+  background: #444 !important; /* lighter black for pressed */
+}
+.octave-controls .kbd.bg-light.border.rounded:active {
+  background: #bdbdbd !important; /* lighter grey for mouse click */
+}
+.octave-controls .kbd.bg-light.border.rounded:active .osk-circle {
+  background: #444 !important; /* lighter black for mouse click */
+}
+.octave-controls .kbd.bg-light.border.rounded:active, 
+.octave-controls .kbd.bg-light.border.rounded:focus:active {
+  background: #f2f2f2 !important;
+  box-shadow: 0 2px 10px 2px #bbb !important;
+}
+.octave-controls .kbd.bg-light.border.rounded:active .osk-circle, 
+.octave-controls .kbd.bg-light.border.rounded:focus:active .osk-circle {
+  background: #444 !important;
+}
 .kbd.bg-light.border.rounded .osk-circle {
   position: absolute;
   left: 50%;
@@ -631,4 +652,22 @@ input[type=range]:focus::-moz-range-thumb {
 }
 #advanced-modal.modal.fade.show .modal-dialog {
   transform: translateY(0);
+}
+
+.octave-controls .kbd {
+  cursor: pointer;
+}
+.octave-controls .kbd.mouse-active {
+  background: #f2f2f2 !important;
+  box-shadow: 0 2px 10px 2px #bbb !important;
+}
+.octave-controls .kbd.mouse-active .osk-circle {
+  background: #444 !important;
+}
+.octave-controls .kbd.kbd-pressed {
+  background: #f2f2f2 !important;
+  box-shadow: 0 2px 10px 2px #bbb !important;
+}
+.octave-controls .kbd.kbd-pressed .osk-circle {
+  background: #444 !important;
 }
