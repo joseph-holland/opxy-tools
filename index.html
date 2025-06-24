@@ -333,14 +333,26 @@
         </div>
         <div class="modal-body">
           <canvas id="zoom-canvas" width="1100" height="200"></canvas>
+          <div class="form-check mb-2 ms-2">
+            <input class="form-check-input" type="checkbox" id="zero-crossing-snap" checked>
+            <label class="form-check-label" for="zero-crossing-snap">
+              Snap to zero crossings
+            </label>
+          </div>
           <div class="row mt-2">
             <div class="col">
               <label for="zoom-start-point" class="form-label">Start Point</label>
-              <input type="text" class="form-control" id="zoom-start-point">
+              <div class="d-flex align-items-center">
+                <input type="text" class="form-control" id="zoom-start-point">
+                <span class="ms-2 badge bg-secondary" id="zoom-start-value">0.000</span>
+              </div>
             </div>
             <div class="col">
               <label for="zoom-end-point" class="form-label">End Point</label>
-              <input type="text" class="form-control" id="zoom-end-point">
+              <div class="d-flex align-items-center">
+                <input type="text" class="form-control" id="zoom-end-point">
+                <span class="ms-2 badge bg-secondary" id="zoom-end-value">0.000</span>
+              </div>
             </div>
           </div>
         </div>
