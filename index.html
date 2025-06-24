@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>OP-XY Drum & Multisample Tool</title>
+  <title>OP-XY tools</title>
   <!-- Bootstrap CSS -->
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
   <!-- Bootstrap JS (for tabs) -->
@@ -19,264 +19,264 @@
 <body>
   <div class="container py-4">
     <div class="app-header text-center mb-4">
-      OP-XY Drum & Multisample Tool
+      unoffical OP-XY tools
     </div>
     <ul class="nav nav-tabs justify-content-center mb-4" id="toolTabs" role="tablist">
       <li class="nav-item" role="presentation">
         <button class="nav-link active" id="drum-tab" data-bs-toggle="tab" data-bs-target="#drum" type="button" role="tab" aria-controls="drum" aria-selected="true">
-          Drum
+          drum
         </button>
       </li>
       <li class="nav-item" role="presentation">
         <button class="nav-link" id="multi-tab" data-bs-toggle="tab" data-bs-target="#multi" type="button" role="tab" aria-controls="multi" aria-selected="false">
-          Multisample
+          multisample
         </button>
       </li>
     </ul>
     <div class="tab-content">
       <div class="tab-pane fade show active" id="drum" role="tabpanel" aria-labelledby="drum-tab">
         <div class="section-block">
-          <h5 class="mb-3">How to use (Drum)</h5>
-          <p>Drag and drop samples onto each row. Use your keyboard to play each sample. When finished, press <b>Generate Patch</b> to download a zip file containing the preset. Unzip into a folder named like <b>PresetName.preset</b>.</p>
+          <h5 class="mb-3">how to use (drum)</h5>
+          <p>drag and drop samples onto each row. use your keyboard to play each sample. when finished, press <b>generate patch</b> to download a zip file containing the preset. unzip into a folder named  <b>presetname.preset</b>. copy to your OP-XY via USB and drop into the presets folder (create a subfolder called 'drum' or any custom name to arrange your custom drum presets.</p>
         </div>
         <div class="section-block">
-          <h5 class="mb-3">Settings</h5>
+          <h5 class="mb-3">settings</h5>
           <!-- Drum tool settings -->
-          <label for="preset-name-drum" class="form-label">Preset Name</label>
-          <input id="preset-name-drum" type="text" class="form-control mb-2" value="MyDrumPreset">
-          <label for="sample-rate-drum" class="form-label">Sample Rate</label>
+          <label for="preset-name-drum" class="form-label">preset name</label>
+          <input id="preset-name-drum" type="text" class="form-control mb-2" value="my preset name">
+          <label for="sample-rate-drum" class="form-label">sample rate</label>
           <select class="form-select mb-2" id="sample-rate-drum">
             <option value="0">keep original</option>
             <option value="1">re-encode 11kHz</option>
             <option value="2">re-encode 22kHz</option>
             <option value="3">re-encode 44kHz</option>
           </select>
-          <div class="form-text mb-2">For best results, set the Sample Rate to 22kHz or lower. If notes are missing during playback, try reducing the sample rate further.</div>
+          <div class="form-text mb-2">for best results, set the sample rate to 22kHz or lower. if notes are missing during playback, try reducing the sample rate further.</div>
         </div>
         <div class="section-block">
-          <button class="accent-btn mt-3">Generate Patch</button>
+          <button class="accent-btn mt-3">generate patch</button>
         </div>
         <div class="section-block">
-          <h5 class="mb-3">Keyboard Layout</h5>
-          <div class="mb-2">Below is the mapping of computer keys to drum sounds. Click or use your keyboard to audition each drum:</div>
+          <h5 class="mb-3">demo samples</h5>
+          <div class="mb-2">use the virtual keys below to demo each sample. click with cursor or use your keyboard to play.</div>
           <div class="keyboard-grid-container mb-4 position-relative" id="drum-keyboard">
             <!-- Top row (offset like a real keyboard) -->
             <div class="key-wrapper key-w">
-              <div class="kbd bg-light border rounded">W</div>
+              <div class="kbd bg-light border rounded"><span class="osk-circle"></span><span class="osk-letter">W</span></div>
               <div class="small text-muted">KD2</div>
             </div>
             <div class="key-wrapper key-e">
-              <div class="kbd bg-light border rounded">E</div>
+              <div class="kbd bg-light border rounded"><span class="osk-circle"></span><span class="osk-letter">E</span></div>
               <div class="small text-muted">SD2</div>
             </div>
             <div class="key-wrapper key-r">
-              <div class="kbd bg-light border rounded">R</div>
+              <div class="kbd bg-light border rounded"><span class="osk-circle"></span><span class="osk-letter">R</span></div>
               <div class="small text-muted">CP</div>
             </div>
             <!-- T is omitted to simulate the piano gap -->
             <div class="key-wrapper key-y">
-              <div class="kbd bg-light border rounded">Y</div>
+              <div class="kbd bg-light border rounded"><span class="osk-circle"></span><span class="osk-letter">Y</span></div>
               <div class="small text-muted">CH</div>
             </div>
             <div class="key-wrapper key-u">
-              <div class="kbd bg-light border rounded">U</div>
+              <div class="kbd bg-light border rounded"><span class="osk-circle"></span><span class="osk-letter">U</span></div>
               <div class="small text-muted">OH</div>
             </div>
             <!-- Bottom row -->
             <div class="key-wrapper key-a">
-              <div class="kbd bg-light border rounded">A</div>
+              <div class="kbd bg-light border rounded"><span class="osk-circle"></span><span class="osk-letter">A</span></div>
               <div class="small text-muted">KD1</div>
             </div>
             <div class="key-wrapper key-s">
-              <div class="kbd bg-light border rounded">S</div>
+              <div class="kbd bg-light border rounded"><span class="osk-circle"></span><span class="osk-letter">S</span></div>
               <div class="small text-muted">SD1</div>
             </div>
             <div class="key-wrapper key-d">
-              <div class="kbd bg-light border rounded">D</div>
+              <div class="kbd bg-light border rounded"><span class="osk-circle"></span><span class="osk-letter">D</span></div>
               <div class="small text-muted">RIM</div>
             </div>
             <div class="key-wrapper key-f">
-              <div class="kbd bg-light border rounded">F</div>
+              <div class="kbd bg-light border rounded"><span class="osk-circle"></span><span class="osk-letter">F</span></div>
               <div class="small text-muted">TB</div>
             </div>
             <div class="key-wrapper key-g">
-              <div class="kbd bg-light border rounded">G</div>
+              <div class="kbd bg-light border rounded"><span class="osk-circle"></span><span class="osk-letter">G</span></div>
               <div class="small text-muted">SH</div>
             </div>
             <div class="key-wrapper key-h">
-              <div class="kbd bg-light border rounded">H</div>
+              <div class="kbd bg-light border rounded"><span class="osk-circle"></span><span class="osk-letter">H</span></div>
               <div class="small text-muted">CL</div>
             </div>
             <div class="key-wrapper key-j">
-              <div class="kbd bg-light border rounded">J</div>
+              <div class="kbd bg-light border rounded"><span class="osk-circle"></span><span class="osk-letter">J</span></div>
               <div class="small text-muted">CAB</div>
             </div>
           </div>
           <div class="octave-controls">
             <div class="text-center">
-              <div class="kbd bg-light border rounded mb-1">Z</div>
-              <div class="small text-muted">Octave Down</div>
+              <div class="kbd bg-light border rounded mb-1"><span class="osk-circle"></span><span class="osk-letter">z</span></div>
+              <div class="small text-muted">octave down</div>
             </div>
             <div class="text-center">
-              <div class="kbd bg-light border rounded mb-1">X</div>
-              <div class="small text-muted">Octave Up</div>
+              <div class="kbd bg-light border rounded mb-1"><span class="osk-circle"></span><span class="osk-letter">x</span></div>
+              <div class="small text-muted">octave up</div>
             </div>
           </div>
         </div>
         <div class="section-block">
-          <h5 class="mb-3">Drum Sample Inputs</h5>
+          <h5 class="mb-3">drum sample files</h5>
           <form id="drum-sample-form">
             <div class="table-responsive">
               <table class="table align-middle table-sm mb-0">
                 <thead>
                   <tr>
-                    <th>Drum</th>
-                    <th>Sample File</th>
-                    <th>Actions</th>
-                    <th>Options</th>
+                    <th>drum</th>
+                    <th>sample file</th>
+                    <th>actions</th>
+                    <th>options</th>
                   </tr>
                 </thead>
                 <tbody>
                   <tr>
-                    <td>Kick</td>
+                    <td>kick</td>
                     <td><div class="input-group input-group-sm"><label class="input-group-text" for="sample-1"><i class="fa fa-search"></i></label><input type="file" accept=".wav" class="form-control form-control-sm" id="sample-1" style="display:none;"><div class="small text-muted" id="sample-name-1"></div></div></td>
                     <td><button type="button" class="btn btn-outline-secondary btn-sm" id="play-1" disabled><i class="bi bi-play-fill"></i></button> <button type="button" class="btn btn-outline-danger btn-sm" id="clear-1" disabled><i class="bi bi-x-lg"></i></button></td>
                     <td><button type="button" class="btn btn-outline-secondary btn-sm advanced-btn" data-sample-idx="1"><i class="fa fa-cog" title="Sample options"></i></button></td>
                   </tr>
                   <tr>
-                    <td>Kick Alt</td>
+                    <td>kick alternative</td>
                     <td><div class="input-group input-group-sm"><label class="input-group-text" for="sample-2"><i class="fa fa-search"></i></label><input type="file" accept=".wav" class="form-control form-control-sm" id="sample-2" style="display:none;"><div class="small text-muted" id="sample-name-2"></div></div></td>
                     <td><button type="button" class="btn btn-outline-secondary btn-sm" id="play-2" disabled><i class="bi bi-play-fill"></i></button> <button type="button" class="btn btn-outline-danger btn-sm" id="clear-2" disabled><i class="bi bi-x-lg"></i></button></td>
                     <td><button type="button" class="btn btn-outline-secondary btn-sm advanced-btn" data-sample-idx="2"><i class="fa fa-cog" title="Sample options"></i></button></td>
                   </tr>
                   <tr>
-                    <td>Snare</td>
+                    <td>snare</td>
                     <td><div class="input-group input-group-sm"><label class="input-group-text" for="sample-3"><i class="fa fa-search"></i></label><input type="file" accept=".wav" class="form-control form-control-sm" id="sample-3" style="display:none;"><div class="small text-muted" id="sample-name-3"></div></div></td>
                     <td><button type="button" class="btn btn-outline-secondary btn-sm" id="play-3" disabled><i class="bi bi-play-fill"></i></button> <button type="button" class="btn btn-outline-danger btn-sm" id="clear-3" disabled><i class="bi bi-x-lg"></i></button></td>
                     <td><button type="button" class="btn btn-outline-secondary btn-sm advanced-btn" data-sample-idx="3"><i class="fa fa-cog" title="Sample options"></i></button></td>
                   </tr>
                   <tr>
-                    <td>Snare Alt</td>
+                    <td>snare alternative</td>
                     <td><div class="input-group input-group-sm"><label class="input-group-text" for="sample-4"><i class="fa fa-search"></i></label><input type="file" accept=".wav" class="form-control form-control-sm" id="sample-4" style="display:none;"><div class="small text-muted" id="sample-name-4"></div></div></td>
                     <td><button type="button" class="btn btn-outline-secondary btn-sm" id="play-4" disabled><i class="bi bi-play-fill"></i></button> <button type="button" class="btn btn-outline-danger btn-sm" id="clear-4" disabled><i class="bi bi-x-lg"></i></button></td>
                     <td><button type="button" class="btn btn-outline-secondary btn-sm advanced-btn" data-sample-idx="4"><i class="fa fa-cog" title="Sample options"></i></button></td>
                   </tr>
                   <tr>
-                    <td>Rim</td>
+                    <td>rim</td>
                     <td><div class="input-group input-group-sm"><label class="input-group-text" for="sample-5"><i class="fa fa-search"></i></label><input type="file" accept=".wav" class="form-control form-control-sm" id="sample-5" style="display:none;"><div class="small text-muted" id="sample-name-5"></div></div></td>
                     <td><button type="button" class="btn btn-outline-secondary btn-sm" id="play-5" disabled><i class="bi bi-play-fill"></i></button> <button type="button" class="btn btn-outline-danger btn-sm" id="clear-5" disabled><i class="bi bi-x-lg"></i></button></td>
                     <td><button type="button" class="btn btn-outline-secondary btn-sm advanced-btn" data-sample-idx="5"><i class="fa fa-cog" title="Sample options"></i></button></td>
                   </tr>
                   <tr>
-                    <td>Clap</td>
+                    <td>hand clap</td>
                     <td><div class="input-group input-group-sm"><label class="input-group-text" for="sample-6"><i class="fa fa-search"></i></label><input type="file" accept=".wav" class="form-control form-control-sm" id="sample-6" style="display:none;"><div class="small text-muted" id="sample-name-6"></div></div></td>
                     <td><button type="button" class="btn btn-outline-secondary btn-sm" id="play-6" disabled><i class="bi bi-play-fill"></i></button> <button type="button" class="btn btn-outline-danger btn-sm" id="clear-6" disabled><i class="bi bi-x-lg"></i></button></td>
                     <td><button type="button" class="btn btn-outline-secondary btn-sm advanced-btn" data-sample-idx="6"><i class="fa fa-cog" title="Sample options"></i></button></td>
                   </tr>
                   <tr>
-                    <td>Tambourine</td>
+                    <td>tambourine</td>
                     <td><div class="input-group input-group-sm"><label class="input-group-text" for="sample-7"><i class="fa fa-search"></i></label><input type="file" accept=".wav" class="form-control form-control-sm" id="sample-7" style="display:none;"><div class="small text-muted" id="sample-name-7"></div></div></td>
                     <td><button type="button" class="btn btn-outline-secondary btn-sm" id="play-7" disabled><i class="bi bi-play-fill"></i></button> <button type="button" class="btn btn-outline-danger btn-sm" id="clear-7" disabled><i class="bi bi-x-lg"></i></button></td>
                     <td><button type="button" class="btn btn-outline-secondary btn-sm advanced-btn" data-sample-idx="7"><i class="fa fa-cog" title="Sample options"></i></button></td>
                   </tr>
                   <tr>
-                    <td>Shaker</td>
+                    <td>shaker</td>
                     <td><div class="input-group input-group-sm"><label class="input-group-text" for="sample-8"><i class="fa fa-search"></i></label><input type="file" accept=".wav" class="form-control form-control-sm" id="sample-8" style="display:none;"><div class="small text-muted" id="sample-name-8"></div></div></td>
                     <td><button type="button" class="btn btn-outline-secondary btn-sm" id="play-8" disabled><i class="bi bi-play-fill"></i></button> <button type="button" class="btn btn-outline-danger btn-sm" id="clear-8" disabled><i class="bi bi-x-lg"></i></button></td>
                     <td><button type="button" class="btn btn-outline-secondary btn-sm advanced-btn" data-sample-idx="8"><i class="fa fa-cog" title="Sample options"></i></button></td>
                   </tr>
                   <tr>
-                    <td>Closed Hi-Hat</td>
+                    <td>closed hi-hat</td>
                     <td><div class="input-group input-group-sm"><label class="input-group-text" for="sample-9"><i class="fa fa-search"></i></label><input type="file" accept=".wav" class="form-control form-control-sm" id="sample-9" style="display:none;"><div class="small text-muted" id="sample-name-9"></div></div></td>
                     <td><button type="button" class="btn btn-outline-secondary btn-sm" id="play-9" disabled><i class="bi bi-play-fill"></i></button> <button type="button" class="btn btn-outline-danger btn-sm" id="clear-9" disabled><i class="bi bi-x-lg"></i></button></td>
                     <td><button type="button" class="btn btn-outline-secondary btn-sm advanced-btn" data-sample-idx="9"><i class="fa fa-cog" title="Sample options"></i></button></td>
                   </tr>
                   <tr>
-                    <td>Clave</td>
+                    <td>clave</td>
                     <td><div class="input-group input-group-sm"><label class="input-group-text" for="sample-10"><i class="fa fa-search"></i></label><input type="file" accept=".wav" class="form-control form-control-sm" id="sample-10" style="display:none;"><div class="small text-muted" id="sample-name-10"></div></div></td>
                     <td><button type="button" class="btn btn-outline-secondary btn-sm" id="play-10" disabled><i class="bi bi-play-fill"></i></button> <button type="button" class="btn btn-outline-danger btn-sm" id="clear-10" disabled><i class="bi bi-x-lg"></i></button></td>
                     <td><button type="button" class="btn btn-outline-secondary btn-sm advanced-btn" data-sample-idx="10"><i class="fa fa-cog" title="Sample options"></i></button></td>
                   </tr>
                   <tr>
-                    <td>Open Hi-Hat</td>
+                    <td>open hi-hat</td>
                     <td><div class="input-group input-group-sm"><label class="input-group-text" for="sample-11"><i class="fa fa-search"></i></label><input type="file" accept=".wav" class="form-control form-control-sm" id="sample-11" style="display:none;"><div class="small text-muted" id="sample-name-11"></div></div></td>
                     <td><button type="button" class="btn btn-outline-secondary btn-sm" id="play-11" disabled><i class="bi bi-play-fill"></i></button> <button type="button" class="btn btn-outline-danger btn-sm" id="clear-11" disabled><i class="bi bi-x-lg"></i></button></td>
                     <td><button type="button" class="btn btn-outline-secondary btn-sm advanced-btn" data-sample-idx="11"><i class="fa fa-cog" title="Sample options"></i></button></td>
                   </tr>
                   <tr>
-                    <td>Cabasa</td>
+                    <td>cabasa</td>
                     <td><div class="input-group input-group-sm"><label class="input-group-text" for="sample-12"><i class="fa fa-search"></i></label><input type="file" accept=".wav" class="form-control form-control-sm" id="sample-12" style="display:none;"><div class="small text-muted" id="sample-name-12"></div></div></td>
                     <td><button type="button" class="btn btn-outline-secondary btn-sm" id="play-12" disabled><i class="bi bi-play-fill"></i></button> <button type="button" class="btn btn-outline-danger btn-sm" id="clear-12" disabled><i class="bi bi-x-lg"></i></button></td>
                     <td><button type="button" class="btn btn-outline-secondary btn-sm advanced-btn" data-sample-idx="12"><i class="fa fa-cog" title="Sample options"></i></button></td>
                   </tr>
                   <tr>
-                    <td>Low Tom</td>
+                    <td>low tom</td>
                     <td><div class="input-group input-group-sm"><label class="input-group-text" for="sample-13"><i class="fa fa-search"></i></label><input type="file" accept=".wav" class="form-control form-control-sm" id="sample-13" style="display:none;"><div class="small text-muted" id="sample-name-13"></div></div></td>
                     <td><button type="button" class="btn btn-outline-secondary btn-sm" id="play-13" disabled><i class="bi bi-play-fill"></i></button> <button type="button" class="btn btn-outline-danger btn-sm" id="clear-13" disabled><i class="bi bi-x-lg"></i></button></td>
                     <td><button type="button" class="btn btn-outline-secondary btn-sm advanced-btn" data-sample-idx="13"><i class="fa fa-cog" title="Sample options"></i></button></td>
                   </tr>
                   <tr>
-                    <td>Ride</td>
+                    <td>ride cymbal</td>
                     <td><div class="input-group input-group-sm"><label class="input-group-text" for="sample-14"><i class="fa fa-search"></i></label><input type="file" accept=".wav" class="form-control form-control-sm" id="sample-14" style="display:none;"><div class="small text-muted" id="sample-name-14"></div></div></td>
                     <td><button type="button" class="btn btn-outline-secondary btn-sm" id="play-14" disabled><i class="bi bi-play-fill"></i></button> <button type="button" class="btn btn-outline-danger btn-sm" id="clear-14" disabled><i class="bi bi-x-lg"></i></button></td>
                     <td><button type="button" class="btn btn-outline-secondary btn-sm advanced-btn" data-sample-idx="14"><i class="fa fa-cog" title="Sample options"></i></button></td>
                   </tr>
                   <tr>
-                    <td>Mid Tom</td>
+                    <td>mid-tom</td>
                     <td><div class="input-group input-group-sm"><label class="input-group-text" for="sample-15"><i class="fa fa-search"></i></label><input type="file" accept=".wav" class="form-control form-control-sm" id="sample-15" style="display:none;"><div class="small text-muted" id="sample-name-15"></div></div></td>
                     <td><button type="button" class="btn btn-outline-secondary btn-sm" id="play-15" disabled><i class="bi bi-play-fill"></i></button> <button type="button" class="btn btn-outline-danger btn-sm" id="clear-15" disabled><i class="bi bi-x-lg"></i></button></td>
                     <td><button type="button" class="btn btn-outline-secondary btn-sm advanced-btn" data-sample-idx="15"><i class="fa fa-cog" title="Sample options"></i></button></td>
                   </tr>
                   <tr>
-                    <td>Crash</td>
+                    <td>crash cymbal</td>
                     <td><div class="input-group input-group-sm"><label class="input-group-text" for="sample-16"><i class="fa fa-search"></i></label><input type="file" accept=".wav" class="form-control form-control-sm" id="sample-16" style="display:none;"><div class="small text-muted" id="sample-name-16"></div></div></td>
                     <td><button type="button" class="btn btn-outline-secondary btn-sm" id="play-16" disabled><i class="bi bi-play-fill"></i></button> <button type="button" class="btn btn-outline-danger btn-sm" id="clear-16" disabled><i class="bi bi-x-lg"></i></button></td>
                     <td><button type="button" class="btn btn-outline-secondary btn-sm advanced-btn" data-sample-idx="16"><i class="fa fa-cog" title="Sample options"></i></button></td>
                   </tr>
                   <tr>
-                    <td>Hi Tom</td>
+                    <td>hi-tom</td>
                     <td><div class="input-group input-group-sm"><label class="input-group-text" for="sample-17"><i class="fa fa-search"></i></label><input type="file" accept=".wav" class="form-control form-control-sm" id="sample-17" style="display:none;"><div class="small text-muted" id="sample-name-17"></div></div></td>
                     <td><button type="button" class="btn btn-outline-secondary btn-sm" id="play-17" disabled><i class="bi bi-play-fill"></i></button> <button type="button" class="btn btn-outline-danger btn-sm" id="clear-17" disabled><i class="bi bi-x-lg"></i></button></td>
                     <td><button type="button" class="btn btn-outline-secondary btn-sm advanced-btn" data-sample-idx="17"><i class="fa fa-cog" title="Sample options"></i></button></td>
                   </tr>
                   <tr>
-                    <td>Cowbell</td>
+                    <td>cowbell</td>
                     <td><div class="input-group input-group-sm"><label class="input-group-text" for="sample-18"><i class="fa fa-search"></i></label><input type="file" accept=".wav" class="form-control form-control-sm" id="sample-18" style="display:none;"><div class="small text-muted" id="sample-name-18"></div></div></td>
                     <td><button type="button" class="btn btn-outline-secondary btn-sm" id="play-18" disabled><i class="bi bi-play-fill"></i></button> <button type="button" class="btn btn-outline-danger btn-sm" id="clear-18" disabled><i class="bi bi-x-lg"></i></button></td>
                     <td><button type="button" class="btn btn-outline-secondary btn-sm advanced-btn" data-sample-idx="18"><i class="fa fa-cog" title="Sample options"></i></button></td>
                   </tr>
                   <tr>
-                    <td>Triangle</td>
+                    <td>triangle</td>
                     <td><div class="input-group input-group-sm"><label class="input-group-text" for="sample-19"><i class="fa fa-search"></i></label><input type="file" accept=".wav" class="form-control form-control-sm" id="sample-19" style="display:none;"><div class="small text-muted" id="sample-name-19"></div></div></td>
                     <td><button type="button" class="btn btn-outline-secondary btn-sm" id="play-19" disabled><i class="bi bi-play-fill"></i></button> <button type="button" class="btn btn-outline-danger btn-sm" id="clear-19" disabled><i class="bi bi-x-lg"></i></button></td>
                     <td><button type="button" class="btn btn-outline-secondary btn-sm advanced-btn" data-sample-idx="19"><i class="fa fa-cog" title="Sample options"></i></button></td>
                   </tr>
                   <tr>
-                    <td>Low Tom</td>
+                    <td>low tom</td>
                     <td><div class="input-group input-group-sm"><label class="input-group-text" for="sample-20"><i class="fa fa-search"></i></label><input type="file" accept=".wav" class="form-control form-control-sm" id="sample-20" style="display:none;"><div class="small text-muted" id="sample-name-20"></div></div></td>
                     <td><button type="button" class="btn btn-outline-secondary btn-sm" id="play-20" disabled><i class="bi bi-play-fill"></i></button> <button type="button" class="btn btn-outline-danger btn-sm" id="clear-20" disabled><i class="bi bi-x-lg"></i></button></td>
                     <td><button type="button" class="btn btn-outline-secondary btn-sm advanced-btn" data-sample-idx="20"><i class="fa fa-cog" title="Sample options"></i></button></td>
                   </tr>
                   <tr>
-                    <td>Low Conga</td>
+                    <td>low conga</td>
                     <td><div class="input-group input-group-sm"><label class="input-group-text" for="sample-21"><i class="fa fa-search"></i></label><input type="file" accept=".wav" class="form-control form-control-sm" id="sample-21" style="display:none;"><div class="small text-muted" id="sample-name-21"></div></div></td>
                     <td><button type="button" class="btn btn-outline-secondary btn-sm" id="play-21" disabled><i class="bi bi-play-fill"></i></button> <button type="button" class="btn btn-outline-danger btn-sm" id="clear-21" disabled><i class="bi bi-x-lg"></i></button></td>
                     <td><button type="button" class="btn btn-outline-secondary btn-sm advanced-btn" data-sample-idx="21"><i class="fa fa-cog" title="Sample options"></i></button></td>
                   </tr>
                   <tr>
-                    <td>Clave</td>
+                    <td>clave</td>
                     <td><div class="input-group input-group-sm"><label class="input-group-text" for="sample-22"><i class="fa fa-search"></i></label><input type="file" accept=".wav" class="form-control form-control-sm" id="sample-22" style="display:none;"><div class="small text-muted" id="sample-name-22"></div></div></td>
                     <td><button type="button" class="btn btn-outline-secondary btn-sm" id="play-22" disabled><i class="bi bi-play-fill"></i></button> <button type="button" class="btn btn-outline-danger btn-sm" id="clear-22" disabled><i class="bi bi-x-lg"></i></button></td>
                     <td><button type="button" class="btn btn-outline-secondary btn-sm advanced-btn" data-sample-idx="22"><i class="fa fa-cog" title="Sample options"></i></button></td>
                   </tr>
                   <tr>
-                    <td>High Conga</td>
+                    <td>hi-conga</td>
                     <td><div class="input-group input-group-sm"><label class="input-group-text" for="sample-23"><i class="fa fa-search"></i></label><input type="file" accept=".wav" class="form-control form-control-sm" id="sample-23" style="display:none;"><div class="small text-muted" id="sample-name-23"></div></div></td>
                     <td><button type="button" class="btn btn-outline-secondary btn-sm" id="play-23" disabled><i class="bi bi-play-fill"></i></button> <button type="button" class="btn btn-outline-danger btn-sm" id="clear-23" disabled><i class="bi bi-x-lg"></i></button></td>
                     <td><button type="button" class="btn btn-outline-secondary btn-sm advanced-btn" data-sample-idx="23"><i class="fa fa-cog" title="Sample options"></i></button></td>
                   </tr>
                   <tr>
-                    <td>Guiro</td>
+                    <td>guiro</td>
                     <td><div class="input-group input-group-sm"><label class="input-group-text" for="sample-24"><i class="fa fa-search"></i></label><input type="file" accept=".wav" class="form-control form-control-sm" id="sample-24" style="display:none;"><div class="small text-muted" id="sample-name-24"></div></div></td>
                     <td><button type="button" class="btn btn-outline-secondary btn-sm" id="play-24" disabled><i class="bi bi-play-fill"></i></button> <button type="button" class="btn btn-outline-danger btn-sm" id="clear-24" disabled><i class="bi bi-x-lg"></i></button></td>
                     <td><button type="button" class="btn btn-outline-secondary btn-sm advanced-btn" data-sample-idx="24"><i class="fa fa-cog" title="Sample options"></i></button></td>
@@ -320,7 +320,7 @@
       </div>
     </div>
     <footer class="text-center disclaimer">
-      OP-XY is a trademark of Teenage Engineering. This is an unofficial tool and is not affiliated with or endorsed by Teenage Engineering.
+      OP-XY is a trademark of teenage engineering. this is an unofficial tool and is not affiliated with or endorsed by teenage engineering.
     </footer>
   </div>
 
