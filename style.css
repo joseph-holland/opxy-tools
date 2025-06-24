@@ -454,3 +454,103 @@ a {
 .key-g { grid-column: 9 / 11; grid-row: 2; }
 .key-h { grid-column: 11 / 13; grid-row: 2; }
 .key-j { grid-column: 13 / 15; grid-row: 2; }
+
+/* === Global slider styles for all modals === */
+input[type=range] {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 100%;
+  height: 8px;
+  border-radius: 4px;
+  background: #ddd;
+  outline: none;
+  -webkit-transition: .2s;
+  transition: opacity .2s;
+}
+input[type=range]::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: #222;
+  cursor: pointer;
+  border: none;
+}
+input[type=range]::-moz-range-thumb {
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: #222;
+  cursor: pointer;
+  border: none;
+}
+input[type=range]::-ms-thumb {
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: #222;
+  cursor: pointer;
+  border: none;
+}
+input[type=range]::-webkit-slider-runnable-track {
+  width: 100%;
+  height: 8px;
+  cursor: pointer;
+  background: #ddd;
+  border-radius: 4px;
+}
+input[type=range]::-moz-range-track {
+  width: 100%;
+  height: 8px;
+  cursor: pointer;
+  background: #ddd;
+  border-radius: 4px;
+}
+input[type=range]::-ms-track {
+  width: 100%;
+  height: 8px;
+  cursor: pointer;
+  background: transparent;
+  border-color: transparent;
+  color: transparent;
+}
+input[type=range]::-ms-fill-lower {
+  background: #ddd;
+  border-radius: 4px;
+}
+input[type=range]::-ms-fill-upper {
+  background: #ddd;
+  border-radius: 4px;
+}
+input[type=range]:focus {
+  outline: none;
+}
+input[type=range]:focus::-webkit-slider-thumb {
+  background: #222;
+  box-shadow: 0 0 0 2px rgba(85,85,85,0.4);
+}
+input[type=range]:focus::-moz-range-thumb {
+  background: #222;
+  box-shadow: 0 0 0 2px rgba(85,85,85,0.4);
+}
+input[type=range]:focus::-ms-thumb {
+  background: #222;
+  box-shadow: 0 0 0 2px rgba(85,85,85,0.4);
+}
+
+/* === Advanced Modal Transition Styles === */
+#advanced-modal.modal.fade {
+  opacity: 0;
+  transition: opacity 0.3s linear;
+}
+#advanced-modal.modal.fade.show {
+  opacity: 1;
+}
+#advanced-modal .modal-dialog {
+  transform: translateY(40px) scale(0.98);
+  transition: transform 0.3s cubic-bezier(.4,0,.2,1);
+}
+#advanced-modal.modal.fade.show .modal-dialog {
+  transform: translateY(0) scale(1);
+}

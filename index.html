@@ -353,7 +353,70 @@
     </div>
   </div>
 
+  <!-- Advanced Modal (moved from JS) -->
+  <div id="advanced-modal" class="modal fade" tabindex="-1" style="display:none;background:rgba(0,0,0,0.4);">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">Advanced Settings</h5>
+        </div>
+        <div class="modal-body">
+          <div class="mb-3">
+            <label class="form-label">Playmode:</label>
+            <select class="form-select form-select-sm adv-playmode">
+              <option value="oneshot">Oneshot</option>
+              <option value="group">Group</option>
+              <option value="loop">Loop</option>
+              <option value="gate">Gate</option>
+            </select>
+          </div>
+          <div class="mb-3">
+            <label class="form-label">Direction:</label>
+            <div>
+              <button type="button" class="btn btn-secondary btn-sm adv-reverse" style="background:#444;color:#fff;border:none;">
+                <i class="fa fa-play"></i>
+                <span class="adv-reverse-label ms-2">Normal</span>
+              </button>
+            </div>
+          </div>
+          <div class="mb-3">
+            <label class="form-label">Tuning (semitones):</label>
+            <input type="range" class="form-range adv-tune-slider" min="-48" max="48" value="0" step="1" style="accent-color:#222;background:#fff;width:100%;height:2.2em;border-radius:8px;outline:none;box-shadow:none;">
+            <input type="number" class="form-control form-control-sm adv-tune" min="-48" max="48" value="0">
+          </div>
+          <div class="mb-3">
+            <label class="form-label">Gain (dB):</label>
+            <input type="range" class="form-range adv-gain-slider" min="-30" max="20" value="0" step="1" style="accent-color:#222;background:#fff;width:100%;height:2.2em;border-radius:8px;outline:none;box-shadow:none;">
+            <input type="number" class="form-control form-control-sm adv-gain" min="-30" max="20" value="0">
+          </div>
+          <div class="mb-3">
+            <label class="form-label">Pan:</label>
+            <input type="range" id="advancedPanSlider" class="form-range" min="-100" max="100" value="0" step="1" style="accent-color:#222;background:#fff;width:100%;height:2.2em;border-radius:8px;outline:none;box-shadow:none;">
+            <input type="number" id="advancedPanNumber" class="form-control form-control-sm" min="-100" max="100" value="0" step="1">
+          </div>
+          <div class="mb-3">
+            <label class="form-label">Sample Editor:</label>
+            <button type="button" class="btn btn-secondary btn-sm ms-2" id="zoom-btn" style="background:#444;color:#fff;border:none;"><i class="fa fa-search-plus"></i> Zoom</button>
+            <div id="waveform-container-modal" style="height:60px;width:100%;background:#ececec;position:relative;"></div>
+            <div class="d-flex align-items-center mt-2">
+              <label class="me-2">Start</label>
+              <input type="number" class="form-control form-control-sm adv-sample-start" min="0" value="0" style="width:80px;">
+              <label class="mx-2">End</label>
+              <input type="number" class="form-control form-control-sm adv-sample-end" min="0" value="0" style="width:80px;">
+              <span class="ms-2 small text-muted adv-sample-length"></span>
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary btn-sm adv-cancel" style="background:#888;color:#fff;border:none;">Cancel</button>
+          <button type="button" class="btn btn-secondary btn-sm adv-play-modal" style="background:#222;color:#fff;border:none;"><i class="fa fa-play"></i> <span style="text-decoration:underline;">P</span>lay</button>
+          <button type="button" class="btn btn-dark btn-sm adv-save" style="background:#000;color:#fff;border:none;">Save</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
   <script src="lib/audio_tools.js"></script>
-  <script src="lib/sample_tool_ui.js"></script>
+  <script src="lib/drum_sample_tool.js"></script>
 </body>
 </html>
