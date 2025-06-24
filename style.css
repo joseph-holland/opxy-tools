@@ -557,6 +557,53 @@ a {
 .key-h { grid-column: 11 / 13; grid-row: 2; }
 .key-j { grid-column: 13 / 15; grid-row: 2; }
 
+/* --- W key right-aligned circle and letter --- */
+.key-wrapper.key-w .kbd {
+  width: 4.2rem !important;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  padding: 0;
+}
+.key-wrapper.key-w .kbd .osk-circle {
+  position: absolute;
+  right: 0.35rem;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 1.8em;
+  height: 1.8em;
+  background: #111;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1;
+}
+.key-wrapper.key-w .kbd .osk-letter {
+  position: absolute;
+  right: 0.5rem !important;
+  top: 50% !important;
+  transform: translate(-50%, -50%) !important;
+  color: #fff;
+  font-size: 1.1em;
+  font-weight: normal;
+  z-index: 2;
+  pointer-events: none;
+  text-transform: lowercase;
+}
+
+/* Final override: right-align W key circle and letter with reduced margin */
+.key-wrapper.key-w .kbd .osk-circle,
+.key-wrapper.key-w .kbd .osk-letter {
+  position: absolute !important;
+  right: 0.35rem !important;
+  top: 50% !important;
+  transform: translateY(-50%) !important;
+  left: auto !important;
+  margin: 0 !important;
+}
+
 /* === Global slider styles for all modals === */
 input[type=range] {
   width: 100%;
@@ -673,4 +720,18 @@ input[type=range]:focus::-moz-range-thumb {
 }
 .keyboard-grid-container .kbd {
   border-radius: 4px !important;
+}
+.key-wrapper.key-w .kbd {
+  width: 4.2rem !important; /* 2.8rem * 1.5 = 4.2rem */
+  position: relative;
+}
+.key-wrapper.key-w .kbd .osk-circle {
+  left: 78%; /* Move circle to the right side */
+  top: 50%;
+  transform: translate(-50%, -50%);
+}
+.key-wrapper.key-w .kbd .osk-letter {
+  right: 0.3rem !important;
+  top: 50% !important;
+  transform: translate(-50%, -50%) !important;
 }
