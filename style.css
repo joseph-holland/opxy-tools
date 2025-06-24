@@ -623,6 +623,44 @@ a {
   margin: 0 !important;
 }
 
+/* --- R key larger grey box with left-aligned circle and letter --- */
+.key-wrapper.key-r .kbd {
+  width: 4.2rem !important;
+  position: relative !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: flex-start !important;
+  padding: 0 !important;
+}
+.key-wrapper.key-r .kbd .osk-circle,
+.key-wrapper.key-r .kbd .osk-letter {
+  position: absolute !important;
+  left: 0.35rem !important;
+  top: 50% !important;
+  transform: translateY(-50%) !important;
+  right: auto !important;
+  margin: 0 !important;
+}
+
+/* --- U key larger grey box with left-aligned circle and letter --- */
+.key-wrapper.key-u .kbd {
+  width: 4.2rem !important;
+  position: relative !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: flex-start !important;
+  padding: 0 !important;
+}
+.key-wrapper.key-u .kbd .osk-circle,
+.key-wrapper.key-u .kbd .osk-letter {
+  position: absolute !important;
+  left: 0.35rem !important;
+  top: 50% !important;
+  transform: translateY(-50%) !important;
+  right: auto !important;
+  margin: 0 !important;
+}
+
 /* === Global slider styles for all modals === */
 input[type=range] {
   width: 100%;
@@ -754,8 +792,35 @@ input[type=range]:focus::-moz-range-thumb {
   top: 50% !important;
   transform: translate(-50%, -50%) !important;
 }
+key-wrapper.key-r .kbd {
+  width: 4.2rem !important;
+  position: relative !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: flex-start !important;
+  padding: 0 !important;
+}
+.key-wrapper.key-r .kbd .osk-circle,
+.key-wrapper.key-r .kbd .osk-letter {
+  position: absolute !important;
+  left: 0.35rem !important;
+  top: 50% !important;
+  transform: translateY(-50%) !important;
+  right: auto !important;
+  margin: 0 !important;
+}
 .key-wrapper.key-y .kbd .osk-letter {
   right: 0.6rem !important;
   top: 50% !important;
   transform: translate(-50%, -50%) !important;
+}
+.key-wrapper.key-r .kbd .osk-letter {
+  right: 0.35rem !important;
+  top: 50% !important;
+  transform: translate(-20%, -50%) !important;
+}
+.key-wrapper.key-u .kbd .osk-letter {
+  right: 0.35rem !important;
+  top: 50% !important;
+  transform: translate(-20%, -50%) !important;
 }
