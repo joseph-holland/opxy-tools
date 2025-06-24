@@ -824,3 +824,21 @@ key-wrapper.key-r .kbd {
   top: 50% !important;
   transform: translate(-20%, -50%) !important;
 }
+
+/* --- Move top row labels above keys --- */
+.key-wrapper.key-w,
+.key-wrapper.key-e,
+.key-wrapper.key-r,
+.key-wrapper.key-y,
+.key-wrapper.key-u {
+  display: flex !important;
+  flex-direction: column-reverse !important;
+  align-items: center !important;
+}
+.key-wrapper.key-w .small,
+.key-wrapper.key-e .small,
+.key-wrapper.key-r .small,
+key-wrapper.key-y .small,
+.key-wrapper.key-u .small {
+  margin-bottom: 0.25rem !important;
+}
