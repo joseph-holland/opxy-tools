@@ -36,8 +36,8 @@
     <div class="tab-content">
       <div class="tab-pane fade show active" id="drum" role="tabpanel" aria-labelledby="drum-tab">
         <div class="section-block">
-          <h5 class="mb-3">how to use (drum)</h5>
-          <p>drag and drop samples onto each row. use your keyboard to play each sample. when finished, press <b>generate patch</b> to download a zip file containing the preset. unzip into a folder named  <b>presetname.preset</b>. copy to your OP-XY via USB and drop into the presets folder (create a subfolder called 'drum' or any custom name to arrange your custom drum presets.</p>
+          <h5 class="mb-3">how to use</h5>
+          <p>drag and drop samples onto each row or click the search button to browse. use your keyboard to play each sample. when finished, press <b>generate patch</b> to download a zip file containing the preset. unzip into a folder named  <b>presetname.preset</b>. copy to your OP-XY via USB and drop into the presets folder (create a subfolder called 'drum' or any custom name to arrange your custom drum presets.</p>
         </div>
         <div class="section-block">
           <h5 class="mb-3">settings</h5>
@@ -329,66 +329,68 @@
     <div class="modal-dialog modal-dialog-centered">
       <div class="modal-content">
         <div class="modal-header">
-          <h5 class="modal-title">Sample Options</h5>
+          <h5 class="modal-title">sample options</h5>
         </div>
         <div class="modal-body">
             <div class="alert alert-info py-2 mb-3" style="font-size:0.97em; background:#e0e0e0; color:#222; border-color:#bbb;">
-            Tip: Press <b>P</b> to demo the sample.
+            tip: press <b>p</b> to demo the sample.
             </div>
           <div class="mb-3 d-flex align-items-center">
-            <label class="form-label mb-0 me-2" style="min-width:90px;">Playmode:</label>
+            <label class="form-label mb-0 me-2" style="min-width:90px;">playmode:</label>
             <select class="form-select form-select-sm adv-playmode" style="width:auto;display:inline-block;max-width:350px;">
-              <option value="oneshot">Oneshot - play whole sample</option>
-              <option value="group">Mute Group - choke when another sample plays</option>
-              <option value="loop">Loop - loop at sample end</option>
-              <option value="gate">Key - play while held</option>
+              <option value="oneshot">oneshot - play whole sample</option>
+              <option value="group">mute group - choke when another sample plays</option>
+              <option value="loop">loop - loop at sample end</option>
+              <option value="gate">key - play while held</option>
             </select>
           </div>
           <div class="mb-3 d-flex align-items-center">
-            <label class="form-label mb-0 me-2" style="min-width:90px;">Direction:</label>
+            <label class="form-label mb-0 me-2" style="min-width:90px;">playback direction:</label>
             <button type="button" class="btn btn-secondary btn-sm adv-reverse ms-0" style="background:#444;color:#fff;border:none;min-width:90px;">
               <i class="fa fa-play"></i>
-              <span class="adv-reverse-label ms-2">Normal</span>
+              <span class="adv-reverse-label ms-2">forward</span>
             </button>
           </div>
           <div class="mb-3">
-            <label class="form-label">Tuning (semitones):</label>
+            <label class="form-label">tuning (semitones):</label>
             <div class="d-flex align-items-center">
               <input type="range" class="form-range adv-tune-slider me-2" min="-48" max="48" value="0" step="1" style="accent-color:#222;background:#fff;width:100%;height:2.2em;border-radius:8px;outline:none;box-shadow:none;max-width:220px;">
               <input type="number" class="form-control form-control-sm adv-tune ms-1" min="-48" max="48" value="0" style="width:80px;">
             </div>
           </div>
           <div class="mb-3">
-            <label class="form-label">Gain (dB):</label>
+            <label class="form-label">gain (dB):</label>
             <div class="d-flex align-items-center">
               <input type="range" class="form-range adv-gain-slider me-2" min="-30" max="20" value="0" step="1" style="accent-color:#222;background:#fff;width:100%;height:2.2em;border-radius:8px;outline:none;box-shadow:none;max-width:220px;">
               <input type="number" class="form-control form-control-sm adv-gain ms-1" min="-30" max="20" value="0" style="width:80px;">
             </div>
           </div>
           <div class="mb-3">
-            <label class="form-label">Pan:</label>
+            <label class="form-label">pan:</label>
             <div class="d-flex align-items-center">
               <input type="range" id="advancedPanSlider" class="form-range me-2" min="-100" max="100" value="0" step="1" style="accent-color:#222;background:#fff;width:100%;height:2.2em;border-radius:8px;outline:none;box-shadow:none;max-width:220px;">
               <input type="number" id="advancedPanNumber" class="form-control form-control-sm ms-1" min="-100" max="100" value="0" step="1" style="width:80px;">
             </div>
           </div>
           <div class="mb-3">
-            <label class="form-label">Sample Editor:</label>
-            <button type="button" class="btn btn-secondary btn-sm ms-2" id="zoom-btn" style="background:#444;color:#fff;border:none;"><i class="fa fa-search-plus"></i> Zoom & Edit</button>
+            <label class="form-label">sample editor:</label>
+            <button type="button" class="btn btn-secondary btn-sm ms-2" id="zoom-btn" style="background:#444;color:#fff;border:none;"><i class="fa fa-search-plus"></i> zoom & edit</button>
             <div id="waveform-container-modal" style="height:60px;width:100%;background:#ececec;position:relative;"></div>
             <div class="d-flex align-items-center mt-2">
-              <label class="me-2">Start</label>
+              <label class="me-2">start</label>
               <input type="number" class="form-control form-control-sm adv-sample-start" min="0" value="0" style="width:80px;">
-              <label class="mx-2">End</label>
+              <label class="mx-2">end</label>
               <input type="number" class="form-control form-control-sm adv-sample-end" min="0" value="0" style="width:80px;">
               <span class="ms-2 small text-muted adv-sample-length"></span>
             </div>
           </div>
         </div>
         <div class="modal-footer">
-          <button type="button" class="btn btn-secondary btn-sm adv-cancel" style="background:#888;color:#fff;border:none;">Cancel</button>
-          <button type="button" class="btn btn-secondary btn-sm adv-play-modal" style="background:#222;color:#fff;border:none;"><i class="fa fa-play"></i> <span style="text-decoration:underline;">P</span>lay</button>
-          <button type="button" class="btn btn-dark btn-sm adv-save" style="background:#000;color:#fff;border:none;">Save</button>
+          <button type="button" class="btn btn-secondary btn-sm adv-cancel" style="background:#888;color:#fff;border:none;">cancel</button>
+          <button type="button" class="btn btn-secondary btn-sm adv-play-modal" style="background:#222;color:#fff;border:none;"><i class="fa fa-play"></i> play</button>
+            <button type="button" class="btn btn-dark btn-sm adv-save" style="background:#000;color:#fff;border:none;">
+            <i class="fa fa-save me-1"></i>save
+            </button>
         </div>
       </div>
     </div>
@@ -399,29 +401,29 @@
     <div class="modal-dialog modal-xl">
       <div class="modal-content">
         <div class="modal-header">
-          <h5 class="modal-title" id="zoom-modal-label">Edit Start & End Points</h5>
+          <h5 class="modal-title" id="zoom-modal-label">edit start & end points</h5>
         </div>
         <div class="modal-body">
           <div class="alert alert-info py-2 mb-3" style="font-size:0.97em; background:#e0e0e0; color:#222; border-color:#bbb;">
-            Tip: Press <b>P</b> to demo the sample.
+            tip: press <b>p</b> to demo the sample.
           </div>
           <canvas id="zoom-canvas" width="1100" height="200"></canvas>
           <div class="form-check mb-2 ms-2">
             <input class="form-check-input" type="checkbox" id="zero-crossing-snap" checked>
             <label class="form-check-label" for="zero-crossing-snap">
-              Snap to zero crossings
+              snap to zero crossings
             </label>
           </div>
           <div class="row mt-2">
             <div class="col">
-              <label for="zoom-start-point" class="form-label">Start Point</label>
+              <label for="zoom-start-point" class="form-label">start point</label>
               <div class="d-flex align-items-center">
                 <input type="text" class="form-control" id="zoom-start-point">
                 <span class="ms-2 badge bg-secondary" id="zoom-start-value">0.000</span>
               </div>
             </div>
             <div class="col">
-              <label for="zoom-end-point" class="form-label">End Point</label>
+              <label for="zoom-end-point" class="form-label">end point</label>
               <div class="d-flex align-items-center">
                 <input type="text" class="form-control" id="zoom-end-point">
                 <span class="ms-2 badge bg-secondary" id="zoom-end-value">0.000</span>
@@ -430,9 +432,9 @@
           </div>
         </div>
         <div class="modal-footer">
-          <button type="button" class="btn btn-sm" data-bs-dismiss="modal" style="background:#888;color:#fff;border:none;min-width:80px;height:38px;font-size:1rem;padding:6px 16px;">Cancel</button>
-          <button type="button" class="btn btn-sm" id="zoom-play-button" style="background:#222;color:#fff;border:none;min-width:80px;height:38px;font-size:1rem;padding:6px 16px;"><span style="text-decoration:underline;">P</span>lay</button>
-          <button type="button" class="btn btn-sm" id="zoom-save-button" style="background:#000;color:#fff;border:none;min-width:80px;height:38px;font-size:1rem;padding:6px 16px;">Done</button>
+          <button type="button" class="btn btn-sm" data-bs-dismiss="modal" style="background:#888;color:#fff;border:none;min-width:80px;height:38px;font-size:1rem;padding:6px 16px;">cancel</button>
+          <button type="button" class="btn btn-sm" id="zoom-play-button" style="background:#222;color:#fff;border:none;min-width:80px;height:38px;font-size:1rem;padding:6px 16px;"> play</button>
+          <button type="button" class="btn btn-sm" id="zoom-save-button" style="background:#000;color:#fff;border:none;min-width:80px;height:38px;font-size:1rem;padding:6px 16px;">done</button>
         </div>
       </div>
     </div>
