@@ -35,8 +35,9 @@ body {
   padding: 0.5rem 1.2rem;
   transition: background 0.2s;
 }
-.accent-btn:hover {
-  background: #444;
+.accent-btn:hover, .accent-btn:focus {
+  background: #444 !important;
+  color: #fff;
 }
 
 .disclaimer {
@@ -417,8 +418,9 @@ a {
   padding: 0.5rem 1.2rem;
   transition: background 0.2s;
 }
-.accent-btn:hover {
-  background: #444;
+.accent-btn:hover, .accent-btn:focus {
+  background: #444 !important;
+  color: #fff;
 }
 .disclaimer {
   font-size: 0.9em;

@@ -37,7 +37,7 @@
       <div class="tab-pane fade show active" id="drum" role="tabpanel" aria-labelledby="drum-tab">
         <div class="section-block">
           <h5 class="mb-3">how to use</h5>
-          <p>drag and drop samples onto each row or click the search button to browse. use your keyboard to play each sample. when finished, press <b>generate patch</b> to download a zip file containing the preset. unzip into a folder named  <b>presetname.preset</b>. copy to your OP-XY via USB and drop into the presets folder (create a subfolder called 'drum' or any custom name to arrange your custom drum presets.</p>
+          <p>drag and drop samples onto each row or click the search button to browse. use your keyboard to demo each sample. when finished, press <b>generate patch</b> to download a zip file containing the preset. unzip into a folder named  <b>presetname.preset</b>. copy to your OP-XY via USB and drop into the presets folder (create a subfolder called 'drum' or any custom name to arrange your custom drum presets.</p>
         </div>
         <div class="section-block">
           <h5 class="mb-3">settings</h5>
@@ -68,40 +68,40 @@
                   <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
-                  <div class="mb-3">
-                    <label for="preset-playmode" class="form-label">play mode</label>
-                    <select class="form-select" id="preset-playmode">
+                  <div class="mb-3 d-flex align-items-center">
+                    <label for="preset-playmode" class="form-label mb-0 me-2" style="min-width:110px;">play mode</label>
+                    <select class="form-select" id="preset-playmode" style="max-width:220px;">
                       <option value="poly">poly</option>
                       <option value="mono">mono</option>
                       <option value="legato">legato</option>
                     </select>
                   </div>
                   <div class="mb-3">
-                    <label for="preset-transpose" class="form-label">transpose</label>
+                    <label for="preset-transpose" class="form-label">transpose (semitones)</label>
                     <div class="d-flex align-items-center">
                       <input type="range" class="form-range" id="preset-transpose" min="-36" max="36" value="0" style="accent-color:#222;background:#fff;height:2.2em;border-radius:8px;outline:none;box-shadow:none;flex:1;margin-right:8px;">
                       <input type="number" class="form-control form-control-sm" id="preset-transpose-number" min="-36" max="36" value="0" style="width:80px;flex-shrink:0;">
                     </div>
                   </div>
                   <div class="mb-3">
-                    <label for="preset-velocity-sensitivity" class="form-label">velocity sensitivity</label>
+                    <label for="preset-velocity-sensitivity" class="form-label">velocity sensitivity (%)</label>
                     <div class="d-flex align-items-center">
-                      <input type="range" class="form-range" id="preset-velocity-sensitivity" min="0" max="32767" value="16384" style="accent-color:#222;background:#fff;height:2.2em;border-radius:8px;outline:none;box-shadow:none;flex:1;margin-right:8px;">
-                      <input type="number" class="form-control form-control-sm" id="preset-velocity-sensitivity-number" min="0" max="32767" value="16384" style="width:80px;flex-shrink:0;">
+                      <input type="range" class="form-range" id="preset-velocity-sensitivity" min="0" max="100" value="15" style="accent-color:#222;background:#fff;height:2.2em;border-radius:8px;outline:none;box-shadow:none;flex:1;margin-right:8px;">
+                      <input type="number" class="form-control form-control-sm" id="preset-velocity-sensitivity-number" min="0" max="100" value="15" style="width:80px;flex-shrink:0;">
                     </div>
                   </div>
                   <div class="mb-3">
-                    <label for="preset-volume" class="form-label">volume</label>
+                    <label for="preset-volume" class="form-label">volume (%)</label>
                     <div class="d-flex align-items-center">
-                      <input type="range" class="form-range" id="preset-volume" min="0" max="32767" value="16384" style="accent-color:#222;background:#fff;height:2.2em;border-radius:8px;outline:none;box-shadow:none;flex:1;margin-right:8px;">
-                      <input type="number" class="form-control form-control-sm" id="preset-volume-number" min="0" max="32767" value="16384" style="width:80px;flex-shrink:0;">
+                      <input type="range" class="form-range" id="preset-volume" min="0" max="100" value="80" style="accent-color:#222;background:#fff;height:2.2em;border-radius:8px;outline:none;box-shadow:none;flex:1;margin-right:8px;">
+                      <input type="number" class="form-control form-control-sm" id="preset-volume-number" min="0" max="100" value="80" style="width:80px;flex-shrink:0;">
                     </div>
                   </div>
                   <div class="mb-3">
-                    <label for="preset-width" class="form-label">stereo width</label>
+                    <label for="preset-width" class="form-label">stereo width (%)</label>
                     <div class="d-flex align-items-center">
-                      <input type="range" class="form-range" id="preset-width" min="0" max="32767" value="0" style="accent-color:#222;background:#fff;height:2.2em;border-radius:8px;outline:none;box-shadow:none;flex:1;margin-right:8px;">
-                      <input type="number" class="form-control form-control-sm" id="preset-width-number" min="0" max="32767" value="0" style="width:80px;flex-shrink:0;">
+                      <input type="range" class="form-range" id="preset-width" min="0" max="100" value="0" style="accent-color:#222;background:#fff;height:2.2em;border-radius:8px;outline:none;box-shadow:none;flex:1;margin-right:8px;">
+                      <input type="number" class="form-control form-control-sm" id="preset-width-number" min="0" max="100" value="0" style="width:80px;flex-shrink:0;">
                     </div>
                   </div>
                 </div>
@@ -118,7 +118,7 @@
         </div>
         <div class="section-block">
           <h5 class="mb-3">demo samples</h5>
-          <div class="mb-2">use the virtual keys below to demo each sample. click with cursor or use your keyboard to play.</div>
+          <div class="mb-2">use the virtual keys below to demo each sample. click with cursor or use your keyboard.</div>
           <div class="keyboard-grid-container mb-4 position-relative" id="drum-keyboard">
             <!-- Top row (offset like a real keyboard) -->
             <div class="key-wrapper key-w">
