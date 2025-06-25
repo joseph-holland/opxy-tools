@@ -426,7 +426,7 @@
         <div class="section-block">
           <h5 class="mb-3">settings</h5>
           <label for="preset-name-multi" class="form-label">preset name</label>
-          <input id="preset-name-multi" type="text" class="form-control mb-2" value="my awesome sample">
+          <input id="preset-name-multi" type="text" class="form-control mb-2" value="my preset name">
           <label for="loop-enabled-multi" class="form-label">loop enabled</label>
           <input type="checkbox" id="loop-enabled-multi" class="form-check-input mb-2" checked>
           <br>
@@ -443,6 +443,172 @@
             <option value="3">re-encode 44kHz</option>
           </select>
           <div class="form-text mb-2">for best results, set the sample rate to 22kHz or lower. if notes are missing during playback, try reducing the sample rate further.</div>
+          <!-- Advanced Preset Settings Modal Trigger Button -->
+          <div class="section-block">
+            <button class="btn btn-secondary btn-sm mt-2" data-bs-toggle="modal" data-bs-target="#multisample-preset-advanced-modal" id="open-multisample-preset-advanced-modal">
+              <i class="fa fa-sliders-h me-1"></i>advanced preset settings
+            </button>
+          </div>
+
+          <!-- Advanced Preset Settings Modal for Multisample -->
+          <div class="modal fade" id="multisample-preset-advanced-modal" tabindex="-1" aria-labelledby="multisample-preset-advanced-modal-label" aria-hidden="true">
+            <div class="modal-dialog modal-lg">
+              <div class="modal-content">
+                <div class="modal-header">
+                  <h5 class="modal-title" id="multisample-preset-advanced-modal-label">advanced preset settings</h5>
+                  <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                  <!-- Engine Settings -->
+                  <div class="mb-3 d-flex align-items-center">
+                    <label for="multisample-preset-playmode" class="form-label mb-0 me-2" style="min-width:110px;">play mode</label>
+                    <select class="form-select" id="multisample-preset-playmode" style="max-width:220px;">
+                      <option value="poly">poly</option>
+                      <option value="mono">mono</option>
+                      <option value="legato">legato</option>
+                    </select>
+                  </div>
+                  <div class="mb-3">
+                    <label for="multisample-preset-velocity-sensitivity" class="form-label">velocity sensitivity (%)</label>
+                    <div class="d-flex align-items-center">
+                      <input type="range" class="form-range" id="multisample-preset-velocity-sensitivity" min="0" max="100" value="31" style="accent-color:#222;background:#fff;height:2.2em;border-radius:8px;outline:none;box-shadow:none;flex:1;margin-right:8px;">
+                      <input type="number" class="form-control form-control-sm" id="multisample-preset-velocity-sensitivity-number" min="0" max="100" value="31" style="width:80px;flex-shrink:0;">
+                    </div>
+                  </div>
+                  <div class="mb-3">
+                    <label for="multisample-preset-volume" class="form-label">volume (%)</label>
+                    <div class="d-flex align-items-center">
+                      <input type="range" class="form-range" id="multisample-preset-volume" min="0" max="100" value="50" style="accent-color:#222;background:#fff;height:2.2em;border-radius:8px;outline:none;box-shadow:none;flex:1;margin-right:8px;">
+                      <input type="number" class="form-control form-control-sm" id="multisample-preset-volume-number" min="0" max="100" value="50" style="width:80px;flex-shrink:0;">
+                    </div>
+                  </div>
+                  <div class="mb-3">
+                    <label for="multisample-preset-width" class="form-label">stereo width (%)</label>
+                    <div class="d-flex align-items-center">
+                      <input type="range" class="form-range" id="multisample-preset-width" min="0" max="100" value="9" style="accent-color:#222;background:#fff;height:2.2em;border-radius:8px;outline:none;box-shadow:none;flex:1;margin-right:8px;">
+                      <input type="number" class="form-control form-control-sm" id="multisample-preset-width-number" min="0" max="100" value="9" style="width:80px;flex-shrink:0;">
+                    </div>
+                  </div>
+                  <div class="mb-3">
+                    <label for="multisample-preset-highpass" class="form-label">high pass filter (%)</label>
+                    <div class="d-flex align-items-center">
+                      <input type="range" class="form-range" id="multisample-preset-highpass" min="0" max="100" value="0" style="accent-color:#222;background:#fff;height:2.2em;border-radius:8px;outline:none;box-shadow:none;flex:1;margin-right:8px;">
+                      <input type="number" class="form-control form-control-sm" id="multisample-preset-highpass-number" min="0" max="100" value="0" style="width:80px;flex-shrink:0;">
+                    </div>
+                  </div>
+                  <!-- Portamento Settings (no header) -->
+                  <div class="mb-3 d-flex align-items-center">
+                    <label for="multisample-preset-portamento-type" class="form-label mb-0 me-2" style="min-width:110px;">portamento type</label>
+                    <select class="form-select" id="multisample-preset-portamento-type" style="max-width:220px;">
+                      <option value="32767">linear</option>
+                      <option value="12779">exponential</option>
+                    </select>
+                  </div>
+                  <div class="mb-3">
+                    <label for="multisample-preset-portamento-amount" class="form-label">portamento amount (%)</label>
+                    <div class="d-flex align-items-center">
+                      <input type="range" class="form-range" id="multisample-preset-portamento-amount" min="0" max="100" value="0" style="accent-color:#222;background:#fff;height:2.2em;border-radius:8px;outline:none;box-shadow:none;flex:1;margin-right:8px;">
+                      <input type="number" class="form-control form-control-sm" id="multisample-preset-portamento-amount-number" min="0" max="100" value="0" style="width:80px;flex-shrink:0;">
+                    </div>
+                  </div>
+                  <!-- Tuning Settings (no header) -->
+                  <div class="mb-3 d-flex align-items-center">
+                    <label for="multisample-preset-tuning-root" class="form-label mb-0 me-2" style="min-width:110px;">tuning root</label>
+                    <select class="form-select" id="multisample-preset-tuning-root" style="max-width:220px;">
+                      <option value="0">C</option>
+                      <option value="2730">C#</option>
+                      <option value="5461">D</option>
+                      <option value="8192">D#</option>
+                      <option value="10922">E</option>
+                      <option value="13653">F</option>
+                      <option value="16384">F#</option>
+                      <option value="19114">G</option>
+                      <option value="21845">G#</option>
+                      <option value="24575">A</option>
+                      <option value="27306">A#</option>
+                      <option value="30037">B</option>
+                    </select>
+                  </div>
+                  <div class="mb-3">
+                    <label for="multisample-preset-transpose" class="form-label">transpose (semitones)</label>
+                    <div class="d-flex align-items-center">
+                      <input type="range" class="form-range" id="multisample-preset-transpose" min="-36" max="36" value="0" style="accent-color:#222;background:#fff;height:2.2em;border-radius:8px;outline:none;box-shadow:none;flex:1;margin-right:8px;">
+                      <input type="number" class="form-control form-control-sm" id="multisample-preset-transpose-number" min="-36" max="36" value="0" style="width:80px;flex-shrink:0;">
+                    </div>
+                  </div>
+                  <!-- Envelope Settings (no header) -->
+                  <div class="row">
+                    <div class="col-md-6">
+                      <h6 class="mb-2 text-muted">amp envelope</h6>
+                      <div class="mb-2">
+                        <label for="multisample-amp-attack" class="form-label">attack (%)</label>
+                        <div class="d-flex align-items-center">
+                          <input type="range" class="form-range" id="multisample-amp-attack" min="0" max="100" value="0" style="accent-color:#222;background:#fff;height:2.2em;border-radius:8px;outline:none;box-shadow:none;flex:1;margin-right:8px;">
+                          <input type="number" class="form-control form-control-sm" id="multisample-amp-attack-number" min="0" max="100" value="0" style="width:80px;flex-shrink:0;">
+                        </div>
+                      </div>
+                      <div class="mb-2">
+                        <label for="multisample-amp-decay" class="form-label">decay (%)</label>
+                        <div class="d-flex align-items-center">
+                          <input type="range" class="form-range" id="multisample-amp-decay" min="0" max="100" value="0" style="accent-color:#222;background:#fff;height:2.2em;border-radius:8px;outline:none;box-shadow:none;flex:1;margin-right:8px;">
+                          <input type="number" class="form-control form-control-sm" id="multisample-amp-decay-number" min="0" max="100" value="0" style="width:80px;flex-shrink:0;">
+                        </div>
+                      </div>
+                      <div class="mb-2">
+                        <label for="multisample-amp-sustain" class="form-label">sustain (%)</label>
+                        <div class="d-flex align-items-center">
+                          <input type="range" class="form-range" id="multisample-amp-sustain" min="0" max="100" value="0" style="accent-color:#222;background:#fff;height:2.2em;border-radius:8px;outline:none;box-shadow:none;flex:1;margin-right:8px;">
+                          <input type="number" class="form-control form-control-sm" id="multisample-amp-sustain-number" min="0" max="100" value="0" style="width:80px;flex-shrink:0;">
+                        </div>
+                      </div>
+                      <div class="mb-2">
+                        <label for="multisample-amp-release" class="form-label">release (%)</label>
+                        <div class="d-flex align-items-center">
+                          <input type="range" class="form-range" id="multisample-amp-release" min="0" max="100" value="100" style="accent-color:#222;background:#fff;height:2.2em;border-radius:8px;outline:none;box-shadow:none;flex:1;margin-right:8px;">
+                          <input type="number" class="form-control form-control-sm" id="multisample-amp-release-number" min="0" max="100" value="100" style="width:80px;flex-shrink:0;">
+                        </div>
+                      </div>
+                    </div>
+                    <div class="col-md-6">
+                      <h6 class="mb-2 text-muted">filter envelope</h6>
+                      <div class="mb-2">
+                        <label for="multisample-filter-attack" class="form-label">attack (%)</label>
+                        <div class="d-flex align-items-center">
+                          <input type="range" class="form-range" id="multisample-filter-attack" min="0" max="100" value="100" style="accent-color:#222;background:#fff;height:2.2em;border-radius:8px;outline:none;box-shadow:none;flex:1;margin-right:8px;">
+                          <input type="number" class="form-control form-control-sm" id="multisample-filter-attack-number" min="0" max="100" value="100" style="width:80px;flex-shrink:0;">
+                        </div>
+                      </div>
+                      <div class="mb-2">
+                        <label for="multisample-filter-decay" class="form-label">decay (%)</label>
+                        <div class="d-flex align-items-center">
+                          <input type="range" class="form-range" id="multisample-filter-decay" min="0" max="100" value="100" style="accent-color:#222;background:#fff;height:2.2em;border-radius:8px;outline:none;box-shadow:none;flex:1;margin-right:8px;">
+                          <input type="number" class="form-control form-control-sm" id="multisample-filter-decay-number" min="0" max="100" value="100" style="width:80px;flex-shrink:0;">
+                        </div>
+                      </div>
+                      <div class="mb-2">
+                        <label for="multisample-filter-sustain" class="form-label">sustain (%)</label>
+                        <div class="d-flex align-items-center">
+                          <input type="range" class="form-range" id="multisample-filter-sustain" min="0" max="100" value="100" style="accent-color:#222;background:#fff;height:2.2em;border-radius:8px;outline:none;box-shadow:none;flex:1;margin-right:8px;">
+                          <input type="number" class="form-control form-control-sm" id="multisample-filter-sustain-number" min="0" max="100" value="100" style="width:80px;flex-shrink:0;">
+                        </div>
+                      </div>
+                      <div class="mb-2">
+                        <label for="multisample-filter-release" class="form-label">release (%)</label>
+                        <div class="d-flex align-items-center">
+                          <input type="range" class="form-range" id="multisample-filter-release" min="0" max="100" value="0" style="accent-color:#222;background:#fff;height:2.2em;border-radius:8px;outline:none;box-shadow:none;flex:1;margin-right:8px;">
+                          <input type="number" class="form-control form-control-sm" id="multisample-filter-release-number" min="0" max="100" value="0" style="width:80px;flex-shrink:0;">
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="modal-footer">
+                  <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">cancel</button>
+                  <button type="button" class="btn btn-dark btn-sm" id="save-multisample-preset-advanced-settings"><i class="fa fa-save me-1"></i>save</button>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
         <div class="section-block">
           <button class="accent-btn mt-2" id="generate-multisample-patch" disabled title="load at least one sample to enable">generate patch</button>
