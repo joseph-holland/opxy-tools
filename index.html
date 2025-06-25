@@ -40,7 +40,7 @@
             how to use <i class="fa fa-chevron-down float-end" id="drumHowToUseChevron"></i>
           </h5>
           <div class="collapse show" id="drumHowToUseCollapse">
-            <p>drag and drop samples onto each row or click the search button to browse. use your keyboard to demo each sample. when finished, press <b>generate patch</b> to download a zip file containing the preset. unzip into a folder named  <b>presetname.preset</b>. copy to your OP-XY via USB and drop into the presets folder (create a subfolder called 'drum' or any custom name to arrange your custom drum presets.</p>
+            <p>drag and drop samples onto each row or click the search button to browse. use your keyboard to demo each sample. when finished, press <b>generate patch</b> to download a zip file containing the preset. unzip into a folder named  <b>presetname.preset</b>. copy to your OP-XY via usb and drop into the presets folder (create a subfolder called 'drum' or any custom name to arrange your custom drum presets.</p>
           </div>
         </div>
         <div class="section-block">
@@ -430,7 +430,7 @@
             how to use <i class="fa fa-chevron-down float-end" id="howToUseChevron"></i>
           </h5>
           <div class="collapse show" id="howToUseCollapse">
-            <p>drag and drop samples below. samples are auto-assigned to notes based on their names. click a note name to change it using a midi number (e.g., 60 for middle c) or note name (e.g., c3, g#5, bb2). all samples must have a note assigned! when done, click <b>generate patch</b> to download a zip file containing the preset. unzip into a folder named <b>presetname.preset</b>. copy to your OP-XY via USB and drop into the presets folder (or create a subfolder called 'lead' 'pad' or any custom name to arrange your custom multisample presets.</p>
+            <p>drag and drop samples below. samples are auto-assigned to notes based on their names. click a note name to change it using a midi number (e.g., 60 for middle c) or note name (e.g., c3, g#5, bb2). all samples must have a note assigned! when done, click <b>generate patch</b> to download a zip file containing the preset. unzip into a folder named <b>presetname.preset</b>. copy to your OP-XY via usb and drop into the presets folder (or create a subfolder called 'lead' 'pad' or any custom name to arrange your custom multisample presets.</p>
           </div>
           <h5 class="mb-3" data-bs-toggle="collapse" data-bs-target="#sampleReqCollapse" aria-expanded="true" aria-controls="sampleReqCollapse" style="cursor:pointer;">
             sample requirements <i class="fa fa-chevron-down float-end" id="sampleReqChevron"></i>
@@ -440,10 +440,10 @@
               <li>20 seconds max per sample</li>
               <li>24 samples max per multisample preset</li>
               <li>multiple velocities are not supported</li>
-              <li>file names should end with either a MIDI note number (0-127) or a note name like C#3</li>
+              <li>file names should end with either a midi note number (0-127) or a note name like C#3</li>
             </ul>
             <p class="small text-muted mt-2 mb-0">
-              <strong>naming examples:</strong> "my awesome sample-60.wav", "my cool sound c3.wav", "sickfuzz-g#4-127.wav"
+              <strong>naming examples:</strong> "my awesome sample-60.wav", "my cool sound C3.wav", "sickfuzz-g#4-127.wav"
             </p>
           </div>
         </div>
@@ -462,7 +462,7 @@
               <option value="2">re-encode 22kHz</option>
               <option value="3">re-encode 44kHz</option>
             </select>
-            <div class="form-text mb-2">for best results, set the sample rate to 22kHz or lower. if notes are missing during playback, try reducing the sample rate further.</div>
+            <div class="form-text mb-2">for best results, set the sample rate to 22khz or lower. if notes are missing during playback, try reducing the sample rate further.</div>
             <!-- Advanced Preset Settings Modal Trigger Button -->
             <button class="btn btn-secondary btn-sm mt-2" data-bs-toggle="modal" data-bs-target="#multisample-preset-advanced-modal" id="open-multisample-preset-advanced-modal">
               <i class="fa fa-sliders-h me-1"></i>advanced preset settings
@@ -695,7 +695,7 @@
             </div>
           </div>
           <div class="mb-3">
-            <label class="form-label">gain (dB)</label>
+            <label class="form-label">gain (db)</label>
             <div class="d-flex align-items-center">
               <input type="range" class="form-range adv-gain-slider" min="-30" max="20" value="0" step="1" style="accent-color:#222;background:#fff;height:2.2em;border-radius:8px;outline:none;box-shadow:none;flex:1;margin-right:8px;">
               <input type="number" class="form-control form-control-sm adv-gain" min="-30" max="20" value="0" style="width:80px;flex-shrink:0;">
