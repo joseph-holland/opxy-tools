@@ -785,6 +785,40 @@ input[type=range]:focus::-moz-range-thumb {
   overflow-x: auto;
 }
 
+/* === Advanced Modal Full Width Slider Layout === */
+#advanced-modal .modal-body .d-flex {
+  width: 100%;
+}
+
+#advanced-modal .modal-body .d-flex input[type="range"] {
+  flex: 1;
+  margin-right: 8px;
+  width: auto !important;
+  max-width: none !important;
+}
+
+#advanced-modal .modal-body .d-flex input[type="number"] {
+  flex-shrink: 0;
+  width: 80px !important;
+}
+
+/* === Preset Advanced Modal Full Width Slider Layout === */
+#preset-advanced-modal .modal-body .d-flex {
+  width: 100%;
+}
+
+#preset-advanced-modal .modal-body .d-flex input[type="range"] {
+  flex: 1;
+  margin-right: 8px;
+  width: auto !important;
+  max-width: none !important;
+}
+
+#preset-advanced-modal .modal-body .d-flex input[type="number"] {
+  flex-shrink: 0;
+  width: 80px !important;
+}
+
 .octave-controls .kbd {
   cursor: pointer;
 }
