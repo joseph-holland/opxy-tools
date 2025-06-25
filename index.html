@@ -36,11 +36,18 @@
     <div class="tab-content">
       <div class="tab-pane fade show active" id="drum" role="tabpanel" aria-labelledby="drum-tab">
         <div class="section-block">
-          <h5 class="mb-3">how to use</h5>
-          <p>drag and drop samples onto each row or click the search button to browse. use your keyboard to demo each sample. when finished, press <b>generate patch</b> to download a zip file containing the preset. unzip into a folder named  <b>presetname.preset</b>. copy to your OP-XY via USB and drop into the presets folder (create a subfolder called 'drum' or any custom name to arrange your custom drum presets.</p>
+          <h5 class="mb-3" data-bs-toggle="collapse" data-bs-target="#drumHowToUseCollapse" aria-expanded="true" aria-controls="drumHowToUseCollapse" style="cursor:pointer;">
+            how to use <i class="fa fa-chevron-down float-end" id="drumHowToUseChevron"></i>
+          </h5>
+          <div class="collapse show" id="drumHowToUseCollapse">
+            <p>drag and drop samples onto each row or click the search button to browse. use your keyboard to demo each sample. when finished, press <b>generate patch</b> to download a zip file containing the preset. unzip into a folder named  <b>presetname.preset</b>. copy to your OP-XY via USB and drop into the presets folder (create a subfolder called 'drum' or any custom name to arrange your custom drum presets.</p>
+          </div>
         </div>
         <div class="section-block">
-          <h5 class="mb-3">settings</h5>
+          <h5 class="mb-3" data-bs-toggle="collapse" data-bs-target="#drumSettingsCollapse" aria-expanded="true" aria-controls="drumSettingsCollapse" style="cursor:pointer;">
+            settings <i class="fa fa-chevron-down float-end" id="drumSettingsChevron"></i>
+          </h5>
+          <div class="collapse show" id="drumSettingsCollapse">
           <!-- Drum tool settings -->
           <label for="preset-name-drum" class="form-label">preset name</label>
           <input id="preset-name-drum" type="text" class="form-control mb-2" value="my preset name">
@@ -111,6 +118,7 @@
                 </div>
               </div>
             </div>
+          </div>
           </div>
         </div>
         <div class="section-block">
@@ -420,27 +428,49 @@
       </div>
       <div class="tab-pane fade" id="multi" role="tabpanel" aria-labelledby="multi-tab">
         <div class="section-block">
-          <h5 class="mb-3">how to use</h5>
-          <p>drag and drop samples below. samples are auto-assigned to notes based on their names. click a note name to change it using a midi number (e.g., 60 for middle c) or note name (e.g., c3, g#5, bb2). all samples must have a note assigned! when done, click <b>generate patch</b> to download a zip file containing the preset. unzip into a folder named <b>presetname.preset</b>. copy to your OP-XY via USB and drop into the presets folder (or create a subfolder called 'lead' 'pad' or any custom name to arrange your custom multisample presets.</p>
+          <h5 class="mb-3" data-bs-toggle="collapse" data-bs-target="#howToUseCollapse" aria-expanded="true" aria-controls="howToUseCollapse" style="cursor:pointer;">
+            how to use <i class="fa fa-chevron-down float-end" id="howToUseChevron"></i>
+          </h5>
+          <div class="collapse show" id="howToUseCollapse">
+            <p>drag and drop samples below. samples are auto-assigned to notes based on their names. click a note name to change it using a midi number (e.g., 60 for middle c) or note name (e.g., c3, g#5, bb2). all samples must have a note assigned! when done, click <b>generate patch</b> to download a zip file containing the preset. unzip into a folder named <b>presetname.preset</b>. copy to your OP-XY via USB and drop into the presets folder (or create a subfolder called 'lead' 'pad' or any custom name to arrange your custom multisample presets.</p>
+          </div>
+          <h5 class="mb-3" data-bs-toggle="collapse" data-bs-target="#sampleReqCollapse" aria-expanded="true" aria-controls="sampleReqCollapse" style="cursor:pointer;">
+            sample requirements <i class="fa fa-chevron-down float-end" id="sampleReqChevron"></i>
+          </h5>
+          <div class="collapse show" id="sampleReqCollapse">
+            <ul class="mb-0">
+              <li>20 seconds max per sample</li>
+              <li>24 samples max per multisample preset</li>
+              <li>multiple velocities are not supported</li>
+              <li>file names should end with either a MIDI note number (0-127) or a note name like C#3</li>
+            </ul>
+            <p class="small text-muted mt-2 mb-0">
+              <strong>Naming examples:</strong> "my awesome sample-60.wav", "my cool sound c3.wav", "sickfuzz-g#4-127.wav"
+            </p>
+          </div>
         </div>
         <div class="section-block">
-          <h5 class="mb-3">settings</h5>
-          <label for="preset-name-multi" class="form-label">preset name</label>
-          <input id="preset-name-multi" type="text" class="form-control mb-2" value="my preset name">
-          <!-- Removed loop enabled and preset gain controls, now only in advanced modal -->
-          <label for="sample-rate-multi" class="form-label">sample rate</label>
-          <select class="form-select mb-2" id="sample-rate-multi">
-            <option value="0">keep original</option>
-            <option value="1">re-encode 11kHz</option>
-            <option value="2">re-encode 22kHz</option>
-            <option value="3">re-encode 44kHz</option>
-          </select>
-          <div class="form-text mb-2">for best results, set the sample rate to 22kHz or lower. if notes are missing during playback, try reducing the sample rate further.</div>
-          <!-- Advanced Preset Settings Modal Trigger Button -->
-          <div class="section-block">
-            <button class="btn btn-secondary btn-sm mt-2" data-bs-toggle="modal" data-bs-target="#multisample-preset-advanced-modal" id="open-multisample-preset-advanced-modal">
-              <i class="fa fa-sliders-h me-1"></i>advanced preset settings
-            </button>
+          <h5 class="mb-3" data-bs-toggle="collapse" data-bs-target="#settingsCollapse" aria-expanded="true" aria-controls="settingsCollapse" style="cursor:pointer;">
+            settings <i class="fa fa-chevron-down float-end" id="settingsChevron"></i>
+          </h5>
+          <div class="collapse show" id="settingsCollapse">
+            <label for="preset-name-multi" class="form-label">preset name</label>
+            <input id="preset-name-multi" type="text" class="form-control mb-2" value="my preset name">
+            <!-- Removed loop enabled and preset gain controls, now only in advanced modal -->
+            <label for="sample-rate-multi" class="form-label">sample rate</label>
+            <select class="form-select mb-2" id="sample-rate-multi">
+              <option value="0">keep original</option>
+              <option value="1">re-encode 11kHz</option>
+              <option value="2">re-encode 22kHz</option>
+              <option value="3">re-encode 44kHz</option>
+            </select>
+            <div class="form-text mb-2">for best results, set the sample rate to 22kHz or lower. if notes are missing during playback, try reducing the sample rate further.</div>
+            <!-- Advanced Preset Settings Modal Trigger Button -->
+            <div class="section-block">
+              <button class="btn btn-secondary btn-sm mt-2" data-bs-toggle="modal" data-bs-target="#multisample-preset-advanced-modal" id="open-multisample-preset-advanced-modal">
+                <i class="fa fa-sliders-h me-1"></i>advanced preset settings
+              </button>
+            </div>
           </div>
 
           <!-- Advanced Preset Settings Modal for Multisample -->
@@ -753,72 +783,5 @@
   <script src="lib/audio_tools.js"></script>
   <script src="lib/drum_sample_tool.js"></script>
   <script src="lib/multisample_tool.js"></script>
-  <script>
-  // Add mouse-only pressed style for octave up/down keys
-  function setOctaveKbdMouseActive() {
-    document.querySelectorAll('.octave-kbd').forEach(function(el) {
-      el.addEventListener('mousedown', function() {
-        el.classList.add('mouse-active');
-      });
-      el.addEventListener('mouseup', function() {
-        el.classList.remove('mouse-active');
-      });
-      el.addEventListener('mouseleave', function() {
-        el.classList.remove('mouse-active');
-      });
-    });
-    // Keyboard pressed visual feedback for octave up/down
-    document.addEventListener('keydown', function(e) {
-      if (e.repeat) return;
-      if (e.key === 'z' || e.key === 'Z') {
-        var zKey = document.querySelector('.octave-kbd .osk-letter');
-        if (zKey && zKey.textContent.trim().toLowerCase() === 'z') {
-          zKey.parentElement.classList.add('kbd-pressed');
-        }
-      }
-      if (e.key === 'x' || e.key === 'X') {
-        var xKey = document.querySelectorAll('.octave-kbd .osk-letter');
-        xKey.forEach(function(el) {
-          if (el.textContent.trim().toLowerCase() === 'x') {
-            el.parentElement.classList.add('kbd-pressed');
-          }
-        });
-      }
-    });
-    document.addEventListener('keyup', function(e) {
-      if (e.key === 'z' || e.key === 'Z') {
-        var zKey = document.querySelector('.octave-kbd .osk-letter');
-        if (zKey && zKey.textContent.trim().toLowerCase() === 'z') {
-          zKey.parentElement.classList.remove('kbd-pressed');
-        }
-      }
-      if (e.key === 'x' || e.key === 'X') {
-        var xKey = document.querySelectorAll('.octave-kbd .osk-letter');
-        xKey.forEach(function(el) {
-          if (el.textContent.trim().toLowerCase() === 'x') {
-            el.parentElement.classList.remove('kbd-pressed');
-          }
-        });
-      }
-    });
-  }
-  document.addEventListener('DOMContentLoaded', setOctaveKbdMouseActive);
-
-  // Add browse button logic for multisample loader
-  document.addEventListener('DOMContentLoaded', function() {
-    var multiBrowseBtn = document.querySelector('label[for="multisample-file-input"]');
-    var multiFileInput = document.getElementById('multisample-file-input');
-    if (multiBrowseBtn && multiFileInput) {
-      multiBrowseBtn.addEventListener('click', function() {
-        multiFileInput.value = '';
-      });
-      multiFileInput.addEventListener('change', function(e) {
-        if (multiFileInput.files && multiFileInput.files.length > 0 && window.processMultisampleFiles) {
-          processMultisampleFiles(Array.from(multiFileInput.files));
-        }
-      });
-    }
-  });
-  </script>
 </body>
 </html>
