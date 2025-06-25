@@ -2,7 +2,7 @@
 
 web-based tools for creating custom drum and multisample presets for the teenage engineering OP-XY.
 
-- **live demo:** [opxy-tools](https://joseph-holland.github.io/opxy-drum-tool/)
+- **live demo:** [opxy-tools](https://opxy-tools.pages.dev/)
 - **GitHub:** [github.com/joseph-holland/opxy-drum-tool](https://github.com/joseph-holland/opxy-drum-tool)
 
 ## features
@@ -15,7 +15,7 @@ web-based tools for creating custom drum and multisample presets for the teenage
 
 ## usage
 
-1. open the [web app](https://joseph-holland.github.io/opxy-drum-tool/) in your browser.
+1. open the [web app](https://opxy-tools.pages.dev/) in your browser.
 2. select either the **drum** or **multisample** tab.
 3. drag and drop your samples, or use the browse button to select files.
 4. assign notes (for multisample), adjust settings, and use the advanced modal for detailed control.
