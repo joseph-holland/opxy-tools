@@ -842,3 +842,13 @@ key-wrapper.key-r .kbd {
 .key-wrapper.key-u .small {
   margin-bottom: 0.25rem !important;
 }
+
+.sample-file-col {
+  min-width: 240px;
+}
+
+@media (max-width: 600px) {
+  .sample-file-col {
+    min-width: unset;
+  }
+}
