@@ -1128,3 +1128,47 @@ key-wrapper.key-y .small,
   border-color: #444;
   box-shadow: 0 0 0 0.25rem rgba(102, 102, 102, 0.25);
 }
+
+/* Patch Size Progress Bar - Monochrome Design */
+.progress {
+  background-color: #f8f9fa !important;
+  border: 1px solid #dee2e6 !important;
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.progress-bar {
+  background-color: #000 !important;
+  transition: width 0.3s ease, background-color 0.3s ease;
+}
+
+.progress-bar.warning {
+  background-color: #666 !important;
+}
+
+.progress-bar.danger {
+  background-color: #222 !important;
+  animation: pulse-warning 2s infinite;
+}
+
+@keyframes pulse-warning {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.7; }
+}
+
+/* Status text styling */
+#drum-patch-size-status,
+#multi-patch-size-status {
+  transition: color 0.3s ease;
+}
+
+#drum-patch-size-status.warning,
+#multi-patch-size-status.warning {
+  color: #666 !important;
+}
+
+#drum-patch-size-status.danger,
+#multi-patch-size-status.danger {
+  color: #222 !important;
+  font-weight: 600;
+}
