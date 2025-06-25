@@ -68,15 +68,19 @@
           </h5>
           <div class="collapse show" id="drumSettingsCollapse">
           <!-- Drum tool settings -->
-          <label for="preset-name-drum" class="form-label">preset name</label>
-          <input id="preset-name-drum" type="text" class="form-control mb-2" value="my preset name">
-          <label for="sample-rate-drum" class="form-label">sample rate</label>
-          <select class="form-select mb-2" id="sample-rate-drum">
-            <option value="0">keep original</option>
-            <option value="1">re-encode 11khz</option>
-            <option value="2">re-encode 22khz</option>
-            <option value="3">re-encode 44khz</option>
-          </select>
+          <div class="mb-2 d-flex align-items-center">
+            <label for="preset-name-drum" class="form-label mb-0 me-2" style="min-width:110px;">preset name</label>
+            <input id="preset-name-drum" type="text" class="form-control" value="my preset name" style="max-width:300px;">
+          </div>
+          <div class="mb-2 d-flex align-items-center">
+            <label for="sample-rate-drum" class="form-label mb-0 me-2" style="min-width:110px;">sample rate</label>
+            <select class="form-select" id="sample-rate-drum" style="max-width:300px;">
+              <option value="0">keep original</option>
+              <option value="1">re-encode 11khz</option>
+              <option value="2">re-encode 22khz</option>
+              <option value="3">re-encode 44khz</option>
+            </select>
+          </div>
           <div class="form-text mb-2">for best results, set the sample rate to 22kHz or lower. if notes are missing during playback, try reducing the sample rate further.</div>
           <!-- Advanced Preset Settings Modal Trigger Button -->
           <button class="btn btn-secondary btn-sm mt-2" data-bs-toggle="modal" data-bs-target="#preset-advanced-modal" id="open-preset-advanced-modal">
@@ -482,16 +486,20 @@
             settings <i class="fa fa-chevron-down float-end" id="settingsChevron"></i>
           </h5>
           <div class="collapse show" id="settingsCollapse">
-            <label for="preset-name-multi" class="form-label">preset name</label>
-            <input id="preset-name-multi" type="text" class="form-control mb-2" value="my preset name">
+            <div class="mb-2 d-flex align-items-center">
+              <label for="preset-name-multi" class="form-label mb-0 me-2" style="min-width:110px;">preset name</label>
+              <input id="preset-name-multi" type="text" class="form-control" value="my preset name" style="max-width:300px;">
+            </div>
             <!-- Removed loop enabled and preset gain controls, now only in advanced modal -->
-            <label for="sample-rate-multi" class="form-label">sample rate</label>
-            <select class="form-select mb-2" id="sample-rate-multi">
-              <option value="0">keep original</option>
-              <option value="1">re-encode 11khz</option>
-              <option value="2">re-encode 22khz</option>
-              <option value="3">re-encode 44khz</option>
-            </select>
+            <div class="mb-2 d-flex align-items-center">
+              <label for="sample-rate-multi" class="form-label mb-0 me-2" style="min-width:110px;">sample rate</label>
+              <select class="form-select" id="sample-rate-multi" style="max-width:300px;">
+                <option value="0">keep original</option>
+                <option value="1">re-encode 11khz</option>
+                <option value="2">re-encode 22khz</option>
+                <option value="3">re-encode 44khz</option>
+              </select>
+            </div>
             <div class="form-text mb-2">for best results, set the sample rate to 22khz or lower. if notes are missing during playback, try reducing the sample rate further.</div>
             <!-- Advanced Preset Settings Modal Trigger Button -->
             <button class="btn btn-secondary btn-sm mt-2" data-bs-toggle="modal" data-bs-target="#multisample-preset-advanced-modal" id="open-multisample-preset-advanced-modal">
