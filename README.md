@@ -2,6 +2,8 @@
 
 web-based tools for creating custom drum and multisample presets for the teenage engineering OP-XY.
 
+![OP-XY Tools Preview](preview-image.png)
+
 - **live demo:** [opxy-tools](https://opxy-tools.pages.dev/)
 - **GitHub:** [github.com/joseph-holland/opxy-drum-tool](https://github.com/joseph-holland/opxy-drum-tool)
 
