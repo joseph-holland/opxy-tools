@@ -222,7 +222,7 @@ header .status {
 .row .edit-label {
   flex: 1;
   font-weight: bold;
-  color: #007bff;
+  color: #666;
 }
 
 .row .file-name {
@@ -258,7 +258,7 @@ header .status {
 .button {
     display: inline-block;
     padding: 10px 20px;
-    background-color: #007bff;
+    background-color: #666;
     color: white;
     text-align: center;
     border: none;
@@ -348,7 +348,7 @@ header {
 }
 
 a {
-  color: #007bff;
+  color: #666;
   text-decoration: none; /* Removes underline */
   font-weight: bold;
 }
@@ -358,7 +358,7 @@ a {
   top: 0;
   bottom: 0;
   width: 4px;
-  background-color: #007bff;
+  background-color: #666;
   cursor: ew-resize;
   z-index: 10;
 }
@@ -754,13 +754,13 @@ input[type=range]:focus {
   outline: none;
 }
 input[type=range]:focus::-webkit-slider-thumb {
-  outline: 2px solid #007bff;
+  outline: 2px solid #666;
 }
 input[type=range]:focus::-ms-thumb {
-  outline: 2px solid #007bff;
+  outline: 2px solid #666;
 }
 input[type=range]:focus::-moz-range-thumb {
-  outline: 2px solid #007bff;
+  outline: 2px solid #666;
 }
 
 /* === Advanced Modal Transition Styles === */
@@ -929,4 +929,202 @@ key-wrapper.key-y .small,
   margin-top: 6vh;
   max-width: 100vw;
   overflow-x: auto;
+}
+
+/* Multisample styles */
+.drop-area {
+  min-height: 300px;
+  border: 2px dashed #ccc;
+  border-radius: 8px;
+  background: #f8f9fa;
+  transition: all 0.2s ease;
+}
+
+.drop-area.dragover {
+  border-color: #666;
+  background: #f0f0f0;
+}
+
+.drop-label {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-size: 18px;
+  color: #666;
+  font-weight: bold;
+  pointer-events: none;
+  z-index: 1;
+  transition: opacity 0.2s ease;
+}
+
+.multisample-rows {
+  width: 100%;
+  min-height: 100%;
+  position: relative;
+  z-index: 2;
+}
+
+.multisample-row {
+  display: flex;
+  align-items: center;
+  padding: 12px;
+  margin-bottom: 8px;
+  background: white;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  gap: 12px;
+}
+
+.multisample-row:hover {
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+
+.multisample-label-box {
+  min-width: 200px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.multisample-midi-label {
+  font-weight: 600;
+  font-size: 14px;
+  cursor: pointer;
+  padding: 4px 8px;
+  border-radius: 4px;
+  background: #f8f9fa;
+  border: 1px solid #ddd;
+  transition: background-color 0.2s;
+}
+
+.multisample-midi-label:hover {
+  background: #e9ecef;
+}
+
+.multisample-midi-label.invalid {
+  color: #dc3545;
+  background: #f8d7da;
+  border-color: #f5c6cb;
+}
+
+.multisample-file-name {
+  font-size: 12px;
+  color: #666;
+  word-break: break-all;
+}
+
+.multisample-waveform-container {
+  flex: 1;
+  max-width: 400px;
+  height: 60px;
+  position: relative;
+  background: #ececec;
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.multisample-waveform-container img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.multisample-waveform-container canvas {
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+.multisample-marker {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 3px;
+  background: #666;
+  cursor: ew-resize;
+  z-index: 10;
+}
+
+.multisample-marker.start-marker,
+.multisample-marker.end-marker {
+  background: #dc3545;
+}
+
+.multisample-marker::after {
+  content: '';
+  position: absolute;
+  bottom: -7px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 14px;
+  height: 14px;
+  background: inherit;
+  border-radius: 50%;
+  border: 2px solid white;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+}
+
+.multisample-actions {
+  display: flex;
+  gap: 6px;
+  flex-shrink: 0;
+}
+
+.multisample-clear-btn {
+  background: #6c757d !important;
+  border-color: #6c757d !important;
+  color: white;
+  min-width: 32px;
+  height: 32px;
+  border-radius: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 14px;
+  font-weight: bold;
+}
+
+.multisample-clear-btn:hover {
+  background: #5a6268 !important;
+  border-color: #545b62 !important;
+}
+
+.multisample-play-btn {
+  background: #444 !important;
+  border-color: #444 !important;
+  color: white;
+  min-width: 32px;
+  height: 32px;
+  border-radius: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.multisample-play-btn:hover {
+  background: #666 !important;
+  border-color: #666 !important;
+}
+
+/* Ensure markers are clickable */
+.multisample-marker {
+  user-select: none;
+}
+
+/* Monochrome checkbox styling */
+.form-check-input[type="checkbox"] {
+  background-color: #fff;
+  border: 1px solid #666;
+  accent-color: #666;
+}
+
+.form-check-input[type="checkbox"]:checked {
+  background-color: #666;
+  border-color: #666;
+}
+
+.form-check-input[type="checkbox"]:focus {
+  border-color: #444;
+  box-shadow: 0 0 0 0.25rem rgba(102, 102, 102, 0.25);
 }
