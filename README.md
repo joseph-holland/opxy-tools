@@ -1,29 +1,31 @@
-# OPXY Drum Tool
+# unofficial OP-XY tools
 
-A JavaScript utility for processing, sanitizing, and converting audio samples for use with the OP-XY platform. This tool is designed to run entirely in the browser as a static web application. It provides functions for resampling audio, converting buffers to WAV format, parsing sample filenames, and generating instrument JSON templates.
+web-based tools for creating custom drum and multisample presets for the teenage engineering OP-XY.
 
-## Tools
+- **live demo:** [opxy-tools](https://joseph-holland.github.io/opxy-drum-tool/)
+- **GitHub:** [github.com/joseph-holland/opxy-drum-tool](https://github.com/joseph-holland/opxy-drum-tool)
 
-- **[Drum Patch Generator](https://buba447.github.io/opxy-drum-tool/):** Create and export drum patch JSON files for OP-XY.
-- **[Multisample Tool](https://buba447.github.io/opxy-drum-tool/multisample-tool.html):** Batch process and organize multisample audio files, extract note/midi info from filenames, and generate multisample JSON for OP-XY.
+## features
 
-## Features
+- drag-and-drop sample assignment for drum and multisample presets
+- advanced preset settings (envelopes, tuning, velocity, etc.)
+- waveform and marker editing for samples
+- patch generation for OP-XY (zip file export)
+- modern, responsive ui
 
-- **Audio Resampling:** Resample audio files to a target sample rate using the Web Audio API.
-- **WAV Conversion:** Convert `AudioBuffer` objects to standard WAV files (mono or stereo).
-- **Filename Parsing:** Extract base names and note/MIDI numbers from a wide variety of sample filename formats.
-- **Sanitization:** Clean up names for safe use as filenames or folder names.
-- **Instrument Templates:** Generate base JSON objects for multisample and drum instruments presets compatible with OP-XY.
+## usage
 
-## Filename Parsing in Multisample Tool
+1. open the [web app](https://joseph-holland.github.io/opxy-drum-tool/) in your browser.
+2. select either the **drum** or **multisample** tab.
+3. drag and drop your samples, or use the browse button to select files.
+4. assign notes (for multisample), adjust settings, and use the advanced modal for detailed control.
+5. click **generate patch** to download your preset as a zip file.
+6. unzip and copy the folder to your OP-XY's `presets` directory via USB.
 
-The tool supports filenames with spaces or dashes before the note or MIDI number at the end, such as:
+## credits
 
-- `sample 1 C0.wav`
-- `sample-1-C0.wav`
-- `sample one final - C0.wav`
-- `this is my sample - 13.wav`
-- `sample 1 12.wav`
+- originally created by [zeitgeese](https://github.com/buba447)
+- forked from [buba447/opxy-drum-tool](https://buba447.github.io/opxy-drum-tool/)
 
-The tool extracts the base name and note or MIDI number from these patterns, making it easy to organize and process multisample libraries.
+OP-XY is a trademark of teenage engineering. this is an unofficial tool and is not affiliated with or endorsed by teenage engineering.
 
