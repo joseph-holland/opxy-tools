@@ -449,6 +449,12 @@
         </div>
         <div class="section-block">
           <h5 class="mb-3">samples</h5>
+          <div class="mb-2">
+            <label class="input-group-text" for="multisample-file-input" style="cursor:pointer;display:inline-flex;align-items:center;gap:0.5em;">
+              <i class="fa fa-search"></i> browse
+            </label>
+            <input type="file" id="multisample-file-input" accept=".wav" multiple style="display:none;">
+          </div>
           <div id="multisample-drop-area" class="drop-area position-relative">
             <div id="multisample-rows-container" class="multisample-rows"></div>
             <div id="multisample-drop-label" class="drop-label">drag samples here</div>
@@ -630,6 +636,22 @@
     });
   }
   document.addEventListener('DOMContentLoaded', setOctaveKbdMouseActive);
+
+  // Add browse button logic for multisample loader
+  document.addEventListener('DOMContentLoaded', function() {
+    var multiBrowseBtn = document.querySelector('label[for="multisample-file-input"]');
+    var multiFileInput = document.getElementById('multisample-file-input');
+    if (multiBrowseBtn && multiFileInput) {
+      multiBrowseBtn.addEventListener('click', function() {
+        multiFileInput.value = '';
+      });
+      multiFileInput.addEventListener('change', function(e) {
+        if (multiFileInput.files && multiFileInput.files.length > 0 && window.processMultisampleFiles) {
+          processMultisampleFiles(Array.from(multiFileInput.files));
+        }
+      });
+    }
+  });
   </script>
 </body>
 </html>
