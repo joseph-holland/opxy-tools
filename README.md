@@ -12,6 +12,7 @@ web-based tools for creating custom drum and multisample presets for the teenage
 - preset generation for OP-XY (zip file export)
 - modern, responsive ui
 - drag-and-drop sample assignment for drum and multisample presets
+- re-encode samples to 44, 22 or 11khz
 - advanced preset settings (envelopes, tuning, velocity, etc.)
 - waveform and marker editing for samples with snap to zero point crossing functionality
 
