@@ -421,20 +421,13 @@
       <div class="tab-pane fade" id="multi" role="tabpanel" aria-labelledby="multi-tab">
         <div class="section-block">
           <h5 class="mb-3">how to use</h5>
-          <p>drag and drop samples below. samples are auto-assigned to notes based on their names. click a note name to change it using a midi number (e.g., 60 for middle c) or note name (e.g., c3, g#5, bb2). all samples must have a note assigned! when done, click <b>generate patch</b> to download a zip file containing the preset. unzip into a folder named <b>presetname.preset</b>.</p>
+          <p>drag and drop samples below. samples are auto-assigned to notes based on their names. click a note name to change it using a midi number (e.g., 60 for middle c) or note name (e.g., c3, g#5, bb2). all samples must have a note assigned! when done, click <b>generate patch</b> to download a zip file containing the preset. unzip into a folder named <b>presetname.preset</b>. copy to your OP-XY via USB and drop into the presets folder (or create a subfolder called 'lead' 'pad' or any custom name to arrange your custom multisample presets.</p>
         </div>
         <div class="section-block">
           <h5 class="mb-3">settings</h5>
           <label for="preset-name-multi" class="form-label">preset name</label>
           <input id="preset-name-multi" type="text" class="form-control mb-2" value="my preset name">
-          <label for="loop-enabled-multi" class="form-label">loop enabled</label>
-          <input type="checkbox" id="loop-enabled-multi" class="form-check-input mb-2" checked>
-          <br>
-          <label for="gain-slider-multi" class="form-label">preset gain</label>
-          <div class="d-flex align-items-center mb-2">
-            <input type="range" id="gain-slider-multi" class="form-range me-2" min="-20" max="20" value="0" step="1" style="accent-color:#222;"/>
-            <span id="gain-value-multi" class="badge bg-secondary">0 dB</span>
-          </div>
+          <!-- Removed loop enabled and preset gain controls, now only in advanced modal -->
           <label for="sample-rate-multi" class="form-label">sample rate</label>
           <select class="form-select mb-2" id="sample-rate-multi">
             <option value="0">keep original</option>
@@ -629,7 +622,9 @@
       </div>
     </div>
     <footer class="text-center disclaimer">
-      OP-XY is a trademark of teenage engineering. this is an unofficial tool and is not affiliated with or endorsed by teenage engineering.
+      OP-XY is a trademark of teenage engineering. this is an unofficial tool and is not affiliated with or endorsed by teenage engineering.<br>
+      <a href="https://github.com/joseph-holland/opxy-drum-tool" target="_blank" rel="noopener">View on GitHub</a><br>
+      originally created by zeitgeese, forked from <a href="https://buba447.github.io/opxy-drum-tool/" target="_blank" rel="noopener">buba447/opxy-drum-tool</a>
     </footer>
   </div>
 
