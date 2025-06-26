@@ -1459,7 +1459,7 @@
       <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
           <div class="modal-header">
-            <h5 class="modal-title" id="audio-recording-modal-label">Record Audio Sample</h5>
+            <h5 class="modal-title" id="audio-recording-modal-label">record audio sample</h5>
             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
           </div>
           <div class="modal-body text-center">
@@ -1467,19 +1467,19 @@
             <div id="recording-status" class="mb-3">
               <div class="d-flex justify-content-center align-items-center mb-2">
                 <div id="recording-indicator" class="recording-dot me-2" style="display: none;"></div>
-                <span id="recording-status-text" class="h5 mb-0">Ready to Record</span>
+                <span id="recording-status-text" class="h5 mb-0">ready to record</span>
               </div>
               <div id="recording-timer" class="h4 mb-0 text-muted">00:00</div>
-              <div class="small text-muted">Maximum: 20 seconds</div>
+              <div class="small text-muted">max length: 20 seconds</div>
             </div>
 
             <!-- Recording Controls -->
             <div id="recording-controls" class="mb-3">
               <button type="button" class="btn btn-lg" id="start-recording-btn" style="background: #333; color: #fff; border: none; min-width: 140px; height: 48px;">
-                <i class="fa fa-microphone"></i> Start Recording
+                <i class="fa fa-microphone"></i> start recording
               </button>
               <button type="button" class="btn btn-lg" id="stop-recording-btn" style="display: none; background: #666; color: #fff; border: none; min-width: 140px; height: 48px;">
-                <i class="fa fa-stop"></i> Stop Recording
+                <i class="fa fa-stop"></i> stop recording
               </button>
             </div>
 
@@ -1490,28 +1490,28 @@
               </div>
               <div class="d-flex justify-content-center gap-2">
                 <button type="button" class="btn" id="play-recording-btn" style="background: #333; color: #fff; border: none; min-width: 80px; height: 38px;">
-                  <i class="fa fa-play"></i> Play
+                  <i class="fa fa-play"></i> play
                 </button>
                 <button type="button" class="btn" id="retake-recording-btn" style="background: #666; color: #fff; border: none; min-width: 80px; height: 38px;">
-                  <i class="fa fa-redo"></i> Retake
+                  <i class="fa fa-redo"></i> retake
                 </button>
               </div>
             </div>
 
             <!-- Sample Naming -->
             <div id="sample-naming" class="mb-3" style="display: none;">
-              <label for="recorded-sample-name" class="form-label">Sample Name</label>
+              <label for="recorded-sample-name" class="form-label">sample name</label>
               <input type="text" class="form-control" id="recorded-sample-name" placeholder="mic-sample-2025-06-26-12:34:56" maxlength="50" style="max-width: 400px; margin: 0 auto;">
-              <div class="form-text">Name will be used for MIDI note detection</div>
+              <div class="form-text">name will be used for midi note detection,<br>enter note or midi number at end</div>
             </div>
 
             <!-- Error Messages -->
             <div id="recording-error" class="alert" style="display: none; background: #f5f5f5; border: 1px solid #ccc; color: #333;"></div>
           </div>
           <div class="modal-footer">
-            <button type="button" class="btn" data-bs-dismiss="modal" style="background: #888; color: #fff; border: none; min-width: 80px; height: 38px;">Cancel</button>
+            <button type="button" class="btn" data-bs-dismiss="modal" style="background: #888; color: #fff; border: none; min-width: 80px; height: 38px;">cancel</button>
             <button type="button" class="btn" id="save-recording-btn" style="display: none; background: #000; color: #fff; border: none; min-width: 140px; height: 38px;">
-              <i class="fa fa-save"></i> Add to Samples
+              <i class="fa fa-save"></i> add to samples
             </button>
           </div>
         </div>
