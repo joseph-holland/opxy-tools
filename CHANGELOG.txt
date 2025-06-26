@@ -2,6 +2,10 @@
 
 All notable changes to this project will be documented in this file.
 
+## [v1.2.0] - Import feature and bit depth
+- Allow import of patch.json to copy engine settings from existing presets
+- Added bit depth conversion feature
+
 ## [v1.1.0] - Major UI/UX Overhaul & Recording Feature
 - UI/UX improvements and fixes
 - Can now drag folders of samples into multisample tool

@@ -22,8 +22,9 @@ web-based tools for creating custom drum and multisample presets for the teenage
 2. select either the **drum** or **multisample** tab.
 3. drag and drop your samples, or use the browse button to select files.
 4. assign notes (for multisample), adjust settings and use the advanced dialog for detailed control.
-5. click **generate patch** to download your preset as a zip file.
-6. unzip and copy the folder to your OP-XY's `presets` directory via usb.
+5. optionally, use **import settings** to load engine-level settings from existing preset files.
+6. click **generate patch** to download your preset as a zip file.
+7. unzip and copy the folder to your OP-XY's `presets` directory via usb.
 
 ## credits
 
