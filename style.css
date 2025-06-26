@@ -1080,42 +1080,6 @@ input[type="range"]:focus::-moz-range-thumb {
   flex-shrink: 0;
 }
 
-.multisample-clear-btn {
-  background: #6c757d !important;
-  border-color: #6c757d !important;
-  color: white;
-  min-width: 32px;
-  height: 32px;
-  border-radius: 4px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 14px;
-  font-weight: bold;
-}
-
-.multisample-clear-btn:hover {
-  background: #5a6268 !important;
-  border-color: #545b62 !important;
-}
-
-.multisample-play-btn {
-  background: #444 !important;
-  border-color: #444 !important;
-  color: white;
-  min-width: 32px;
-  height: 32px;
-  border-radius: 4px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.multisample-play-btn:hover {
-  background: #666 !important;
-  border-color: #666 !important;
-}
-
 /* Ensure markers are clickable */
 .multisample-marker {
   user-select: none;
