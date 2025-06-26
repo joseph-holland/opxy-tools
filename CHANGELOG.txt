@@ -1,0 +1,14 @@
+# Changelog
+
+All notable changes to this project will be documented in this file.
+
+## [vX.X.X]
+- Added tab persistence: remembers last selected tab (drum or multisample) for the session.
+- Ensured multisample tool "browse" and "clear all" buttons are visually identical, with hover effect.
+- Added support for folder drag-and-drop in multisample tool, recursively loading all .wav files.
+- Added "Clear All" button to multisample tool, reliably initialized and visually consistent.
+- Fixed file input duplication bug in multisample tool.
+
+## [v1.0.0]
+- Initial project setup and feature implementation.
+- Forked from forked from https://buba447.github.io/opxy-drum-tool
