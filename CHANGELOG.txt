@@ -2,9 +2,26 @@
 
 All notable changes to this project will be documented in this file.
 
+## [v1.2.1] - Patch Size Calculation Fixes  
+- Fixed patch size calculations to be more accurate for all conversion scenarios
+- Corrected sample rate conversion logic to use exact target rates (not minimum of source/target)
+- Improved bit depth conversion to use exact target bit depths for size calculations
+- Enhanced mono conversion detection to properly account for stereo-to-mono downmixing
+- Added helper functions for accurate sample count calculation after conversions
+- Patch size now correctly reflects original file size when no conversions are applied
+- Fixed edge cases where conversion detection was inconsistent
+
 ## [v1.2.0] - Import feature and bit depth
 - Allow import of patch.json to copy engine settings from existing presets
-- Added bit depth conversion feature
+- Added bit depth conversion feature (keep original, 16-bit, 24-bit)
+- Added channel conversion feature (keep original, convert to mono)
+- Intelligent conversion logic prevents meaningless upconversion (16→24-bit, mono→stereo)
+- Enhanced patch size calculations account for sample rate, bit depth, and channel conversions
+- Added comprehensive patch summary with conversion statistics and warnings
+- Session persistence for dropdown settings (sample rate, bit depth, channels)
+- Visual sample info display with conversion indicators and FontAwesome icons
+- Real-time patch size updates when conversion settings change
+- Mixed format warnings for patches with varying bit depths, sample rates, or channels
 
 ## [v1.1.0] - Major UI/UX Overhaul & Recording Feature
 - UI/UX improvements and fixes

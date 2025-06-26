@@ -940,6 +940,14 @@ key-wrapper.key-y .small,
   overflow-x: auto;
 }
 
+#zoom-canvas {
+  width: 100%;
+  height: 200px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  cursor: crosshair;
+}
+
 /* --- Ensure multisample zoom modal dialog is never wider than viewport --- */
 #multisample-zoom-modal .modal-dialog {
   display: flex;
@@ -1231,3 +1239,64 @@ key-wrapper.key-y .small,
     margin: 1rem 0.5rem;
   }
 }
+
+/* Sample info display styling */
+.sample-filename {
+  font-weight: 500;
+  color: #333;
+  word-break: break-word;
+}
+
+.sample-info {
+  line-height: 1.2;
+}
+
+.sample-info .badge {
+  font-size: 0.7rem;
+  padding: 0.25em 0.4em;
+  border: 1px solid #ccc;
+}
+
+.conversion-indicator {
+  color: #007bff;
+  font-weight: 500;
+}
+
+.sample-specs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.25rem;
+  margin-bottom: 0.25rem;
+}
+
+/* Patch summary styling */
+#drum-patch-summary, #multi-patch-summary {
+  border-radius: 0.375rem;
+}
+
+#drum-patch-summary .card, #multi-patch-summary .card {
+  box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+}
+
+#drum-patch-stats, #multi-patch-stats {
+  line-height: 1.4;
+}
+
+/* Progress bar styling for monochrome design */
+.progress-bar.danger {
+  background-color: #666 !important;
+}
+
+.progress-bar.warning {
+  background-color: #999 !important;
+}
+
+.small.danger {
+  color: #666 !important;
+}
+
+.small.warning {
+  color: #ffc107;
+}
+
+/* Removing the edited row styling */
