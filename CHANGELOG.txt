@@ -2,13 +2,16 @@
 
 All notable changes to this project will be documented in this file.
 
-## [vX.X.X]
-- Added tab persistence: remembers last selected tab (drum or multisample) for the session.
-- Ensured multisample tool "browse" and "clear all" buttons are visually identical, with hover effect.
-- Added support for folder drag-and-drop in multisample tool, recursively loading all .wav files.
-- Added "Clear All" button to multisample tool, reliably initialized and visually consistent.
-- Fixed file input duplication bug in multisample tool.
+## [v1.1.0] - Major UI/UX Overhaul & Recording Feature
+- UI/UX improvements and fixes
+- Can now drag folders of samples into multisample tool
+- New recording feature for samples
+- Session management: Tab persistence remembers last selected tool (drum/multisample) and expand/collapse of sections
+- Performance: Optimised waveform drawing and marker rendering
 
-## [v1.0.0]
+## [v1.0.0] - Initial Release
 - Initial project setup and feature implementation.
-- Forked from forked from https://buba447.github.io/opxy-drum-tool
+- Forked from https://buba447.github.io/opxy-drum-tool
+- Basic drum and multisample patch generation for OP-XY
+- Drag-and-drop sample loading
+- Advanced preset settings
