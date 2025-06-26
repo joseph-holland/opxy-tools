@@ -909,7 +909,7 @@ input[type="range"]:focus::-moz-range-thumb {
 .key-wrapper.key-w .small,
 .key-wrapper.key-e .small,
 .key-wrapper.key-r .small,
-.key-wrapper.key-y .small,
+key-wrapper.key-y .small,
 .key-wrapper.key-u .small {
   margin-bottom: 0.25rem !important;
 }
@@ -938,6 +938,29 @@ input[type="range"]:focus::-moz-range-thumb {
   margin-top: 6vh;
   max-width: 100vw;
   overflow-x: auto;
+}
+
+/* --- Ensure multisample zoom modal dialog is never wider than viewport --- */
+#multisample-zoom-modal .modal-dialog {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  max-width: 100vw;
+  width: 80%;
+  margin: 0 auto;
+}
+#multisample-zoom-modal .modal-content {
+  margin-top: 6vh;
+  max-width: 100vw;
+  overflow-x: auto;
+}
+
+#multisample-zoom-canvas {
+  width: 100%;
+  height: 200px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  cursor: crosshair;
 }
 
 /* Multisample styles */
@@ -1149,4 +1172,63 @@ input[type="range"]:focus::-moz-range-thumb {
 #multi-patch-size-status.danger {
   color: #222 !important;
   font-weight: 600;
+}
+
+/* === Recording UI Styles === */
+.recording-dot {
+  width: 12px;
+  height: 12px;
+  background-color: #333;
+  border-radius: 50%;
+  animation: recording-pulse 1s infinite;
+}
+
+@keyframes recording-pulse {
+  0% { opacity: 1; }
+  50% { opacity: 0.3; }
+  100% { opacity: 1; }
+}
+
+#recording-waveform {
+  background: #f8f9fa;
+  max-width: 100%;
+}
+
+#recording-timer {
+  font-family: 'IBM Plex Mono', 'Courier New', monospace;
+  font-weight: 600;
+  color: #333;
+}
+
+/* Recording modal button states */
+#start-recording-btn:hover {
+  background: #222 !important;
+}
+
+#stop-recording-btn:hover {
+  background: #555 !important;
+}
+
+#play-recording-btn:hover {
+  background: #222 !important;
+}
+
+#retake-recording-btn:hover {
+  background: #555 !important;
+}
+
+#edit-sample-name-btn:hover {
+  background: #555 !important;
+}
+
+/* Recording modal responsive */
+@media (max-width: 576px) {
+  #recording-waveform {
+    width: 100%;
+    height: 50px;
+  }
+  
+  .modal-dialog {
+    margin: 1rem 0.5rem;
+  }
 }
