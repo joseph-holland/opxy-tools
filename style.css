@@ -1007,17 +1007,23 @@ key-wrapper.key-y .small,
 
 .multisample-row {
   display: flex;
-  align-items: center;
+  flex-direction: column;
   padding: 12px;
   margin-bottom: 8px;
   background: white;
   border: 1px solid #ddd;
   border-radius: 6px;
-  gap: 12px;
 }
 
 .multisample-row:hover {
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.multisample-top-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
 }
 
 .multisample-label-box {
@@ -1056,9 +1062,7 @@ key-wrapper.key-y .small,
 
 .multisample-waveform-container {
   flex: 1;
-  max-width: 400px;
   height: 60px;
-  position: relative;
   background: #ececec;
   border-radius: 4px;
   overflow: hidden;
@@ -1108,7 +1112,6 @@ key-wrapper.key-y .small,
 .multisample-actions {
   display: flex;
   gap: 6px;
-  flex-shrink: 0;
 }
 
 /* Ensure markers are clickable */
@@ -1265,8 +1268,27 @@ key-wrapper.key-y .small,
 .sample-specs {
   display: flex;
   flex-wrap: wrap;
-  gap: 0.25rem;
-  margin-bottom: 0.25rem;
+  gap: 4px;
+}
+
+.sample-specs .badge {
+  font-size: 10px;
+  font-weight: normal;
+  padding: 4px 6px;
+  background: #444 !important;
+  color: #fff !important;
+  border: none;
+  line-height: 1;
+  white-space: nowrap;
+}
+
+.sample-specs .badge i {
+  font-size: 9px;
+}
+
+.sample-specs .badge .fa-arrow-right {
+  opacity: 0.7;
+  margin: 0 2px;
 }
 
 /* Patch summary styling */
@@ -1372,4 +1394,26 @@ button[style*="background:#444"]:hover:not(:disabled) {
 .btn:disabled {
   opacity: 0.65;
   pointer-events: none;
+}
+
+.sample-info {
+  width: 100%;
+  margin-top: 12px;
+  padding-top: 8px;
+  border-top: 1px solid #eee;
+}
+
+.sample-specs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.sample-specs .badge {
+  font-size: 11px;
+  font-weight: normal;
+  background: #f8f9fa !important;
+  color: #666 !important;
+  border: 1px solid #ddd;
+  padding: 6px 8px;
 }
