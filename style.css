@@ -1299,4 +1299,77 @@ key-wrapper.key-y .small,
   color: #ffc107;
 }
 
-/* Removing the edited row styling */
+/* Button base styles */
+.btn,
+.input-group-text,
+.multi-sample-btn {
+  transition: all 0.2s ease-in-out !important;
+}
+
+/* Dark button hover effects - More specific selectors */
+button[style*="background: #444"],
+button[style*="background:#444"] {
+  transition: background-color 0.2s ease-in-out !important;
+}
+
+button[style*="background: #444"]:hover:not(:disabled),
+button[style*="background:#444"]:hover:not(:disabled) {
+  background: #666 !important;
+}
+
+/* Light button hover effects */
+.btn-outline-secondary:hover:not(:disabled),
+.btn-outline-secondary:focus:not(:disabled) {
+  background: #dee2e6 !important;
+  color: #212529 !important;
+  border-color: #ced4da !important;
+}
+
+/* Multi-sample button hover effects */
+.multi-sample-btn:hover:not(:disabled),
+.multi-sample-btn:focus:not(:disabled),
+.input-group-text:hover:not(:disabled) {
+  background: #dee2e6 !important;
+  color: #212529 !important;
+  border-color: #ced4da !important;
+}
+
+/* Ensure disabled buttons don't have hover effects */
+.btn:disabled,
+.btn.disabled,
+.input-group-text:disabled,
+.input-group-text.disabled,
+.multi-sample-btn:disabled,
+.multi-sample-btn.disabled {
+  opacity: 0.65;
+  pointer-events: none;
+}
+
+/* Dark button styles */
+.dark-btn {
+  background: #444 !important;
+  color: #fff !important;
+  border: none !important;
+  transition: background-color 0.2s ease-in-out !important;
+}
+
+.dark-btn:hover:not(:disabled) {
+  background: #666 !important;
+}
+
+/* Light/outline button styles */
+.btn-outline-secondary {
+  transition: all 0.2s ease-in-out !important;
+}
+
+.btn-outline-secondary:hover:not(:disabled) {
+  background-color: #dee2e6 !important;
+  color: #212529 !important;
+  border-color: #ced4da !important;
+}
+
+/* Disabled state */
+.btn:disabled {
+  opacity: 0.65;
+  pointer-events: none;
+}
