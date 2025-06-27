@@ -1245,9 +1245,9 @@ key-wrapper.key-y .small,
 
 /* Sample info display styling */
 .sample-filename {
-  font-weight: 500;
+  font-size: 13px;
   color: #333;
-  word-break: break-word;
+  margin-bottom: 2px;
 }
 
 .sample-info {
@@ -1267,28 +1267,38 @@ key-wrapper.key-y .small,
 
 .sample-specs {
   display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.sample-specs-row {
+  display: flex;
   flex-wrap: wrap;
   gap: 4px;
 }
 
 .sample-specs .badge {
-  font-size: 10px;
+  font-size: 11px;
   font-weight: normal;
-  padding: 4px 6px;
-  background: #444 !important;
-  color: #fff !important;
-  border: none;
-  line-height: 1;
-  white-space: nowrap;
+  background: #f8f9fa !important;
+  color: #666 !important;
+  border: 1px solid #ddd;
 }
 
-.sample-specs .badge i {
+.sample-specs i {
+  margin-right: 3px;
+  font-size: 10px;
+  opacity: 0.8;
+}
+
+.sample-specs .conversion {
+  color: #0066cc;
+}
+
+.sample-specs .conversion i.fa-arrow-right {
+  margin: 0 3px;
   font-size: 9px;
-}
-
-.sample-specs .badge .fa-arrow-right {
-  opacity: 0.7;
-  margin: 0 2px;
+  opacity: 0.5;
 }
 
 /* Patch summary styling */
