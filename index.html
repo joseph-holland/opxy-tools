@@ -108,16 +108,11 @@
               <!-- Advanced Preset Settings Modal Trigger Button -->
               <div class="d-flex gap-2 mt-2">
                 <button class="btn btn-secondary btn-sm" data-bs-toggle="modal" data-bs-target="#preset-advanced-modal" id="open-preset-advanced-modal"><i class="fa fa-sliders-h me-1"></i>preset settings</button>
-                <button class="btn btn-outline-secondary btn-sm" id="import-drum-settings-btn">
-                  <i class="fa fa-upload me-1"></i>import settings
-                </button>
               </div>
-              <!-- Hidden file input for importing settings -->
-              <input type="file" id="import-drum-settings-input" accept=".json" style="display: none;">
               <!-- Advanced Preset Settings Modal -->
               <div class="modal fade" id="preset-advanced-modal" tabindex="-1" aria-labelledby="preset-advanced-modal-label" aria-hidden="true">
                 <div class="modal-dialog">
-                  <div class="modal-con tent">
+                  <div class="modal-content">
                     <div class="modal-header">
                       <h5 class="modal-title" id="preset-advanced-modal-label">
                         preset settings
@@ -125,6 +120,14 @@
                       <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
                     <div class="modal-body">
+                      <!-- Import Settings Button -->
+                      <div class="d-flex gap-2 mb-3 pb-3 border-bottom">
+                        <button class="btn btn-outline-secondary btn-sm" id="import-drum-settings-btn">
+                          <i class="fa fa-upload me-1"></i>import settings
+                        </button>
+                        <input type="file" id="import-drum-settings-input" accept=".json" style="display: none;">
+                      </div>
+                      
                       <div class="mb-3 d-flex align-items-center">
                         <label for="preset-playmode" class="form-label mb-0 me-2" style="min-width: 110px;">play mode</label>
                         <select class="form-select" id="preset-playmode" style="max-width: 220px;">
@@ -198,7 +201,7 @@
                       <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">
                         cancel
                       </button>
-                      <button type="button" class="btn btn-dark btn-sm" id="save-preset-advanced-settings"><i class="fa fa-save me-1"></i>save</button>
+                      <button type="button" class="btn btn-dark btn-sm" id="save-preset-advanced-settings" data-bs-dismiss="modal"><i class="fa fa-save me-1"></i>save</button>
                     </div>
                   </div>
                 </div>
