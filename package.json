@@ -36,8 +36,7 @@
     ],
     "collectCoverageFrom": [
       "lib/**/*.js",
-      "!lib/**/*.min.js",
-      "!lib/multisample_tool.js"
+      "!lib/**/*.min.js"
     ],
     "coverageDirectory": "coverage",
     "coverageReporters": [
