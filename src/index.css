@@ -1,0 +1,59 @@
+/* Global styles for OPXY Tools React app */
+/* Preserving the OP-XY monochrome aesthetic */
+
+:root {
+  font-family: "Montserrat", "Arial", sans-serif;
+  line-height: 1.7;
+  font-weight: 400;
+  
+  color-scheme: light;
+  color: #222;
+  background-color: #fff;
+  
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  min-height: 100vh;
+  background: #fff;
+  color: #222;
+  font-size: 0.98rem;
+  letter-spacing: 0.01em;
+  line-height: 1.7;
+}
+
+#root {
+  min-height: 100vh;
+  width: 100%;
+}
+
+/* Preserve legacy link styling */
+a {
+  color: #666;
+  text-decoration: none;
+}
+
+a:hover {
+  color: #222;
+}
+
+/* Override Carbon defaults for OP-XY aesthetic */
+.cds--content {
+  background: #fff;
+}
+
+/* Ensure proper spacing and layout */
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 1rem;
+}
