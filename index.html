@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>unofficial OP-XY tools</title>
+    <title>unofficial OP-XY tools (beta)</title>
     <!-- Meta description for search engines and social sharing -->
     <meta name="description" content="unofficial online tools for creating custom drum and multisample presets for the OP-XY synthesizer. generate and convert samples for your OP-XY device." />
     <!-- Open Graph tags for social media sharing -->
@@ -40,7 +40,7 @@
   </head>
   <body>
     <div class="container py-4">
-      <div class="app-header mb-4">unofficial OP-XY tools</div>
+      <div class="app-header mb-4">unofficial OP-XY tools (beta)</div>
       <ul class="nav nav-tabs mb-4" id="toolTabs" role="tablist">
         <li class="nav-item" role="presentation">
           <button class="nav-link active" id="drum-tab" data-bs-toggle="tab" data-bs-target="#drum" type="button" role="tab" aria-controls="drum" aria-selected="true">
@@ -210,7 +210,7 @@
           </div>
           <div class="section-block">
             <!-- Patch Size Indicator -->
-            <label class="form-label">patch size</label>
+            <label class="form-label">estimated patch size</label>
             <div class="mb-3">
               <div class="d-flex justify-content-between align-items-center mb-1">
                 <small class="text-muted"><span id="drum-current-patch-size">0.0 MB</span></small>
@@ -1382,7 +1382,7 @@
           </div>
           <div class="section-block">
             <!-- Patch Size Indicator -->
-            <label class="form-label">patch size</label>
+            <label class="form-label">estimated patch size</label>
             <div class="mb-3">
               <div class="d-flex justify-content-between align-items-center mb-1">
                 <small class="text-muted"><span id="multi-current-patch-size">0.0 MB</span> / 8 MB</small>
@@ -1414,12 +1414,16 @@
           <div class="section-block">
             <h5 class="mb-3">sample files</h5>
             <div class="mb-2 d-flex align-items-center" style="gap: 0.5em;">
-              <label class="input-group-text multi-sample-btn" for="multisample-file-input"> <i class="fa fa-search" aria-hidden="true"></i> browse </label>
-              <input type="file" id="multisample-file-input" accept=".wav" multiple style="display: none;" />
-              <button type="button" class="input-group-text multi-sample-btn" id="multisample-record-btn" title="record a new sample">
-                <i class="fa fa-microphone" aria-hidden="true"></i> record
+              <button type="button" class="btn btn-outline-secondary btn-sm" id="multisample-browse-btn" title="Browse for sample files">
+                <i class="fa fa-search"></i> browse
               </button>
-              <button type="button" class="input-group-text multi-sample-btn" id="multisample-clear-all-btn" title="remove all loaded samples"><i class="fa fa-trash" aria-hidden="true"></i> clear all</button>
+              <button type="button" class="btn btn-outline-secondary btn-sm" id="multisample-record-btn" title="Record a new sample">
+                <i class="fa fa-microphone"></i> record
+              </button>
+              <button type="button" class="btn btn-outline-secondary btn-sm" id="multisample-clear-all-btn" title="Remove all loaded samples" disabled>
+                <i class="fa fa-trash"></i> clear all
+              </button>
+              <input type="file" id="multisample-file-input" accept=".wav" multiple style="display: none;" />
             </div>
             <div id="multisample-drop-area" class="drop-area position-relative">
               <div id="multisample-rows-container" class="multisample-rows"></div>
