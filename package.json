@@ -1,0 +1,59 @@
+{
+  "name": "opxy-tools",
+  "version": "0.4.0",
+  "description": "Web-based tools for creating custom drum and multisample presets for the teenage engineering OP-XY",
+  "main": "index.html",
+  "scripts": {
+    "test": "jest",
+    "test:watch": "jest --watch",
+    "test:coverage": "jest --coverage",
+    "test:e2e": "playwright test",
+    "test:e2e:ui": "playwright test --ui",
+    "dev": "python -m http.server 8080",
+    "serve": "python -m http.server 8080"
+  },
+  "keywords": [
+    "OP-XY",
+    "teenage-engineering",
+    "synthesizer",
+    "drum-samples",
+    "multisample",
+    "preset-generator",
+    "audio-tools"
+  ],
+  "author": "Joseph Holland",
+  "license": "MIT",
+  "devDependencies": {
+    "@playwright/test": "^1.45.0",
+    "jest": "^29.7.0",
+    "jest-environment-jsdom": "^29.7.0"
+  },
+  "jest": {
+    "testEnvironment": "jsdom",
+    "setupFilesAfterEnv": ["<rootDir>/tests/setup.js"],
+    "testMatch": [
+      "<rootDir>/tests/**/*.test.js"
+    ],
+    "collectCoverageFrom": [
+      "lib/**/*.js",
+      "!lib/**/*.min.js"
+    ],
+    "coverageDirectory": "coverage",
+    "coverageReporters": [
+      "text",
+      "lcov",
+      "html"
+    ],
+    "moduleFileExtensions": ["js", "json"],
+    "transform": {},
+    "globals": {
+      "AudioContext": "MockAudioContext",
+      "OfflineAudioContext": "MockOfflineAudioContext"
+    }
+  },
+  "browserslist": [
+    "> 1%",
+    "last 2 versions",
+    "not dead"
+  ]
+}
