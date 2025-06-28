@@ -1,34 +1,77 @@
 import { createContext, useContext, useReducer } from 'react';
 import type { ReactNode } from 'react';
+import type { WavMetadata } from '../utils/audio';
 
-// Define types for the application state
-export interface AppState {
-  currentTab: 'drum' | 'multisample';
-  drumSamples: Array<{
-    file: File | null;
-    name: string;
-    isLoaded: boolean;
-    audioBuffer: AudioBuffer | null;
-  }>;
-  multisampleFiles: Array<{
-    file: File | null;
-    name: string;
-    note: string;
-    audioBuffer: AudioBuffer | null;
-  }>;
-  isLoading: boolean;
-  error: string | null;
+// Define enhanced types for the application state
+export interface DrumSample {
+  file: File | null;
+  name: string;
+  isLoaded: boolean;
+  audioBuffer: AudioBuffer | null;
+  metadata?: WavMetadata;
+  // Advanced controls
+  gain?: number;
+  pan?: number;
+  tune?: number;
+  reverse?: boolean;
+  playmode?: 'oneshot' | 'gate' | 'toggle';
+  // Trim points
+  inPoint?: number;
+  outPoint?: number;
 }
 
-// Define action types
+export interface MultisampleFile {
+  file: File | null;
+  name: string;
+  note: string;
+  audioBuffer: AudioBuffer | null;
+  metadata?: WavMetadata;
+  // Advanced controls
+  gain?: number;
+  pan?: number;
+  tune?: number;
+  reverse?: boolean;
+  // Loop and velocity settings
+  loopStart?: number;
+  loopEnd?: number;
+  velocityStart?: number;
+  velocityEnd?: number;
+  // Trim points
+  inPoint?: number;
+  outPoint?: number;
+}
+
+export interface AppState {
+  currentTab: 'drum' | 'multisample';
+  drumSamples: DrumSample[];
+  multisampleFiles: MultisampleFile[];
+  isLoading: boolean;
+  error: string | null;
+  // Patch generation settings
+  sampleRate: number;
+  bitDepth: number;
+  channels: number;
+  // UI state
+  selectedDrumIndex: number | null;
+  selectedMultisampleIndex: number | null;
+}
+
+// Define enhanced action types
 export type AppAction = 
   | { type: 'SET_TAB'; payload: 'drum' | 'multisample' }
-  | { type: 'LOAD_DRUM_SAMPLE'; payload: { index: number; file: File; audioBuffer: AudioBuffer } }
+  | { type: 'LOAD_DRUM_SAMPLE'; payload: { index: number; file: File; audioBuffer: AudioBuffer; metadata?: WavMetadata } }
   | { type: 'CLEAR_DRUM_SAMPLE'; payload: number }
-  | { type: 'LOAD_MULTISAMPLE_FILE'; payload: { file: File; note: string; audioBuffer: AudioBuffer } }
+  | { type: 'UPDATE_DRUM_SAMPLE'; payload: { index: number; updates: Partial<DrumSample> } }
+  | { type: 'LOAD_MULTISAMPLE_FILE'; payload: { file: File; note: string; audioBuffer: AudioBuffer; metadata?: WavMetadata } }
   | { type: 'CLEAR_MULTISAMPLE_FILE'; payload: number }
+  | { type: 'UPDATE_MULTISAMPLE_FILE'; payload: { index: number; updates: Partial<MultisampleFile> } }
   | { type: 'SET_LOADING'; payload: boolean }
-  | { type: 'SET_ERROR'; payload: string | null };
+  | { type: 'SET_ERROR'; payload: string | null }
+  | { type: 'SET_SAMPLE_RATE'; payload: number }
+  | { type: 'SET_BIT_DEPTH'; payload: number }
+  | { type: 'SET_CHANNELS'; payload: number }
+  | { type: 'SET_SELECTED_DRUM'; payload: number | null }
+  | { type: 'SET_SELECTED_MULTISAMPLE'; payload: number | null };
 
 // Initial state
 const initialState: AppState = {
@@ -38,13 +81,25 @@ const initialState: AppState = {
     name: '',
     isLoaded: false,
     audioBuffer: null,
+    gain: 0,
+    pan: 0,
+    tune: 0,
+    reverse: false,
+    playmode: 'oneshot',
+    inPoint: 0,
+    outPoint: 0,
   })),
   multisampleFiles: [],
   isLoading: false,
   error: null,
+  sampleRate: 44100,
+  bitDepth: 16,
+  channels: 2,
+  selectedDrumIndex: null,
+  selectedMultisampleIndex: null,
 };
 
-// Reducer function
+// Enhanced reducer function
 function appReducer(state: AppState, action: AppAction): AppState {
   switch (action.type) {
     case 'SET_TAB':
@@ -52,11 +107,15 @@ function appReducer(state: AppState, action: AppAction): AppState {
       
     case 'LOAD_DRUM_SAMPLE':
       const newDrumSamples = [...state.drumSamples];
+      const audioBuffer = action.payload.audioBuffer;
       newDrumSamples[action.payload.index] = {
+        ...newDrumSamples[action.payload.index],
         file: action.payload.file,
         name: action.payload.file.name,
         isLoaded: true,
-        audioBuffer: action.payload.audioBuffer,
+        audioBuffer: audioBuffer,
+        metadata: action.payload.metadata,
+        outPoint: audioBuffer ? audioBuffer.length - 1 : 0,
       };
       return { ...state, drumSamples: newDrumSamples };
       
@@ -67,10 +126,26 @@ function appReducer(state: AppState, action: AppAction): AppState {
         name: '',
         isLoaded: false,
         audioBuffer: null,
+        gain: 0,
+        pan: 0,
+        tune: 0,
+        reverse: false,
+        playmode: 'oneshot',
+        inPoint: 0,
+        outPoint: 0,
       };
       return { ...state, drumSamples: clearedDrumSamples };
       
+    case 'UPDATE_DRUM_SAMPLE':
+      const updatedDrumSamples = [...state.drumSamples];
+      updatedDrumSamples[action.payload.index] = {
+        ...updatedDrumSamples[action.payload.index],
+        ...action.payload.updates,
+      };
+      return { ...state, drumSamples: updatedDrumSamples };
+      
     case 'LOAD_MULTISAMPLE_FILE':
+      const audioBuffer2 = action.payload.audioBuffer;
       return {
         ...state,
         multisampleFiles: [
@@ -79,7 +154,18 @@ function appReducer(state: AppState, action: AppAction): AppState {
             file: action.payload.file,
             name: action.payload.file.name,
             note: action.payload.note,
-            audioBuffer: action.payload.audioBuffer,
+            audioBuffer: audioBuffer2,
+            metadata: action.payload.metadata,
+            gain: 0,
+            pan: 0,
+            tune: 0,
+            reverse: false,
+            loopStart: action.payload.metadata?.loopStart || 0,
+            loopEnd: action.payload.metadata?.loopEnd || (audioBuffer2 ? audioBuffer2.length - 1 : 0),
+            velocityStart: 0,
+            velocityEnd: 127,
+            inPoint: 0,
+            outPoint: audioBuffer2 ? audioBuffer2.length - 1 : 0,
           },
         ],
       };
@@ -90,11 +176,34 @@ function appReducer(state: AppState, action: AppAction): AppState {
         multisampleFiles: state.multisampleFiles.filter((_, index) => index !== action.payload),
       };
       
+    case 'UPDATE_MULTISAMPLE_FILE':
+      const updatedMultisampleFiles = [...state.multisampleFiles];
+      updatedMultisampleFiles[action.payload.index] = {
+        ...updatedMultisampleFiles[action.payload.index],
+        ...action.payload.updates,
+      };
+      return { ...state, multisampleFiles: updatedMultisampleFiles };
+      
     case 'SET_LOADING':
       return { ...state, isLoading: action.payload };
       
     case 'SET_ERROR':
       return { ...state, error: action.payload };
+      
+    case 'SET_SAMPLE_RATE':
+      return { ...state, sampleRate: action.payload };
+      
+    case 'SET_BIT_DEPTH':
+      return { ...state, bitDepth: action.payload };
+      
+    case 'SET_CHANNELS':
+      return { ...state, channels: action.payload };
+      
+    case 'SET_SELECTED_DRUM':
+      return { ...state, selectedDrumIndex: action.payload };
+      
+    case 'SET_SELECTED_MULTISAMPLE':
+      return { ...state, selectedMultisampleIndex: action.payload };
       
     default:
       return state;

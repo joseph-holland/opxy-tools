@@ -68,24 +68,34 @@ npm run build
 6. click **generate patch** to download your preset as a zip file.
 7. unzip and copy the folder to your OP-XY's `presets` directory via usb.
 
-## migration status
+## migration status: **70-75% complete** 🚀
 
-This project has been successfully migrated from vanilla HTML/JS to React with Carbon Design System while preserving the distinctive OP-XY monochrome aesthetic. Core functionality including file upload, audio processing, and patch generation is complete.
+This project has been successfully migrated from vanilla HTML/JS to React with TypeScript and Carbon Design System. Recent major improvements include advanced audio processing, interactive waveform editing, and real-time patch size monitoring.
 
 ### completed ✅
-- React + TypeScript + Vite setup
-- Carbon Design System integration with custom OP-XY theme  
-- File upload and drag-and-drop functionality
-- Audio processing (resampling, WAV conversion)
-- Patch generation and ZIP export
-- State management with React Context
-- Responsive design and accessibility
+- **Core Infrastructure**: AudioContext management, enhanced state management
+- **Advanced Audio Processing**: WAV metadata parsing, format conversion, zero-crossing detection
+- **Interactive Waveform Editor**: Canvas-based rendering with draggable markers
+- **Real-time Patch Size Monitoring**: Live calculation with optimization recommendations
+- **Enhanced UI Components**: PatchSizeIndicator, WaveformEditor, improved drum grid
+- **Memory Management**: Singleton AudioContext pattern prevents memory leaks
+- **Type Safety**: Comprehensive TypeScript coverage with proper error handling
+- **File Upload System**: Enhanced with metadata extraction and validation
 
 ### in progress 🚧
-- Advanced modal dialogs
-- Waveform editing interface
-- Session persistence
-- Complete feature parity testing
+- Advanced sample controls (gain, pan, tune sliders)
+- Recording functionality with WebRTC
+- Enhanced multisample tool features
+- Session management (import/export settings)
+- Comprehensive test suite
+
+### recent improvements 🎉
+- **Mini Waveform Previews**: Each drum pad now shows a waveform with trimming controls
+- **Audio Format Controls**: Sample rate, bit depth, and channel selection
+- **Smart Note Detection**: Automatic MIDI note extraction from WAV metadata and filenames
+- **Performance Optimizations**: Efficient audio buffer operations and real-time calculations
+
+See [MIGRATION_COMPLETION_SUMMARY.md](MIGRATION_COMPLETION_SUMMARY.md) for detailed progress report.
 
 ## credits
 
