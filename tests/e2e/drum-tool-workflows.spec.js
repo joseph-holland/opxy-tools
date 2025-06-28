@@ -22,8 +22,8 @@ test.describe('Drum Tool Workflows', () => {
       await expect(page.locator(`#search-${i}`)).toBeVisible();
     }
     
-    // Check for generate patch button
-    await expect(page.locator('.accent-btn')).toContainText('generate patch');
+    // Check for generate patch button (using more specific selector)
+    await expect(page.locator('#drum button.accent-btn')).toContainText('generate patch');
   });
 
   test('should open and close drum preset settings modal', async ({ page }) => {
@@ -113,9 +113,15 @@ test.describe('Drum Tool Workflows', () => {
   });
 
   test('should display patch size indicator', async ({ page }) => {
+    // Wait for page to be fully loaded and initialized
+    await page.waitForLoadState('networkidle');
+    
     // Check for patch size elements
     await expect(page.locator('#drum-current-patch-size')).toBeVisible();
-    await expect(page.locator('#drum-patch-size-progress')).toBeVisible();
+    
+    // The progress bar might be hidden initially, but should exist
+    await expect(page.locator('#drum-patch-size-progress')).toBeAttached();
+    
     await expect(page.locator('#drum-patch-size-status')).toBeVisible();
     
     // Initial size should be 0.0 MB

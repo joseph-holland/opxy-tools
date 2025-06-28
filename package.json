@@ -3,14 +3,15 @@
   "version": "0.4.0",
   "description": "Web-based tools for creating custom drum and multisample presets for the teenage engineering OP-XY",
   "main": "index.html",
+  "type": "module",
   "scripts": {
     "test": "jest",
     "test:watch": "jest --watch",
     "test:coverage": "jest --coverage",
     "test:e2e": "playwright test",
     "test:e2e:ui": "playwright test --ui",
-    "dev": "python -m http.server 8080",
-    "serve": "python -m http.server 8080"
+    "dev": "http-server -p 8080",
+    "serve": "http-server -p 8080"
   },
   "keywords": [
     "OP-XY",
@@ -24,13 +25,17 @@
   "author": "Joseph Holland",
   "license": "MIT",
   "devDependencies": {
-    "@playwright/test": "^1.45.0",
+    "@playwright/test": "^1.53.1",
+    "@types/node": "^24.0.7",
+    "http-server": "^14.1.1",
     "jest": "^29.7.0",
     "jest-environment-jsdom": "^29.7.0"
   },
   "jest": {
     "testEnvironment": "jsdom",
-    "setupFilesAfterEnv": ["<rootDir>/tests/setup.js"],
+    "setupFilesAfterEnv": [
+      "<rootDir>/tests/setup.js"
+    ],
     "testMatch": [
       "<rootDir>/tests/**/*.test.js"
     ],
@@ -44,7 +49,10 @@
       "lcov",
       "html"
     ],
-    "moduleFileExtensions": ["js", "json"],
+    "moduleFileExtensions": [
+      "js",
+      "json"
+    ],
     "transform": {},
     "globals": {
       "AudioContext": "MockAudioContext",

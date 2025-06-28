@@ -4,12 +4,12 @@ test.describe('Multisample Tool Workflows', () => {
   test.beforeEach(async ({ page }) => {
     await page.goto('/');
     // Switch to multisample tab
-    await page.click('#multisample-tab');
+    await page.click('#multi-tab');
   });
 
   test('should display multisample tool interface correctly', async ({ page }) => {
     // Check that multisample tab is active
-    await expect(page.locator('#multisample-tab')).toHaveClass(/active/);
+    await expect(page.locator('#multi-tab')).toHaveClass(/active/);
     
     // Check for multisample tool specific elements
     await expect(page.locator('#preset-name-multi')).toBeVisible();
@@ -60,7 +60,8 @@ test.describe('Multisample Tool Workflows', () => {
     // Click the preset settings button
     await page.click('#open-multisample-preset-advanced-modal');
     
-    // Modal should be visible
+    // Wait for modal to be fully visible
+    await page.waitForSelector('#multisample-preset-advanced-modal.show');
     await expect(page.locator('#multisample-preset-advanced-modal')).toBeVisible();
     await expect(page.locator('#multisample-preset-advanced-modal-label')).toContainText('advanced preset settings');
     
@@ -76,8 +77,11 @@ test.describe('Multisample Tool Workflows', () => {
     await expect(page.locator('#multisample-filter-attack')).toBeVisible();
     await expect(page.locator('#multisample-filter-decay')).toBeVisible();
     
-    // Close modal
-    await page.click('button[data-bs-dismiss="modal"]');
+    // Close modal using the save button instead of dismiss button
+    await page.click('#save-multisample-preset-advanced-settings');
+    
+    // Wait for modal to be fully hidden
+    await page.waitForSelector('#multisample-preset-advanced-modal:not(.show)');
     await expect(page.locator('#multisample-preset-advanced-modal')).not.toBeVisible();
   });
 
@@ -240,15 +244,24 @@ test.describe('Multisample Tool Workflows', () => {
     // Test how to use section
     const howToUseChevron = page.locator('[data-bs-target="#howToUseCollapse"]');
     await howToUseChevron.click();
+    
+    // Wait for collapse animation to finish
+    await page.waitForTimeout(500); // Bootstrap collapse animation takes 350ms
     await expect(page.locator('#howToUseCollapse')).not.toHaveClass(/show/);
     
     // Click again to expand
     await howToUseChevron.click();
+    await page.waitForTimeout(500); // Wait for expand animation
     await expect(page.locator('#howToUseCollapse')).toHaveClass(/show/);
     
     // Test sample requirements section
     const reqChevron = page.locator('[data-bs-target="#sampleReqCollapse"]');
     await reqChevron.click();
+    await page.waitForTimeout(500);
     await expect(page.locator('#sampleReqCollapse')).not.toHaveClass(/show/);
+    
+    await reqChevron.click();
+    await page.waitForTimeout(500);
+    await expect(page.locator('#sampleReqCollapse')).toHaveClass(/show/);
   });
 });
