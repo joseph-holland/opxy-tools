@@ -1,12 +1,14 @@
 import { Button } from '@carbon/react';
 import { useAppContext } from '../../context/AppContext';
 import { useFileUpload } from '../../hooks/useFileUpload';
+import { usePatchGeneration } from '../../hooks/usePatchGeneration';
 import { useRef } from 'react';
 import type { DragEvent, ChangeEvent } from 'react';
 
 export function MultisampleTool() {
   const { state } = useAppContext();
   const { handleMultisampleUpload, clearMultisampleFile } = useFileUpload();
+  const { generateMultisamplePatchFile } = usePatchGeneration();
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const handleDragOver = (e: DragEvent) => {
@@ -53,6 +55,10 @@ export function MultisampleTool() {
     for (let i = state.multisampleFiles.length - 1; i >= 0; i--) {
       clearMultisampleFile(i);
     }
+  };
+
+  const handleGeneratePatch = () => {
+    generateMultisamplePatchFile();
   };
 
   const hasAnySamples = state.multisampleFiles.length > 0;
@@ -189,8 +195,9 @@ export function MultisampleTool() {
           <Button 
             kind="primary" 
             disabled={!hasAnySamples || state.isLoading}
+            onClick={handleGeneratePatch}
           >
-            {state.isLoading ? 'Processing...' : 'Generate Patch'}
+            {state.isLoading ? 'Generating...' : 'Generate Patch'}
           </Button>
           <Button 
             kind="secondary" 

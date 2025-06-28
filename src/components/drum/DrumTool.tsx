@@ -1,12 +1,14 @@
 import { Button } from '@carbon/react';
 import { useAppContext } from '../../context/AppContext';
 import { useFileUpload } from '../../hooks/useFileUpload';
+import { usePatchGeneration } from '../../hooks/usePatchGeneration';
 import { useRef } from 'react';
 import type { DragEvent, ChangeEvent } from 'react';
 
 export function DrumTool() {
   const { state } = useAppContext();
   const { handleDrumSampleUpload, clearDrumSample } = useFileUpload();
+  const { generateDrumPatchFile } = usePatchGeneration();
   const fileInputRefs = useRef<(HTMLInputElement | null)[]>([]);
 
   const handleDragOver = (e: DragEvent) => {
@@ -49,6 +51,10 @@ export function DrumTool() {
     for (let i = 0; i < 16; i++) {
       clearDrumSample(i);
     }
+  };
+
+  const handleGeneratePatch = () => {
+    generateDrumPatchFile();
   };
 
   const hasAnySamples = state.drumSamples.some(sample => sample.isLoaded);
@@ -176,8 +182,9 @@ export function DrumTool() {
           <Button 
             kind="primary" 
             disabled={!hasAnySamples || state.isLoading}
+            onClick={handleGeneratePatch}
           >
-            {state.isLoading ? 'Processing...' : 'Generate Patch'}
+            {state.isLoading ? 'Generating...' : 'Generate Patch'}
           </Button>
           <Button 
             kind="secondary" 
