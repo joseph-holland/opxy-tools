@@ -219,4 +219,9 @@ global.document.createElement = jest.fn((tagName) => {
 beforeEach(() => {
   jest.clearAllMocks();
   sessionStorageMock.clear();
+  
+  // Reset document to provide mock functions for each test
+  global.document.getElementById = jest.fn();
+  global.document.querySelector = jest.fn();
+  global.document.querySelectorAll = jest.fn();
 });
