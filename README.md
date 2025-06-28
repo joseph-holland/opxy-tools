@@ -1,5 +1,8 @@
 # unofficial OP-XY tools
 
+[![Test Suite](https://github.com/joseph-holland/opxy-tools/actions/workflows/test.yml/badge.svg)](https://github.com/joseph-holland/opxy-tools/actions/workflows/test.yml)
+[![codecov](https://codecov.io/gh/joseph-holland/opxy-tools/branch/main/graph/badge.svg)](https://codecov.io/gh/joseph-holland/opxy-tools)
+
 web-based tools for creating custom drum and multisample presets for the teenage engineering OP-XY.
 
 ![OP-XY Tools Preview](assets/preview-image.png)
@@ -25,6 +28,27 @@ web-based tools for creating custom drum and multisample presets for the teenage
 5. optionally, use **import settings** to load engine-level settings from existing preset files.
 6. click **generate patch** to download your preset as a zip file.
 7. unzip and copy the folder to your OP-XY's `presets` directory via usb.
+
+## testing
+
+This project includes comprehensive automated testing:
+
+- **Unit Tests**: Jest for testing core functionality
+- **End-to-End Tests**: Playwright for testing user workflows  
+- **CI/CD**: GitHub Actions for automated testing
+
+```bash
+# Run unit tests
+npm test
+
+# Run with coverage
+npm run test:coverage
+
+# Run end-to-end tests
+npm run test:e2e
+```
+
+See [TESTING.md](TESTING.md) for detailed testing documentation.
 
 ## credits
 
