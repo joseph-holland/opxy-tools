@@ -1,0 +1,102 @@
+import { Button } from '@carbon/react';
+import { useAppContext } from '../../context/AppContext';
+
+export function MultisampleTool() {
+  const { state } = useAppContext();
+
+  return (
+    <div>
+      <div style={{
+        marginBottom: '2.5rem',
+        paddingBottom: '1.5rem',
+        borderBottom: '1px solid #f0f0f0'
+      }}>
+        <h3 style={{ 
+          marginBottom: '1rem',
+          color: '#222',
+          fontFamily: '"Montserrat", "Arial", sans-serif'
+        }}>
+          Multisample Tool
+        </h3>
+        
+        <p style={{ 
+          color: '#666',
+          marginBottom: '1.5rem',
+          fontSize: '0.9rem'
+        }}>
+          Create custom multisample presets for the OP-XY. Upload samples and assign them to keyboard notes.
+        </p>
+
+        {/* Drop area */}
+        <div style={{
+          background: '#f8f9fa',
+          border: '2px dashed #ced4da',
+          borderRadius: '0.375rem',
+          padding: '3rem 2rem',
+          textAlign: 'center',
+          marginBottom: '2rem'
+        }}>
+          <div style={{ color: '#666', fontSize: '1.1rem', marginBottom: '1rem' }}>
+            Drop audio files here or click to browse
+          </div>
+          <Button kind="secondary">
+            Browse Files
+          </Button>
+        </div>
+
+        {/* Sample list */}
+        {state.multisampleFiles.length > 0 && (
+          <div style={{ marginBottom: '2rem' }}>
+            <h4 style={{ 
+              marginBottom: '1rem',
+              color: '#222',
+              fontFamily: '"Montserrat", "Arial", sans-serif'
+            }}>
+              Loaded Samples ({state.multisampleFiles.length})
+            </h4>
+            
+            <div style={{ 
+              background: '#fff',
+              border: '1px solid #e0e0e0',
+              borderRadius: '0.375rem'
+            }}>
+              {state.multisampleFiles.map((sample, index) => (
+                <div 
+                  key={index}
+                  style={{
+                    padding: '1rem',
+                    borderBottom: index < state.multisampleFiles.length - 1 ? '1px solid #f0f0f0' : 'none',
+                    display: 'flex',
+                    justifyContent: 'space-between',
+                    alignItems: 'center'
+                  }}
+                >
+                  <div>
+                    <div style={{ fontWeight: '500', color: '#222' }}>
+                      {sample.name}
+                    </div>
+                    <div style={{ fontSize: '0.9rem', color: '#666' }}>
+                      Note: {sample.note || 'Not assigned'}
+                    </div>
+                  </div>
+                  <Button kind="ghost" size="sm">
+                    Remove
+                  </Button>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+
+        <div style={{ display: 'flex', gap: '1rem', justifyContent: 'center' }}>
+          <Button kind="primary" disabled>
+            Generate Patch
+          </Button>
+          <Button kind="secondary" disabled>
+            Clear All
+          </Button>
+        </div>
+      </div>
+    </div>
+  );
+}
