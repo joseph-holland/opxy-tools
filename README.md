@@ -1,69 +1,95 @@
-# React + TypeScript + Vite
+# unofficial OP-XY tools
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+web-based tools for creating custom drum and multisample presets for the teenage engineering OP-XY.
 
-Currently, two official plugins are available:
+![OP-XY Tools Preview](public/assets/preview-image.png)
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+- **live demo:** [opxy-tools](https://opxy-tools.pages.dev/)
+- **GitHub:** [github.com/joseph-holland/opxy-tools](https://github.com/joseph-holland/opxy-tools)
 
-## Expanding the ESLint configuration
+## features
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+- preset generation for OP-XY (zip file export)
+- modern, responsive ui built with React and Carbon Design System
+- drag-and-drop sample assignment for drum and multisample presets
+- re-encode samples to 44, 22 or 11khz
+- advanced preset settings (envelopes, tuning, velocity, etc.)
+- waveform and marker editing for samples with snap to zero point crossing functionality
 
-```js
-export default tseslint.config([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
+## development setup
 
-      // Remove tseslint.configs.recommended and replace with this
-      ...tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      ...tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      ...tseslint.configs.stylisticTypeChecked,
+This project has been migrated to React with TypeScript for improved maintainability and modularity.
 
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+### requirements
+
+- Node.js 16+ 
+- npm or yarn
+
+### installation
+
+```bash
+# Clone the repository
+git clone https://github.com/joseph-holland/opxy-tools.git
+cd opxy-tools
+
+# Install dependencies
+npm install
+
+# Start development server
+npm run dev
+
+# Build for production
+npm run build
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+### project structure
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
-
-export default tseslint.config([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
 ```
+/src
+  /components         # React UI components (Carbon-based, OP-XY themed)
+    /common          # Shared components
+    /drum           # Drum-specific components
+    /multisample    # Multisample-specific components
+  /hooks              # Custom hooks for state, file I/O, audio, etc.
+  /utils              # Pure JS/TS logic: audio, patch, file mgmt
+  /theme              # Custom Carbon theme and style overrides
+  /context            # App/global context providers
+  App.tsx
+  main.tsx
+```
+
+## usage
+
+1. open the [web app](https://opxy-tools.pages.dev/) in your browser.
+2. select either the **drum** or **multisample** tab.
+3. drag and drop your samples, or use the browse button to select files.
+4. assign notes (for multisample), adjust settings and use the advanced dialog for detailed control.
+5. optionally, use **import settings** to load engine-level settings from existing preset files.
+6. click **generate patch** to download your preset as a zip file.
+7. unzip and copy the folder to your OP-XY's `presets` directory via usb.
+
+## migration status
+
+This project has been successfully migrated from vanilla HTML/JS to React with Carbon Design System while preserving the distinctive OP-XY monochrome aesthetic. Core functionality including file upload, audio processing, and patch generation is complete.
+
+### completed ✅
+- React + TypeScript + Vite setup
+- Carbon Design System integration with custom OP-XY theme  
+- File upload and drag-and-drop functionality
+- Audio processing (resampling, WAV conversion)
+- Patch generation and ZIP export
+- State management with React Context
+- Responsive design and accessibility
+
+### in progress 🚧
+- Advanced modal dialogs
+- Waveform editing interface
+- Session persistence
+- Complete feature parity testing
+
+## credits
+
+- originally created by [zeitgeese](https://github.com/buba447)
+- forked from [buba447/opxy-drum-tool](https://buba447.github.io/opxy-drum-tool/)
+
+OP-XY is a trademark of teenage engineering. this is an unofficial tool and is not affiliated with or endorsed by teenage engineering.
