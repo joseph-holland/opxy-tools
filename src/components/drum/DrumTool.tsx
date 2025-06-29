@@ -1,65 +1,17 @@
-import { Button, Select, SelectItem } from '@carbon/react';
+import React from 'react';
 import { useAppContext } from '../../context/AppContext';
+import { Button, Select, SelectItem, TextInput, Tabs, TabList, Tab, TabPanels, TabPanel } from '@carbon/react';
+import { PatchSizeIndicator } from '../common/PatchSizeIndicator';
+import { DrumKeyboard } from './DrumKeyboard';
+import { DrumSampleTable } from './DrumSampleTable';
+import { DrumPresetSettings } from './DrumPresetSettings';
 import { useFileUpload } from '../../hooks/useFileUpload';
 import { usePatchGeneration } from '../../hooks/usePatchGeneration';
-import { PatchSizeIndicator } from '../common/PatchSizeIndicator';
-import { WaveformEditor } from '../common/WaveformEditor';
-import { useRef } from 'react';
-import type { DragEvent, ChangeEvent } from 'react';
 
 export function DrumTool() {
   const { state, dispatch } = useAppContext();
   const { handleDrumSampleUpload, clearDrumSample } = useFileUpload();
   const { generateDrumPatchFile } = usePatchGeneration();
-  const fileInputRefs = useRef<(HTMLInputElement | null)[]>([]);
-
-  const handleDragOver = (e: DragEvent) => {
-    e.preventDefault();
-    e.stopPropagation();
-  };
-
-  const handleDrop = async (e: DragEvent, index: number) => {
-    e.preventDefault();
-    e.stopPropagation();
-    
-    const files = Array.from(e.dataTransfer.files);
-    const audioFile = files.find(file => 
-      file.type.startsWith('audio/') || file.name.toLowerCase().endsWith('.wav')
-    );
-    
-    if (audioFile) {
-      await handleDrumSampleUpload(audioFile, index);
-    }
-  };
-
-  const handleFileSelect = async (e: ChangeEvent<HTMLInputElement>, index: number) => {
-    const file = e.target.files?.[0];
-    if (file) {
-      await handleDrumSampleUpload(file, index);
-    }
-    // Reset input
-    e.target.value = '';
-  };
-
-  const openFileDialog = (index: number) => {
-    fileInputRefs.current[index]?.click();
-  };
-
-  const handleClearSample = (index: number) => {
-    clearDrumSample(index);
-  };
-
-  const clearAllSamples = () => {
-    for (let i = 0; i < 16; i++) {
-      clearDrumSample(i);
-    }
-  };
-
-  const handleGeneratePatch = () => {
-    generateDrumPatchFile();
-  };
-
-  const hasAnySamples = state.drumSamples.some(sample => sample.isLoaded);
 
   const handleSampleRateChange = (value: string) => {
     dispatch({ type: 'SET_SAMPLE_RATE', payload: parseInt(value) });
@@ -73,211 +25,191 @@ export function DrumTool() {
     dispatch({ type: 'SET_CHANNELS', payload: parseInt(value) });
   };
 
+  const handlePresetNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    dispatch({ type: 'SET_PRESET_NAME', payload: e.target.value });
+  };
+
+  const handleFileUpload = async (index: number, file: File) => {
+    try {
+      await handleDrumSampleUpload(file, index);
+    } catch (error) {
+      console.error('Error uploading file:', error);
+    }
+  };
+
+  const handleClearSample = (index: number) => {
+    clearDrumSample(index);
+  };
+
+  const handleGeneratePatch = async () => {
+    try {
+      const patchName = state.presetName.trim() || 'drum_patch';
+      await generateDrumPatchFile(patchName);
+    } catch (error) {
+      console.error('Error generating patch:', error);
+    }
+  };
+
+  const handleClearAll = () => {
+    if (confirm('Are you sure you want to clear all loaded samples?')) {
+      for (let i = 0; i < 24; i++) {
+        clearDrumSample(i);
+      }
+    }
+  };
+
   return (
-    <div>
+    <div style={{ 
+      maxWidth: '1200px', 
+      margin: '0 auto',
+      fontFamily: '"Montserrat", "Arial", sans-serif'
+    }}>
+      {/* Header with preset name and audio settings */}
       <div style={{
-        marginBottom: '2.5rem',
-        paddingBottom: '1.5rem',
-        borderBottom: '1px solid #f0f0f0'
+        display: 'grid',
+        gridTemplateColumns: '1fr auto',
+        gap: '2rem',
+        marginBottom: '2rem',
+        alignItems: 'end'
       }}>
-        <h3 style={{ 
-          marginBottom: '1rem',
-          color: '#222',
-          fontFamily: '"Montserrat", "Arial", sans-serif'
-        }}>
-          Drum Sample Tool
-        </h3>
-        
-        <p style={{ 
-          color: '#666',
-          marginBottom: '1.5rem',
-          fontSize: '0.9rem'
-        }}>
-          Create custom drum presets for the OP-XY. Drag and drop up to 16 samples onto the drum grid below.
-        </p>
+        {/* Preset Name */}
+        <div>
+          <TextInput
+            id="preset-name"
+            labelText="Preset Name"
+            placeholder="Enter preset name..."
+            value={state.presetName}
+            onChange={handlePresetNameChange}
+            style={{ maxWidth: '400px' }}
+          />
+        </div>
 
-        {state.error && (
-          <div style={{
-            background: '#fff2f2',
-            border: '1px solid #fee',
-            borderRadius: '0.375rem',
-            padding: '1rem',
-            marginBottom: '1rem',
-            color: '#d32f2f'
-          }}>
-            {state.error}
-          </div>
-        )}
-
-        {/* Audio Format Settings */}
+        {/* Audio Format Controls */}
         <div style={{
-          display: 'grid',
-          gridTemplateColumns: 'repeat(3, 1fr)',
+          display: 'flex',
           gap: '1rem',
-          marginBottom: '2rem',
-          padding: '1rem',
-          backgroundColor: '#f8f9fa',
-          borderRadius: '0.375rem',
-          border: '1px solid #e0e0e0'
+          alignItems: 'end'
         }}>
           <Select
             id="sample-rate"
             labelText="Sample Rate"
             value={state.sampleRate.toString()}
             onChange={(e) => handleSampleRateChange(e.target.value)}
+            size="sm"
           >
-            <SelectItem value="11025" text="11.025 kHz" />
-            <SelectItem value="22050" text="22.05 kHz" />
             <SelectItem value="44100" text="44.1 kHz" />
+            <SelectItem value="48000" text="48 kHz" />
+            <SelectItem value="96000" text="96 kHz" />
           </Select>
-          
+
           <Select
             id="bit-depth"
             labelText="Bit Depth"
             value={state.bitDepth.toString()}
             onChange={(e) => handleBitDepthChange(e.target.value)}
+            size="sm"
           >
             <SelectItem value="16" text="16-bit" />
             <SelectItem value="24" text="24-bit" />
           </Select>
-          
+
           <Select
             id="channels"
             labelText="Channels"
             value={state.channels.toString()}
             onChange={(e) => handleChannelsChange(e.target.value)}
+            size="sm"
           >
             <SelectItem value="1" text="Mono" />
             <SelectItem value="2" text="Stereo" />
           </Select>
         </div>
+      </div>
 
-        {/* Patch Size Indicator */}
-        <PatchSizeIndicator type="drum" />
-
-        {/* Drum grid */}
-        <div style={{
-          display: 'grid',
-          gridTemplateColumns: 'repeat(4, 1fr)',
-          gap: '1rem',
-          marginBottom: '2rem'
-        }}>
-          {Array.from({ length: 16 }, (_, index) => (
-            <div key={index}>
-              <input
-                type="file"
-                accept="audio/*,.wav"
-                style={{ display: 'none' }}
-                ref={(el) => { fileInputRefs.current[index] = el; }}
-                onChange={(e) => handleFileSelect(e, index)}
-              />
-              <div
-                style={{
-                  background: state.drumSamples[index]?.isLoaded ? '#e8f5e8' : '#f8f9fa',
-                  border: `2px ${state.drumSamples[index]?.isLoaded ? 'solid #4caf50' : 'dashed #ced4da'}`,
-                  borderRadius: '0.375rem',
-                  padding: '1rem',
-                  textAlign: 'center',
-                  color: '#666',
-                  fontSize: '0.9rem',
-                  minHeight: '160px',
-                  display: 'flex',
-                  flexDirection: 'column',
-                  justifyContent: 'space-between',
-                  cursor: 'pointer',
-                  transition: 'all 0.2s ease'
-                }}
-                onDragOver={handleDragOver}
-                onDrop={(e) => handleDrop(e, index)}
-                onClick={() => openFileDialog(index)}
-                onMouseEnter={(e) => {
-                  if (!state.drumSamples[index]?.isLoaded) {
-                    e.currentTarget.style.background = '#f0f0f0';
-                  }
-                }}
-                onMouseLeave={(e) => {
-                  if (!state.drumSamples[index]?.isLoaded) {
-                    e.currentTarget.style.background = '#f8f9fa';
-                  }
-                }}
-              >
-                <div style={{ fontWeight: '500', marginBottom: '0.5rem' }}>
-                  Pad {index + 1}
-                </div>
-                
-                {state.drumSamples[index]?.isLoaded ? (
-                  <>
-                    <div style={{ 
-                      color: '#222', 
-                      fontWeight: '500', 
-                      marginBottom: '0.5rem',
-                      wordBreak: 'break-word',
-                      fontSize: '0.8rem'
-                    }}>
-                      {state.drumSamples[index].name}
-                    </div>
-                    
-                    {/* Mini waveform preview */}
-                    {state.drumSamples[index].audioBuffer && (
-                      <div style={{ margin: '0.5rem 0', flexGrow: 1 }}>
-                        <WaveformEditor
-                          audioBuffer={state.drumSamples[index].audioBuffer}
-                          height={40}
-                          inPoint={state.drumSamples[index].inPoint}
-                          outPoint={state.drumSamples[index].outPoint}
-                          onMarkersChange={(markers) => {
-                            dispatch({
-                              type: 'UPDATE_DRUM_SAMPLE',
-                              payload: {
-                                index,
-                                updates: {
-                                  inPoint: markers.inPoint,
-                                  outPoint: markers.outPoint
-                                }
-                              }
-                            });
-                          }}
-                        />
-                      </div>
-                    )}
-                    
-                    <Button
-                      kind="ghost"
-                      size="sm"
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        handleClearSample(index);
-                      }}
-                    >
-                      Clear
-                    </Button>
-                  </>
-                ) : (
-                  <div style={{ fontSize: '0.8rem', flexGrow: 1, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                    Drop sample here<br />or click to browse
-                  </div>
-                )}
-              </div>
+      {/* Main Content Tabs */}
+      <Tabs>
+        <TabList>
+          <Tab>Keyboard</Tab>
+          <Tab>Sample Table</Tab>
+        </TabList>
+        
+        <TabPanels>
+          {/* Keyboard Tab */}
+          <TabPanel>
+            <div style={{ marginBottom: '2rem' }}>
+              <DrumKeyboard />
             </div>
-          ))}
+          </TabPanel>
+          
+          {/* Sample Table Tab */}
+          <TabPanel>
+            <div style={{ marginBottom: '2rem' }}>
+              <DrumSampleTable 
+                onFileUpload={handleFileUpload}
+                onClearSample={handleClearSample}
+              />
+            </div>
+          </TabPanel>
+        </TabPanels>
+      </Tabs>
+
+      {/* Preset Settings */}
+      <div style={{ marginTop: '2rem' }}>
+        <DrumPresetSettings />
+      </div>
+
+      {/* Patch Generation Controls */}
+      <div style={{
+        display: 'flex',
+        justifyContent: 'space-between',
+        alignItems: 'center',
+        marginTop: '2rem',
+        padding: '1.5rem',
+        background: '#f8f9fa',
+        borderRadius: '0.375rem',
+        border: '1px solid #e0e0e0'
+      }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
+          <PatchSizeIndicator type="drum" />
         </div>
 
-        <div style={{ display: 'flex', gap: '1rem', justifyContent: 'center' }}>
-          <Button 
-            kind="primary" 
-            disabled={!hasAnySamples || state.isLoading}
-            onClick={handleGeneratePatch}
-          >
-            {state.isLoading ? 'Generating...' : 'Generate Patch'}
-          </Button>
-          <Button 
-            kind="secondary" 
-            disabled={!hasAnySamples}
-            onClick={clearAllSamples}
+        <div style={{ display: 'flex', gap: '0.75rem' }}>
+          <Button
+            kind="secondary"
+            onClick={handleClearAll}
+            disabled={state.drumSamples.every(s => !s.isLoaded)}
           >
             Clear All
           </Button>
+          <Button
+            kind="primary"
+            onClick={handleGeneratePatch}
+            disabled={state.drumSamples.every(s => !s.isLoaded)}
+          >
+            Generate Patch
+          </Button>
         </div>
+      </div>
+
+      {/* Instructions */}
+      <div style={{
+        marginTop: '2rem',
+        padding: '1rem',
+        background: '#f0f8ff',
+        borderRadius: '0.375rem',
+        border: '1px solid #b3d9ff',
+        fontSize: '0.8rem',
+        lineHeight: '1.5',
+        color: '#333'
+      }}>
+        <h4 style={{ marginBottom: '0.5rem', color: '#0066cc' }}>How to use:</h4>
+        <ul style={{ margin: 0, paddingLeft: '1.5rem' }}>
+          <li><strong>Keyboard Tab:</strong> Use the on-screen keyboard or your computer keyboard to trigger samples</li>
+          <li><strong>Sample Table Tab:</strong> Drag & drop audio files or click to browse for each of the 24 drum samples</li>
+          <li><strong>Preset Settings:</strong> Adjust playmode, transpose, velocity, volume, and stereo width</li>
+          <li><strong>Keyboard Shortcuts:</strong> Z/X to switch octaves, A-J keys to play samples</li>
+          <li><strong>Generate Patch:</strong> Creates an OP-XY compatible drum patch file</li>
+        </ul>
       </div>
     </div>
   );

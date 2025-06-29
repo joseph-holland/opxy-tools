@@ -5,98 +5,125 @@ import type { WavMetadata } from '../utils/audio';
 // Define enhanced types for the application state
 export interface DrumSample {
   file: File | null;
+  audioBuffer: AudioBuffer | null;
   name: string;
   isLoaded: boolean;
-  audioBuffer: AudioBuffer | null;
-  metadata?: WavMetadata;
-  // Advanced controls
-  gain?: number;
-  pan?: number;
-  tune?: number;
-  reverse?: boolean;
-  playmode?: 'oneshot' | 'gate' | 'toggle';
-  // Trim points
-  inPoint?: number;
-  outPoint?: number;
+  inPoint: number;
+  outPoint: number;
+  // Sample settings
+  playmode: 'oneshot' | 'group';
+  reverse: boolean;
+  tune: number; // -36 to +36 semitones
+  pan: number; // -100 to +100
+  gain: number; // -30 to +20 dB
 }
 
 export interface MultisampleFile {
   file: File | null;
-  name: string;
-  note: string;
   audioBuffer: AudioBuffer | null;
-  metadata?: WavMetadata;
-  // Advanced controls
-  gain?: number;
-  pan?: number;
-  tune?: number;
-  reverse?: boolean;
-  // Loop and velocity settings
-  loopStart?: number;
-  loopEnd?: number;
-  velocityStart?: number;
-  velocityEnd?: number;
-  // Trim points
-  inPoint?: number;
-  outPoint?: number;
+  name: string;
+  isLoaded: boolean;
+  rootNote: number;
+  inPoint: number;
+  outPoint: number;
 }
 
 export interface AppState {
+  // Current tab
   currentTab: 'drum' | 'multisample';
-  drumSamples: DrumSample[];
-  multisampleFiles: MultisampleFile[];
-  isLoading: boolean;
-  error: string | null;
-  // Patch generation settings
+  
+  // Audio settings
   sampleRate: number;
   bitDepth: number;
   channels: number;
+  
+  // Drum samples (24 samples for full OP-XY compatibility)
+  drumSamples: DrumSample[];
+  
+  // Preset settings
+  presetName: string;
+  presetSettings: {
+    playmode: 'poly' | 'mono' | 'legato';
+    transpose: number; // -36 to +36
+    velocity: number; // 0-100%
+    volume: number; // 0-100%
+    width: number; // 0-100%
+  };
+  
+  // Multisample files
+  multisampleFiles: MultisampleFile[];
+  selectedMultisample: number | null;
+  
   // UI state
-  selectedDrumIndex: number | null;
-  selectedMultisampleIndex: number | null;
+  isLoading: boolean;
+  error: string | null;
 }
 
 // Define enhanced action types
 export type AppAction = 
   | { type: 'SET_TAB'; payload: 'drum' | 'multisample' }
-  | { type: 'LOAD_DRUM_SAMPLE'; payload: { index: number; file: File; audioBuffer: AudioBuffer; metadata?: WavMetadata } }
-  | { type: 'CLEAR_DRUM_SAMPLE'; payload: number }
-  | { type: 'UPDATE_DRUM_SAMPLE'; payload: { index: number; updates: Partial<DrumSample> } }
-  | { type: 'LOAD_MULTISAMPLE_FILE'; payload: { file: File; note: string; audioBuffer: AudioBuffer; metadata?: WavMetadata } }
-  | { type: 'CLEAR_MULTISAMPLE_FILE'; payload: number }
-  | { type: 'UPDATE_MULTISAMPLE_FILE'; payload: { index: number; updates: Partial<MultisampleFile> } }
-  | { type: 'SET_LOADING'; payload: boolean }
-  | { type: 'SET_ERROR'; payload: string | null }
   | { type: 'SET_SAMPLE_RATE'; payload: number }
   | { type: 'SET_BIT_DEPTH'; payload: number }
   | { type: 'SET_CHANNELS'; payload: number }
-  | { type: 'SET_SELECTED_DRUM'; payload: number | null }
-  | { type: 'SET_SELECTED_MULTISAMPLE'; payload: number | null };
+  | { type: 'SET_PRESET_NAME'; payload: string }
+  | { type: 'SET_PRESET_PLAYMODE'; payload: 'poly' | 'mono' | 'legato' }
+  | { type: 'SET_PRESET_TRANSPOSE'; payload: number }
+  | { type: 'SET_PRESET_VELOCITY'; payload: number }
+  | { type: 'SET_PRESET_VOLUME'; payload: number }
+  | { type: 'SET_PRESET_WIDTH'; payload: number }
+  | { type: 'LOAD_DRUM_SAMPLE'; payload: { index: number; file: File; audioBuffer: AudioBuffer } }
+  | { type: 'CLEAR_DRUM_SAMPLE'; payload: number }
+  | { type: 'UPDATE_DRUM_SAMPLE'; payload: { index: number; updates: Partial<DrumSample> } }
+  | { type: 'LOAD_MULTISAMPLE_FILE'; payload: { index: number; file: File; audioBuffer: AudioBuffer } }
+  | { type: 'CLEAR_MULTISAMPLE_FILE'; payload: number }
+  | { type: 'UPDATE_MULTISAMPLE_FILE'; payload: { index: number; updates: Partial<MultisampleFile> } }
+  | { type: 'SET_SELECTED_MULTISAMPLE'; payload: number | null }
+  | { type: 'SET_LOADING'; payload: boolean }
+  | { type: 'SET_ERROR'; payload: string | null };
 
 // Initial state
+const initialDrumSample: DrumSample = {
+  file: null,
+  audioBuffer: null,
+  name: '',
+  isLoaded: false,
+  inPoint: 0,
+  outPoint: 0,
+  playmode: 'oneshot',
+  reverse: false,
+  tune: 0,
+  pan: 0,
+  gain: 0
+};
+
+const initialMultisampleFile: MultisampleFile = {
+  file: null,
+  audioBuffer: null,
+  name: '',
+  isLoaded: false,
+  rootNote: 60, // Middle C
+  inPoint: 0,
+  outPoint: 0
+};
+
 const initialState: AppState = {
   currentTab: 'drum',
-  drumSamples: Array(16).fill(null).map(() => ({
-    file: null,
-    name: '',
-    isLoaded: false,
-    audioBuffer: null,
-    gain: 0,
-    pan: 0,
-    tune: 0,
-    reverse: false,
-    playmode: 'oneshot',
-    inPoint: 0,
-    outPoint: 0,
-  })),
-  multisampleFiles: [],
-  isLoading: false,
-  error: null,
   sampleRate: 44100,
   bitDepth: 16,
   channels: 2,
-  selectedDrumIndex: null,
-  selectedMultisampleIndex: null,
+  drumSamples: Array(24).fill(null).map(() => ({ ...initialDrumSample })),
+  presetName: '',
+  presetSettings: {
+    playmode: 'poly',
+    transpose: 0,
+    velocity: 60,
+    volume: 56,
+    width: 0
+  },
+  multisampleFiles: Array(8).fill(null).map(() => ({ ...initialMultisampleFile })),
+  selectedMultisample: null,
+  isLoading: false,
+  error: null
 };
 
 // Enhanced reducer function
@@ -104,91 +131,6 @@ function appReducer(state: AppState, action: AppAction): AppState {
   switch (action.type) {
     case 'SET_TAB':
       return { ...state, currentTab: action.payload };
-      
-    case 'LOAD_DRUM_SAMPLE':
-      const newDrumSamples = [...state.drumSamples];
-      const audioBuffer = action.payload.audioBuffer;
-      newDrumSamples[action.payload.index] = {
-        ...newDrumSamples[action.payload.index],
-        file: action.payload.file,
-        name: action.payload.file.name,
-        isLoaded: true,
-        audioBuffer: audioBuffer,
-        metadata: action.payload.metadata,
-        outPoint: audioBuffer ? audioBuffer.length - 1 : 0,
-      };
-      return { ...state, drumSamples: newDrumSamples };
-      
-    case 'CLEAR_DRUM_SAMPLE':
-      const clearedDrumSamples = [...state.drumSamples];
-      clearedDrumSamples[action.payload] = {
-        file: null,
-        name: '',
-        isLoaded: false,
-        audioBuffer: null,
-        gain: 0,
-        pan: 0,
-        tune: 0,
-        reverse: false,
-        playmode: 'oneshot',
-        inPoint: 0,
-        outPoint: 0,
-      };
-      return { ...state, drumSamples: clearedDrumSamples };
-      
-    case 'UPDATE_DRUM_SAMPLE':
-      const updatedDrumSamples = [...state.drumSamples];
-      updatedDrumSamples[action.payload.index] = {
-        ...updatedDrumSamples[action.payload.index],
-        ...action.payload.updates,
-      };
-      return { ...state, drumSamples: updatedDrumSamples };
-      
-    case 'LOAD_MULTISAMPLE_FILE':
-      const audioBuffer2 = action.payload.audioBuffer;
-      return {
-        ...state,
-        multisampleFiles: [
-          ...state.multisampleFiles,
-          {
-            file: action.payload.file,
-            name: action.payload.file.name,
-            note: action.payload.note,
-            audioBuffer: audioBuffer2,
-            metadata: action.payload.metadata,
-            gain: 0,
-            pan: 0,
-            tune: 0,
-            reverse: false,
-            loopStart: action.payload.metadata?.loopStart || 0,
-            loopEnd: action.payload.metadata?.loopEnd || (audioBuffer2 ? audioBuffer2.length - 1 : 0),
-            velocityStart: 0,
-            velocityEnd: 127,
-            inPoint: 0,
-            outPoint: audioBuffer2 ? audioBuffer2.length - 1 : 0,
-          },
-        ],
-      };
-      
-    case 'CLEAR_MULTISAMPLE_FILE':
-      return {
-        ...state,
-        multisampleFiles: state.multisampleFiles.filter((_, index) => index !== action.payload),
-      };
-      
-    case 'UPDATE_MULTISAMPLE_FILE':
-      const updatedMultisampleFiles = [...state.multisampleFiles];
-      updatedMultisampleFiles[action.payload.index] = {
-        ...updatedMultisampleFiles[action.payload.index],
-        ...action.payload.updates,
-      };
-      return { ...state, multisampleFiles: updatedMultisampleFiles };
-      
-    case 'SET_LOADING':
-      return { ...state, isLoading: action.payload };
-      
-    case 'SET_ERROR':
-      return { ...state, error: action.payload };
       
     case 'SET_SAMPLE_RATE':
       return { ...state, sampleRate: action.payload };
@@ -199,11 +141,99 @@ function appReducer(state: AppState, action: AppAction): AppState {
     case 'SET_CHANNELS':
       return { ...state, channels: action.payload };
       
-    case 'SET_SELECTED_DRUM':
-      return { ...state, selectedDrumIndex: action.payload };
+    case 'SET_PRESET_NAME':
+      return { ...state, presetName: action.payload };
+      
+    case 'SET_PRESET_PLAYMODE':
+      return { 
+        ...state, 
+        presetSettings: { ...state.presetSettings, playmode: action.payload }
+      };
+      
+    case 'SET_PRESET_TRANSPOSE':
+      return { 
+        ...state, 
+        presetSettings: { ...state.presetSettings, transpose: action.payload }
+      };
+      
+    case 'SET_PRESET_VELOCITY':
+      return { 
+        ...state, 
+        presetSettings: { ...state.presetSettings, velocity: action.payload }
+      };
+      
+    case 'SET_PRESET_VOLUME':
+      return { 
+        ...state, 
+        presetSettings: { ...state.presetSettings, volume: action.payload }
+      };
+      
+    case 'SET_PRESET_WIDTH':
+      return { 
+        ...state, 
+        presetSettings: { ...state.presetSettings, width: action.payload }
+      };
+      
+    case 'LOAD_DRUM_SAMPLE':
+      const newDrumSamples = [...state.drumSamples];
+      newDrumSamples[action.payload.index] = {
+        ...newDrumSamples[action.payload.index],
+        file: action.payload.file,
+        audioBuffer: action.payload.audioBuffer,
+        name: action.payload.file.name,
+        isLoaded: true,
+        inPoint: 0,
+        outPoint: action.payload.audioBuffer.length - 1
+      };
+      return { ...state, drumSamples: newDrumSamples };
+      
+    case 'CLEAR_DRUM_SAMPLE':
+      const clearedDrumSamples = [...state.drumSamples];
+      clearedDrumSamples[action.payload] = { ...initialDrumSample };
+      return { ...state, drumSamples: clearedDrumSamples };
+      
+    case 'UPDATE_DRUM_SAMPLE':
+      const updatedDrumSamples = [...state.drumSamples];
+      updatedDrumSamples[action.payload.index] = {
+        ...updatedDrumSamples[action.payload.index],
+        ...action.payload.updates
+      };
+      return { ...state, drumSamples: updatedDrumSamples };
+      
+    case 'LOAD_MULTISAMPLE_FILE':
+      const newMultisampleFiles = [...state.multisampleFiles];
+      newMultisampleFiles[action.payload.index] = {
+        ...newMultisampleFiles[action.payload.index],
+        file: action.payload.file,
+        audioBuffer: action.payload.audioBuffer,
+        name: action.payload.file.name,
+        isLoaded: true,
+        inPoint: 0,
+        outPoint: action.payload.audioBuffer.length - 1
+      };
+      return { ...state, multisampleFiles: newMultisampleFiles };
+      
+    case 'CLEAR_MULTISAMPLE_FILE':
+      const clearedMultisampleFiles = [...state.multisampleFiles];
+      clearedMultisampleFiles[action.payload] = { ...initialMultisampleFile };
+      return { ...state, multisampleFiles: clearedMultisampleFiles };
+      
+    case 'UPDATE_MULTISAMPLE_FILE':
+      const updatedMultisampleFiles = [...state.multisampleFiles];
+      updatedMultisampleFiles[action.payload.index] = {
+        ...updatedMultisampleFiles[action.payload.index],
+        ...action.payload.updates
+      };
+      return { ...state, multisampleFiles: updatedMultisampleFiles };
       
     case 'SET_SELECTED_MULTISAMPLE':
-      return { ...state, selectedMultisampleIndex: action.payload };
+      return { ...state, selectedMultisample: action.payload };
+      
+    case 'SET_LOADING':
+      return { ...state, isLoading: action.payload };
+      
+    case 'SET_ERROR':
+      return { ...state, error: action.payload };
       
     default:
       return state;
