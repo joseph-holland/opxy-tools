@@ -58,158 +58,409 @@ export function DrumTool() {
     }
   };
 
+  const hasLoadedSamples = state.drumSamples.some(s => s.isLoaded);
+
   return (
     <div style={{ 
-      maxWidth: '1200px', 
+      maxWidth: '1400px', 
       margin: '0 auto',
-      fontFamily: '"Montserrat", "Arial", sans-serif'
+      fontFamily: '"Montserrat", "Arial", sans-serif',
+      minHeight: '100vh',
+      display: 'flex',
+      flexDirection: 'column'
     }}>
-      {/* Header with preset name and audio settings */}
+      {/* Header Section */}
       <div style={{
-        display: 'grid',
-        gridTemplateColumns: '1fr auto',
-        gap: '2rem',
-        marginBottom: '2rem',
-        alignItems: 'end'
+        background: '#fff',
+        borderBottom: '1px solid #e0e0e0',
+        padding: '1.5rem 2rem',
+        marginBottom: '0'
       }}>
-        {/* Preset Name */}
-        <div>
-          <TextInput
-            id="preset-name"
-            labelText="Preset Name"
-            placeholder="Enter preset name..."
-            value={state.presetName}
-            onChange={handlePresetNameChange}
-            style={{ maxWidth: '400px' }}
-          />
-        </div>
-
-        {/* Audio Format Controls */}
         <div style={{
-          display: 'flex',
-          gap: '1rem',
-          alignItems: 'end'
+          display: 'grid',
+          gridTemplateColumns: '1fr auto',
+          gap: '2rem',
+          alignItems: 'end',
+          maxWidth: '100%'
         }}>
-          <Select
-            id="sample-rate"
-            labelText="Sample Rate"
-            value={state.sampleRate.toString()}
-            onChange={(e) => handleSampleRateChange(e.target.value)}
-            size="sm"
-          >
-            <SelectItem value="44100" text="44.1 kHz" />
-            <SelectItem value="48000" text="48 kHz" />
-            <SelectItem value="96000" text="96 kHz" />
-          </Select>
+          {/* Preset Name */}
+          <div>
+            <TextInput
+              id="preset-name"
+              labelText="Preset Name"
+              placeholder="Enter preset name..."
+              value={state.presetName}
+              onChange={handlePresetNameChange}
+              style={{ maxWidth: '400px' }}
+            />
+          </div>
 
-          <Select
-            id="bit-depth"
-            labelText="Bit Depth"
-            value={state.bitDepth.toString()}
-            onChange={(e) => handleBitDepthChange(e.target.value)}
-            size="sm"
-          >
-            <SelectItem value="16" text="16-bit" />
-            <SelectItem value="24" text="24-bit" />
-          </Select>
+          {/* Audio Format Controls */}
+          <div style={{
+            display: 'flex',
+            gap: '1rem',
+            alignItems: 'end'
+          }}>
+            <Select
+              id="sample-rate"
+              labelText="Sample Rate"
+              value={state.sampleRate.toString()}
+              onChange={(e) => handleSampleRateChange(e.target.value)}
+              size="sm"
+            >
+              <SelectItem value="44100" text="44.1 kHz" />
+              <SelectItem value="48000" text="48 kHz" />
+              <SelectItem value="96000" text="96 kHz" />
+            </Select>
 
-          <Select
-            id="channels"
-            labelText="Channels"
-            value={state.channels.toString()}
-            onChange={(e) => handleChannelsChange(e.target.value)}
-            size="sm"
-          >
-            <SelectItem value="1" text="Mono" />
-            <SelectItem value="2" text="Stereo" />
-          </Select>
+            <Select
+              id="bit-depth"
+              labelText="Bit Depth"
+              value={state.bitDepth.toString()}
+              onChange={(e) => handleBitDepthChange(e.target.value)}
+              size="sm"
+            >
+              <SelectItem value="16" text="16-bit" />
+              <SelectItem value="24" text="24-bit" />
+            </Select>
+
+            <Select
+              id="channels"
+              labelText="Channels"
+              value={state.channels.toString()}
+              onChange={(e) => handleChannelsChange(e.target.value)}
+              size="sm"
+            >
+              <SelectItem value="1" text="Mono" />
+              <SelectItem value="2" text="Stereo" />
+            </Select>
+          </div>
         </div>
       </div>
 
-      {/* Main Content Tabs */}
-      <Tabs>
-        <TabList>
-          <Tab>Keyboard</Tab>
-          <Tab>Sample Table</Tab>
-        </TabList>
-        
-        <TabPanels>
-          {/* Keyboard Tab */}
-          <TabPanel>
-            <div style={{ marginBottom: '2rem' }}>
-              <DrumKeyboard />
+      {/* Always Visible Keyboard Section */}
+      <div style={{
+        background: '#fff',
+        borderBottom: '1px solid #e0e0e0',
+        padding: '2rem'
+      }}>
+        <div style={{
+          display: 'flex',
+          justifyContent: 'space-between',
+          alignItems: 'center',
+          marginBottom: '1.5rem'
+        }}>
+          <h3 style={{ 
+            margin: '0',
+            color: '#222',
+            fontSize: '1.25rem',
+            fontWeight: '600',
+            display: 'flex',
+            alignItems: 'center',
+            gap: '0.5rem'
+          }}>
+            <i className="fas fa-keyboard" style={{ color: '#666' }}></i>
+            OP-XY Drum Keyboard
+          </h3>
+          <div style={{
+            display: 'flex',
+            alignItems: 'center',
+            gap: '1.5rem',
+            fontSize: '0.875rem',
+            color: '#666'
+          }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+              <i className="fas fa-upload" style={{ color: '#666' }}></i>
+              Drag files to keys or use table below
             </div>
-          </TabPanel>
-          
-          {/* Sample Table Tab */}
-          <TabPanel>
-            <div style={{ marginBottom: '2rem' }}>
-              <DrumSampleTable 
-                onFileUpload={handleFileUpload}
-                onClearSample={handleClearSample}
-              />
+            <div style={{ 
+              display: 'flex', 
+              alignItems: 'center', 
+              gap: '0.5rem',
+              fontWeight: '500'
+            }}>
+              <i className="fas fa-check-circle" style={{ color: '#666' }}></i>
+              {state.drumSamples.filter(s => s.isLoaded).length} / 24 loaded
             </div>
-          </TabPanel>
-        </TabPanels>
-      </Tabs>
+          </div>
+        </div>
+        <DrumKeyboard onFileUpload={handleFileUpload} />
+      </div>
 
-      {/* Preset Settings */}
-      <div style={{ marginTop: '2rem' }}>
+      {/* Tabbed Content Area */}
+      <div style={{ 
+        flex: 1,
+        padding: '0 2rem',
+        marginBottom: '2rem'
+      }}>
+        <Tabs>
+          <TabList 
+            style={{ 
+              marginBottom: '2rem',
+              borderBottom: '2px solid #f0f0f0'
+            }}
+          >
+            <Tab style={{ fontSize: '1rem', fontWeight: '500' }}>
+              <i className="fas fa-table" style={{ marginRight: '0.5rem' }}></i>
+              Sample Table
+            </Tab>
+            <Tab style={{ fontSize: '1rem', fontWeight: '500' }}>
+              <i className="fas fa-sliders-h" style={{ marginRight: '0.5rem' }}></i>
+              Advanced
+            </Tab>
+          </TabList>
+          
+          <TabPanels>
+            {/* Sample Table Tab */}
+            <TabPanel style={{ padding: '0' }}>
+              <div style={{
+                background: '#fff',
+                borderRadius: '8px',
+                padding: '2rem',
+                boxShadow: '0 2px 8px rgba(0, 0, 0, 0.1)',
+                border: '1px solid #f0f0f0'
+              }}>
+                <div style={{
+                  display: 'flex',
+                  justifyContent: 'space-between',
+                  alignItems: 'center',
+                  marginBottom: '1.5rem'
+                }}>
+                  <h3 style={{ 
+                    margin: '0',
+                    color: '#222',
+                    fontSize: '1.25rem',
+                    fontWeight: '600',
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '0.5rem'
+                  }}>
+                    <i className="fas fa-list" style={{ color: '#666' }}></i>
+                    Sample Management
+                  </h3>
+                  <div style={{ display: 'flex', gap: '0.75rem' }}>
+                    <Button
+                      kind="secondary"
+                      size="sm"
+                      onClick={handleClearAll}
+                      disabled={!hasLoadedSamples}
+                    >
+                      <i className="fas fa-trash" style={{ marginRight: '0.5rem' }}></i>
+                      Clear All
+                    </Button>
+                  </div>
+                </div>
+                <DrumSampleTable 
+                  onFileUpload={handleFileUpload}
+                  onClearSample={handleClearSample}
+                />
+              </div>
+            </TabPanel>
+
+            {/* Advanced Tab */}
+            <TabPanel style={{ padding: '0' }}>
+              <div style={{
+                display: 'grid',
+                gridTemplateColumns: '1fr 1fr',
+                gap: '2rem'
+              }}>
+                {/* Individual Sample Controls */}
+                <div style={{
+                  background: '#fff',
+                  borderRadius: '8px',
+                  padding: '2rem',
+                  boxShadow: '0 2px 8px rgba(0, 0, 0, 0.1)',
+                  border: '1px solid #f0f0f0'
+                }}>
+                  <h3 style={{ 
+                    margin: '0 0 1.5rem 0',
+                    color: '#222',
+                    fontSize: '1.25rem',
+                    fontWeight: '600',
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '0.5rem'
+                  }}>
+                    <i className="fas fa-cog" style={{ color: '#666' }}></i>
+                    Individual Sample Controls
+                  </h3>
+                  <div style={{
+                    background: '#f8f9fa',
+                    borderRadius: '6px',
+                    padding: '2rem',
+                    textAlign: 'center',
+                    color: '#666',
+                    border: '1px solid #e9ecef'
+                  }}>
+                    <i className="fas fa-tools" style={{ fontSize: '2rem', marginBottom: '1rem', color: '#999' }}></i>
+                    <p style={{ margin: '0' }}>
+                      Select a sample from the table to edit individual settings like gain, pan, and tune.
+                    </p>
+                    <p style={{ margin: '1rem 0 0 0', fontSize: '0.875rem' }}>
+                      Coming soon in the next update
+                    </p>
+                  </div>
+                </div>
+
+                {/* Recording Interface */}
+                <div style={{
+                  background: '#fff',
+                  borderRadius: '8px',
+                  padding: '2rem',
+                  boxShadow: '0 2px 8px rgba(0, 0, 0, 0.1)',
+                  border: '1px solid #f0f0f0'
+                }}>
+                  <h3 style={{ 
+                    margin: '0 0 1.5rem 0',
+                    color: '#222',
+                    fontSize: '1.25rem',
+                    fontWeight: '600',
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '0.5rem'
+                  }}>
+                    <i className="fas fa-microphone" style={{ color: '#666' }}></i>
+                    Recording Studio
+                  </h3>
+                  <div style={{
+                    background: '#f8f9fa',
+                    borderRadius: '6px',
+                    padding: '2rem',
+                    textAlign: 'center',
+                    color: '#666',
+                    border: '1px solid #e9ecef'
+                  }}>
+                    <i className="fas fa-record-vinyl" style={{ fontSize: '2rem', marginBottom: '1rem', color: '#999' }}></i>
+                    <p style={{ margin: '0' }}>
+                      Record directly into any drum slot using your microphone or line input.
+                    </p>
+                    <p style={{ margin: '1rem 0 0 0', fontSize: '0.875rem' }}>
+                      Coming soon in the next update
+                    </p>
+                  </div>
+                </div>
+
+                {/* Import/Export */}
+                <div style={{
+                  background: '#fff',
+                  borderRadius: '8px',
+                  padding: '2rem',
+                  boxShadow: '0 2px 8px rgba(0, 0, 0, 0.1)',
+                  border: '1px solid #f0f0f0',
+                  gridColumn: '1 / -1'
+                }}>
+                  <h3 style={{ 
+                    margin: '0 0 1.5rem 0',
+                    color: '#222',
+                    fontSize: '1.25rem',
+                    fontWeight: '600',
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '0.5rem'
+                  }}>
+                    <i className="fas fa-exchange-alt" style={{ color: '#666' }}></i>
+                    Preset Management
+                  </h3>
+                  <div style={{
+                    display: 'grid',
+                    gridTemplateColumns: '1fr 1fr',
+                    gap: '1rem'
+                  }}>
+                    <div style={{
+                      background: '#f8f9fa',
+                      borderRadius: '6px',
+                      padding: '1.5rem',
+                      color: '#666',
+                      border: '1px solid #e9ecef'
+                    }}>
+                      <h4 style={{ 
+                        margin: '0 0 0.5rem 0', 
+                        color: '#222',
+                        display: 'flex',
+                        alignItems: 'center',
+                        gap: '0.5rem'
+                      }}>
+                        <i className="fas fa-download" style={{ color: '#666' }}></i>
+                        Import Settings
+                      </h4>
+                      <p style={{ margin: '0', fontSize: '0.875rem' }}>
+                        Load preset configurations from JSON files
+                      </p>
+                    </div>
+                    <div style={{
+                      background: '#f8f9fa',
+                      borderRadius: '6px',
+                      padding: '1.5rem',
+                      color: '#666',
+                      border: '1px solid #e9ecef'
+                    }}>
+                      <h4 style={{ 
+                        margin: '0 0 0.5rem 0', 
+                        color: '#222',
+                        display: 'flex',
+                        alignItems: 'center',
+                        gap: '0.5rem'
+                      }}>
+                        <i className="fas fa-upload" style={{ color: '#666' }}></i>
+                        Export Settings
+                      </h4>
+                      <p style={{ margin: '0', fontSize: '0.875rem' }}>
+                        Save current preset configuration for later use
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </TabPanel>
+          </TabPanels>
+        </Tabs>
+      </div>
+
+      {/* Preset Settings Panel - Always Visible */}
+      <div style={{
+        background: '#fff',
+        borderTop: '1px solid #e0e0e0',
+        padding: '1.5rem 2rem'
+      }}>
         <DrumPresetSettings />
       </div>
 
-      {/* Patch Generation Controls */}
+      {/* Footer - Patch Generation */}
       <div style={{
-        display: 'flex',
-        justifyContent: 'space-between',
-        alignItems: 'center',
-        marginTop: '2rem',
-        padding: '1.5rem',
         background: '#f8f9fa',
-        borderRadius: '0.375rem',
-        border: '1px solid #e0e0e0'
+        borderTop: '1px solid #e0e0e0',
+        padding: '1.5rem 2rem'
       }}>
-        <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
-          <PatchSizeIndicator type="drum" />
-        </div>
+        <div style={{
+          display: 'flex',
+          justifyContent: 'space-between',
+          alignItems: 'center',
+          maxWidth: '100%'
+        }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
+            <PatchSizeIndicator type="drum" />
+          </div>
 
-        <div style={{ display: 'flex', gap: '0.75rem' }}>
-          <Button
-            kind="secondary"
-            onClick={handleClearAll}
-            disabled={state.drumSamples.every(s => !s.isLoaded)}
-          >
-            Clear All
-          </Button>
-          <Button
-            kind="primary"
-            onClick={handleGeneratePatch}
-            disabled={state.drumSamples.every(s => !s.isLoaded)}
-          >
-            Generate Patch
-          </Button>
+          <div style={{ display: 'flex', gap: '0.75rem' }}>
+            <Button
+              kind="secondary"
+              onClick={handleClearAll}
+              disabled={!hasLoadedSamples}
+            >
+              <i className="fas fa-trash" style={{ marginRight: '0.5rem' }}></i>
+              Clear All
+            </Button>
+            <Button
+              kind="primary"
+              onClick={handleGeneratePatch}
+              disabled={!hasLoadedSamples}
+              size="lg"
+            >
+              <i className="fas fa-download" style={{ marginRight: '0.5rem' }}></i>
+              Generate Patch
+            </Button>
+          </div>
         </div>
-      </div>
-
-      {/* Instructions */}
-      <div style={{
-        marginTop: '2rem',
-        padding: '1rem',
-        background: '#f0f8ff',
-        borderRadius: '0.375rem',
-        border: '1px solid #b3d9ff',
-        fontSize: '0.8rem',
-        lineHeight: '1.5',
-        color: '#333'
-      }}>
-        <h4 style={{ marginBottom: '0.5rem', color: '#0066cc' }}>How to use:</h4>
-        <ul style={{ margin: 0, paddingLeft: '1.5rem' }}>
-          <li><strong>Keyboard Tab:</strong> Use the on-screen keyboard or your computer keyboard to trigger samples</li>
-          <li><strong>Sample Table Tab:</strong> Drag & drop audio files or click to browse for each of the 24 drum samples</li>
-          <li><strong>Preset Settings:</strong> Adjust playmode, transpose, velocity, volume, and stereo width</li>
-          <li><strong>Keyboard Shortcuts:</strong> Z/X to switch octaves, A-J keys to play samples</li>
-          <li><strong>Generate Patch:</strong> Creates an OP-XY compatible drum patch file</li>
-        </ul>
       </div>
     </div>
   );

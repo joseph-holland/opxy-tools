@@ -1,5 +1,6 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useAppContext } from '../../context/AppContext';
+import { audioContextManager } from '../../utils/audioContext';
 
 // Drum key mapping for two octaves (matching legacy)
 const drumKeyMap = [
@@ -39,17 +40,24 @@ const drumKeyMap = [
   },
 ];
 
-export function DrumKeyboard() {
+interface DrumKeyboardProps {
+  onFileUpload?: (index: number, file: File) => void;
+}
+
+export function DrumKeyboard({ onFileUpload }: DrumKeyboardProps = {}) {
   const { state } = useAppContext();
   const [currentOctave, setCurrentOctave] = useState(0);
   const [pressedKeys, setPressedKeys] = useState<Set<string>>(new Set());
+  const fileInputRef = useRef<HTMLInputElement>(null);
+  const [pendingUploadIndex, setPendingUploadIndex] = useState<number | null>(null);
+  const [isMobile, setIsMobile] = useState(window.innerWidth <= 768);
 
-  const playSample = (index: number) => {
+  const playSample = async (index: number) => {
     const sample = state.drumSamples[index];
     if (!sample?.isLoaded || !sample.audioBuffer) return;
 
     try {
-      const audioContext = new (window.AudioContext || (window as any).webkitAudioContext)();
+      const audioContext = await audioContextManager.getAudioContext();
       const source = audioContext.createBufferSource();
       source.buffer = sample.audioBuffer;
       source.connect(audioContext.destination);
@@ -64,7 +72,36 @@ export function DrumKeyboard() {
     return mapping ? mapping.idx : null;
   };
 
+  const openFileBrowser = (index: number) => {
+    setPendingUploadIndex(index);
+    fileInputRef.current?.click();
+  };
+
+  const handleFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file && pendingUploadIndex !== null && onFileUpload) {
+      onFileUpload(pendingUploadIndex, file);
+      setPendingUploadIndex(null);
+    }
+    // Reset the input value so the same file can be selected again
+    if (fileInputRef.current) {
+      fileInputRef.current.value = '';
+    }
+  };
+
   useEffect(() => {
+    const handleResize = () => {
+      setIsMobile(window.innerWidth <= 768);
+    };
+
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
+
+  useEffect(() => {
+    // Skip keyboard event handling on mobile devices
+    if (isMobile) return;
+
     const handleKeyDown = (e: KeyboardEvent) => {
       // Check if user is typing in an input field
       const activeElement = document.activeElement;
@@ -112,7 +149,7 @@ export function DrumKeyboard() {
       document.removeEventListener('keydown', handleKeyDown);
       document.removeEventListener('keyup', handleKeyUp);
     };
-  }, [currentOctave, state.drumSamples]);
+  }, [currentOctave, state.drumSamples, isMobile]);
 
   const currentMap = drumKeyMap[currentOctave];
 
@@ -122,17 +159,22 @@ export function DrumKeyboard() {
     mapping, 
     isPressed, 
     isLarge = false,
-    circleOffset = 'center' // 'left', 'right', or 'center'
+    circleOffset = 'center', // 'left', 'right', or 'center'
+    isActiveOctave = true,
+    showKeyboardLabels = true
   }: { 
     keyChar: string; 
     mapping?: { label: string; idx: number }; 
     isPressed: boolean;
     isLarge?: boolean;
     circleOffset?: 'left' | 'right' | 'center';
+    isActiveOctave?: boolean;
+    showKeyboardLabels?: boolean;
   }) => {
     const hasContent = mapping && state.drumSamples[mapping.idx]?.isLoaded;
     const isTopRow = ['W', 'E', 'R', 'Y', 'U'].includes(keyChar);
     const isActive = hasContent; // Key is only active when it has content
+    const canPlaySound = isActive && isActiveOctave; // Can only play sound if active and in current octave
     
     // Key dimensions - exact 1:1 and 1:1.5 ratios
     const baseSize = 56; // Increased base size for more prominence
@@ -145,7 +187,7 @@ export function DrumKeyboard() {
       width: '35px', // Scaled up proportionally
       height: '35px',
       borderRadius: '50%',
-      background: !isActive ? '#333' : (isPressed ? '#666' : '#111'),
+      background: !isActive ? '#333' : (isPressed && isActiveOctave ? '#666' : '#111'),
       display: 'flex',
       alignItems: 'center',
       justifyContent: 'center',
@@ -189,44 +231,72 @@ export function DrumKeyboard() {
     return (
       <div style={{
         display: 'flex',
-        flexDirection: isTopRow ? 'column' : 'column-reverse',
+        flexDirection: 'column',
         alignItems: 'center',
-        gap: '4px'
+        gap: '0px'
       }}>
-        {/* Drum label - above for top row, below for bottom row */}
-        {mapping && (
-          <div style={{
-            fontSize: '11px',
-            color: '#999',
-            fontWeight: '500',
-            textAlign: 'center',
-            minHeight: '14px'
-          }}>
-            {mapping.label}
-          </div>
-        )}
         
         {/* Key button */}
         <button
           onClick={() => {
-            if (!isActive) return; // Don't respond if inactive
-            const idx = getDrumIdxForKey(keyChar);
-            if (idx !== null) playSample(idx);
-          }}
-          onMouseDown={() => {
-            if (!isActive) return; // Don't respond if inactive
-            const idx = getDrumIdxForKey(keyChar);
-            if (idx !== null) {
-              // Simulate key press for mouse clicks
-              const syntheticEvent = new KeyboardEvent('keydown', { key: keyChar });
-              document.dispatchEvent(syntheticEvent);
+            if (mapping) {
+              if (isActive) {
+                // Play sample if key has content
+                playSample(mapping.idx);
+              } else {
+                // Open file browser if key is empty
+                openFileBrowser(mapping.idx);
+              }
             }
           }}
+          onMouseDown={() => {
+            if (!isActive || !mapping) return; // Only simulate key events for active keys with samples
+            // Simulate key press for mouse clicks
+            const syntheticEvent = new KeyboardEvent('keydown', { key: keyChar });
+            document.dispatchEvent(syntheticEvent);
+          }}
           onMouseUp={() => {
-            if (!isActive) return; // Don't respond if inactive
+            if (!isActive || !mapping) return; // Only simulate key events for active keys with samples
             // Simulate key release for mouse clicks
             const syntheticEvent = new KeyboardEvent('keyup', { key: keyChar });
             document.dispatchEvent(syntheticEvent);
+          }}
+          onDragOver={(e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            // Add visual feedback for drag over
+            e.currentTarget.style.background = '#333';
+            e.currentTarget.style.transform = 'scale(1.05)';
+            e.currentTarget.style.boxShadow = '0 6px 20px rgba(0, 0, 0, 0.3)';
+            e.currentTarget.style.borderColor = '#000';
+          }}
+          onDragLeave={(e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            // Remove visual feedback
+            e.currentTarget.style.background = !isActive ? '#999' : (isPressed ? '#bdbdbd' : '#444444');
+            e.currentTarget.style.transform = 'scale(1)';
+            e.currentTarget.style.boxShadow = isActive ? '0 4px 12px rgba(0, 0, 0, 0.18)' : '0 2px 6px rgba(0, 0, 0, 0.1)';
+            e.currentTarget.style.borderColor = !isActive ? '#666' : '#000';
+          }}
+          onDrop={(e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            
+            // Remove visual feedback
+            e.currentTarget.style.background = !isActive ? '#999' : (isPressed ? '#bdbdbd' : '#444444');
+            e.currentTarget.style.transform = 'scale(1)';
+            e.currentTarget.style.boxShadow = isActive ? '0 4px 12px rgba(0, 0, 0, 0.18)' : '0 2px 6px rgba(0, 0, 0, 0.1)';
+            e.currentTarget.style.borderColor = !isActive ? '#666' : '#000';
+            
+            const files = Array.from(e.dataTransfer.files);
+            const audioFile = files.find(file => 
+              file.type.startsWith('audio/') || file.name.toLowerCase().endsWith('.wav')
+            );
+            
+            if (audioFile && onFileUpload && mapping) {
+              onFileUpload(mapping.idx, audioFile);
+            }
           }}
           style={{
             width: keyWidth,
@@ -234,7 +304,7 @@ export function DrumKeyboard() {
             border: !isActive ? '1px solid #666' : '1px solid #000',
             borderRadius: '3px', // Reduced corner radius
             background: !isActive ? '#999' : (isPressed ? '#bdbdbd' : '#444444'),
-            cursor: isActive ? 'pointer' : 'not-allowed',
+            cursor: 'pointer', // Always show pointer cursor since empty keys can be clicked to browse files
             display: 'flex',
             alignItems: 'center',
             justifyContent: isLarge && circleOffset === 'left' ? 'flex-start' : 
@@ -275,15 +345,47 @@ export function DrumKeyboard() {
               justifyContent: 'center',
               position: 'relative'
             }}>
-              {/* Computer key label */}
-              <div style={{
-                ...letterStyle,
-                color: !isActive ? '#999' : '#fff'
-              }}>
-                {keyChar.toLowerCase()}
-              </div>
+              {/* Computer key label - only on desktop active octave */}
+              {showKeyboardLabels && (
+                <div style={{
+                  ...letterStyle,
+                  color: !isActive ? '#999' : '#fff'
+                }}>
+                  {keyChar.toLowerCase()}
+                </div>
+              )}
             </div>
           </div>
+          
+          {/* Drum label overlay - always visible */}
+          {mapping && (
+            <div style={{
+              position: 'absolute',
+              top: '2px',
+              left: '2px',
+              right: '2px',
+              bottom: '2px',
+              display: 'flex',
+              alignItems: 'flex-start',
+              justifyContent: 'flex-start',
+              pointerEvents: 'none',
+              zIndex: 2
+            }}>
+              <div style={{
+                background: 'rgba(0, 0, 0, 0.8)',
+                color: '#fff',
+                fontSize: '9px',
+                fontWeight: '600',
+                padding: '2px 4px',
+                borderRadius: '2px',
+                lineHeight: '1',
+                textTransform: 'uppercase',
+                letterSpacing: '0.5px'
+              }}>
+                {mapping.label}
+              </div>
+            </div>
+          )}
         </button>
       </div>
     );
@@ -294,89 +396,184 @@ export function DrumKeyboard() {
       fontFamily: '"Montserrat", "Arial", sans-serif',
       userSelect: 'none'
     }}>
-      {/* OP-XY Keyboard Layout - authentic hardware positioning */}
+      {/* Hidden file input for browsing files */}
+      <input
+        ref={fileInputRef}
+        type="file"
+        accept="audio/*,.wav"
+        style={{ display: 'none' }}
+        onChange={handleFileSelect}
+      />
+      {/* OP-XY Keyboard Layout - Side by Side on Desktop, Stacked on Mobile */}
       <div style={{
         display: 'flex',
-        flexDirection: 'column',
+        flexDirection: isMobile ? 'column' : 'row',
         alignItems: 'center',
-        gap: '0px',
+        justifyContent: 'center',
+        gap: isMobile ? '1.5rem' : '0px',
         padding: '20px',
         background: '#f8f8f8',
         borderRadius: '8px',
         boxShadow: 'inset 0 0 5px rgba(0, 0, 0, 0.1)',
-        maxWidth: '600px',
+        maxWidth: isMobile ? '600px' : '1000px',
         margin: '0 auto 2rem'
       }}>
-        {/* Top row - proper OP-XY spacing and sizing */}
-        <div style={{ 
-          display: 'flex', 
-          gap: '0px', 
-          alignItems: 'flex-end'
+        {/* Octave 1 (Lower) */}
+        <div style={{
+          display: 'flex',
+          flexDirection: 'column',
+          alignItems: 'center',
+          gap: '0px',
+          position: 'relative'
         }}>
-          {/* W - Large key, right-aligned circle */}
-          <OPXYKey
-            keyChar="W"
-            mapping={currentMap.W}
-            isPressed={pressedKeys.has('W')}
-            isLarge={true}
-            circleOffset="right"
-          />
           
-          {/* E - Standard key */}
-          <OPXYKey
-            keyChar="E"
-            mapping={currentMap.E}
-            isPressed={pressedKeys.has('E')}
-          />
-          
-          {/* R - Large key, left-aligned circle */}
-          <OPXYKey
-            keyChar="R"
-            mapping={currentMap.R}
-            isPressed={pressedKeys.has('R')}
-            isLarge={true}
-            circleOffset="left"
-          />
-          
-          {/* Gap adjusted for alignment:
-               With 0px gap: 4 + W(72) + E(48) + R(72) = R ends at 196px
-               Need Y to start at: A(48) + S(48) + D(48) + F(48) = 192px, so Y should start at 192px
-               Current position: 4 + W(72) + E(48) + R(72) = 196px, need 4px less
-               Removing gap div to align perfectly with 0px spacing */}
-          
-          {/* Y - Large key, left-aligned circle - should align with G */}
-          <OPXYKey
-            keyChar="Y"
-            mapping={currentMap.Y}
-            isPressed={pressedKeys.has('Y')}
-            isLarge={true}
-            circleOffset="left"
-          />
-          
-          {/* U - Large key, right-aligned circle */}
-          <OPXYKey
-            keyChar="U"
-            mapping={currentMap.U}
-            isPressed={pressedKeys.has('U')}
-            isLarge={true}
-            circleOffset="right"
-          />
+          {/* Top row */}
+          <div style={{ 
+            display: 'flex', 
+            gap: '0px', 
+            alignItems: 'flex-end'
+          }}>
+            <OPXYKey
+              keyChar="W"
+              mapping={drumKeyMap[0].W}
+              isPressed={currentOctave === 0 && pressedKeys.has('W')}
+              isLarge={true}
+              circleOffset="right"
+              isActiveOctave={currentOctave === 0}
+              showKeyboardLabels={!isMobile && currentOctave === 0}
+            />
+            <OPXYKey
+              keyChar="E"
+              mapping={drumKeyMap[0].E}
+              isPressed={currentOctave === 0 && pressedKeys.has('E')}
+              isActiveOctave={currentOctave === 0}
+              showKeyboardLabels={!isMobile && currentOctave === 0}
+            />
+            <OPXYKey
+              keyChar="R"
+              mapping={drumKeyMap[0].R}
+              isPressed={currentOctave === 0 && pressedKeys.has('R')}
+              isLarge={true}
+              circleOffset="left"
+              isActiveOctave={currentOctave === 0}
+              showKeyboardLabels={!isMobile && currentOctave === 0}
+            />
+            <OPXYKey
+              keyChar="Y"
+              mapping={drumKeyMap[0].Y}
+              isPressed={currentOctave === 0 && pressedKeys.has('Y')}
+              isLarge={true}
+              circleOffset="left"
+              isActiveOctave={currentOctave === 0}
+              showKeyboardLabels={!isMobile && currentOctave === 0}
+            />
+            <OPXYKey
+              keyChar="U"
+              mapping={drumKeyMap[0].U}
+              isPressed={currentOctave === 0 && pressedKeys.has('U')}
+              isLarge={true}
+              circleOffset="right"
+              isActiveOctave={currentOctave === 0}
+              showKeyboardLabels={!isMobile && currentOctave === 0}
+            />
+          </div>
+
+          {/* Bottom row */}
+          <div style={{ 
+            display: 'flex', 
+            gap: '0px',
+            alignItems: 'flex-start'
+          }}>
+            {['A', 'S', 'D', 'F', 'G', 'H', 'J'].map(key => (
+              <OPXYKey
+                key={`octave0-${key}`}
+                keyChar={key}
+                mapping={drumKeyMap[0][key as keyof typeof drumKeyMap[0]]}
+                isPressed={currentOctave === 0 && pressedKeys.has(key)}
+                isActiveOctave={currentOctave === 0}
+                showKeyboardLabels={!isMobile && currentOctave === 0}
+              />
+            ))}
+          </div>
         </div>
 
-        {/* Bottom row - full width, standard keys */}
-        <div style={{ 
-          display: 'flex', 
+        {/* Octave 2 (Upper) */}
+        <div style={{
+          display: 'flex',
+          flexDirection: 'column',
+          alignItems: 'center',
           gap: '0px',
-          alignItems: 'flex-start'
+          position: 'relative'
         }}>
-          {['A', 'S', 'D', 'F', 'G', 'H', 'J'].map(key => (
+          
+          {/* Top row */}
+          <div style={{ 
+            display: 'flex', 
+            gap: '0px', 
+            alignItems: 'flex-end'
+          }}>
             <OPXYKey
-              key={`bottom-${key}`}
-              keyChar={key}
-              mapping={currentMap[key as keyof typeof currentMap]}
-              isPressed={pressedKeys.has(key)}
+              keyChar="W"
+              mapping={drumKeyMap[1].W}
+              isPressed={currentOctave === 1 && pressedKeys.has('W')}
+              isLarge={true}
+              circleOffset="right"
+              isActiveOctave={currentOctave === 1}
+              showKeyboardLabels={!isMobile && currentOctave === 1}
             />
-          ))}
+            <OPXYKey
+              keyChar="E"
+              mapping={drumKeyMap[1].E}
+              isPressed={currentOctave === 1 && pressedKeys.has('E')}
+              isActiveOctave={currentOctave === 1}
+              showKeyboardLabels={!isMobile && currentOctave === 1}
+            />
+            <OPXYKey
+              keyChar="R"
+              mapping={drumKeyMap[1].R}
+              isPressed={currentOctave === 1 && pressedKeys.has('R')}
+              isLarge={true}
+              circleOffset="left"
+              isActiveOctave={currentOctave === 1}
+              showKeyboardLabels={!isMobile && currentOctave === 1}
+            />
+            <OPXYKey
+              keyChar="Y"
+              mapping={drumKeyMap[1].Y}
+              isPressed={currentOctave === 1 && pressedKeys.has('Y')}
+              isLarge={true}
+              circleOffset="left"
+              isActiveOctave={currentOctave === 1}
+              showKeyboardLabels={!isMobile && currentOctave === 1}
+            />
+            <OPXYKey
+              keyChar="U"
+              mapping={drumKeyMap[1].U}
+              isPressed={currentOctave === 1 && pressedKeys.has('U')}
+              isLarge={true}
+              circleOffset="right"
+              isActiveOctave={currentOctave === 1}
+              showKeyboardLabels={!isMobile && currentOctave === 1}
+            />
+          </div>
+
+          {/* Bottom row */}
+          <div style={{ 
+            display: 'flex', 
+            gap: '0px',
+            alignItems: 'flex-start'
+          }}>
+            {['A', 'S', 'D', 'F', 'G', 'H', 'J'].map(key => (
+              <OPXYKey
+                key={`octave1-${key}`}
+                keyChar={key}
+                mapping={drumKeyMap[1][key as keyof typeof drumKeyMap[1]]}
+                isPressed={currentOctave === 1 && pressedKeys.has(key)}
+                isActiveOctave={currentOctave === 1}
+                showKeyboardLabels={!isMobile && currentOctave === 1}
+              />
+            ))}
+          </div>
         </div>
       </div>
 
@@ -387,11 +584,23 @@ export function DrumKeyboard() {
         color: '#666',
         lineHeight: '1.4'
       }}>
-        <div style={{ marginBottom: '0.5rem' }}>
-          <strong>Current Octave: {currentOctave + 1}</strong>
-        </div>
-        Use keyboard keys to trigger samples<br />
-        <strong>Z</strong> / <strong>X</strong> to switch octaves • <strong>A-J, W, E, R, Y, U</strong> to play samples
+        {!isMobile && (
+          <div style={{ marginBottom: '0.5rem' }}>
+            <strong>Current Octave: {currentOctave + 1}</strong>
+          </div>
+        )}
+        {isMobile ? (
+          <>
+            <strong>Touch Interface:</strong> Tap keys to play loaded samples<br />
+            <strong>Load Samples:</strong> Tap empty keys to browse and select audio files
+          </>
+        ) : (
+          <>
+            Use keyboard keys to trigger samples<br />
+            <strong>Z</strong> / <strong>X</strong> to switch octaves • <strong>A-J, W, E, R, Y, U</strong> to play samples<br />
+            <strong>Load Samples:</strong> Click empty keys to browse files or drag & drop audio files directly onto any key
+          </>
+        )}
       </div>
     </div>
   );

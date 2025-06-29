@@ -8,10 +8,12 @@ interface DrumSampleTableProps {
   onClearSample: (index: number) => void;
 }
 
-// Drum sample names matching the legacy layout
+// Full drum names from OP-XY documentation
 const drumSampleNames = [
-  'KD1', 'KD2', 'SD1', 'SD2', 'RIM', 'CLP', 'TB', 'SH', 'CH', 'CL', 'OH', 'CAB',
-  'RC', 'CC', 'LT', 'COW', 'MT', 'HT', 'LC', 'HC', 'TRI', 'LT', 'WS', 'GUI'
+  'kick', 'kick alt', 'snare', 'snare alt', 'rim', 'hand clap', 
+  'tambourine', 'shaker', 'closed hi-hat', 'clave', 'open hi-hat', 'cabasa',
+  'low tom', 'ride cymbal', 'mid-tom', 'crash cymbal', 'hi-tom', 'cowbell', 
+  'triangle', 'low tom', 'low conga', 'clave', 'hi-conga', 'guiro'
 ];
 
 export function DrumSampleTable({ onFileUpload, onClearSample }: DrumSampleTableProps) {
@@ -67,7 +69,7 @@ export function DrumSampleTable({ onFileUpload, onClearSample }: DrumSampleTable
       {/* Table Header */}
       <div style={{
         display: 'grid',
-        gridTemplateColumns: '60px 80px 1fr 120px 120px',
+        gridTemplateColumns: '140px 1fr 120px 120px',
         gap: '0.5rem',
         padding: '0.75rem',
         background: '#f8f9fa',
@@ -80,9 +82,8 @@ export function DrumSampleTable({ onFileUpload, onClearSample }: DrumSampleTable
         textTransform: 'uppercase',
         letterSpacing: '0.05em'
       }}>
-        <div>#</div>
-        <div>Name</div>
-        <div>Sample</div>
+        <div>Drum Key</div>
+        <div>File Details</div>
         <div>Waveform</div>
         <div>Actions</div>
       </div>
@@ -116,7 +117,7 @@ export function DrumSampleTable({ onFileUpload, onClearSample }: DrumSampleTable
               <div
                 style={{
                   display: 'grid',
-                  gridTemplateColumns: '60px 80px 1fr 120px 120px',
+                  gridTemplateColumns: '140px 1fr 120px 120px',
                   gap: '0.5rem',
                   padding: '0.75rem',
                   background: isLoaded ? '#f0f8f0' : '#fff',
@@ -136,27 +137,12 @@ export function DrumSampleTable({ onFileUpload, onClearSample }: DrumSampleTable
                   e.currentTarget.style.background = isLoaded ? '#f0f8f0' : '#fff';
                 }}
               >
-                {/* Sample Number */}
-                <div style={{
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  width: '32px',
-                  height: '32px',
-                  borderRadius: '50%',
-                  background: isLoaded ? '#4caf50' : '#ccc',
-                  color: '#fff',
-                  fontSize: '0.8rem',
-                  fontWeight: 'bold'
-                }}>
-                  {index + 1}
-                </div>
-
                 {/* Drum Name */}
                 <div style={{
                   fontSize: '0.8rem',
                   fontWeight: '500',
-                  color: '#222'
+                  color: '#222',
+                  textTransform: 'capitalize'
                 }}>
                   {drumSampleNames[index]}
                 </div>

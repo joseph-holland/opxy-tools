@@ -1,6 +1,9 @@
 /* Global styles for OPXY Tools React app */
 /* Preserving the OP-XY monochrome aesthetic */
 
+/* Import Font Awesome */
+@import '@fortawesome/fontawesome-free/css/all.css';
+
 :root {
   font-family: "Montserrat", "Arial", sans-serif;
   line-height: 1.7;
