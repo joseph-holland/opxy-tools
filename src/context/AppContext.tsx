@@ -110,6 +110,7 @@ export type AppAction =
   | { type: 'LOAD_MULTISAMPLE_FILE'; payload: { file: File; audioBuffer: AudioBuffer; metadata: WavMetadata } }
   | { type: 'CLEAR_MULTISAMPLE_FILE'; payload: number }
   | { type: 'UPDATE_MULTISAMPLE_FILE'; payload: { index: number; updates: Partial<MultisampleFile> } }
+  | { type: 'REORDER_MULTISAMPLE_FILES'; payload: { fromIndex: number; toIndex: number } }
   | { type: 'SET_SELECTED_MULTISAMPLE'; payload: number | null }
   | { type: 'SET_LOADING'; payload: boolean }
   | { type: 'SET_ERROR'; payload: string | null }
@@ -361,9 +362,8 @@ function appReducer(state: AppState, action: AppAction): AppState {
       };
       
     case 'CLEAR_MULTISAMPLE_FILE':
-      const clearedMultisampleFiles = [...state.multisampleFiles];
-      clearedMultisampleFiles[action.payload] = { ...initialMultisampleFile };
-      return { ...state, multisampleFiles: clearedMultisampleFiles };
+      const filteredMultisampleFiles = state.multisampleFiles.filter((_, index) => index !== action.payload);
+      return { ...state, multisampleFiles: filteredMultisampleFiles };
       
     case 'UPDATE_MULTISAMPLE_FILE':
       const updatedMultisampleFiles = [...state.multisampleFiles];
@@ -372,6 +372,12 @@ function appReducer(state: AppState, action: AppAction): AppState {
         ...action.payload.updates
       };
       return { ...state, multisampleFiles: updatedMultisampleFiles };
+      
+    case 'REORDER_MULTISAMPLE_FILES':
+      const reorderedFiles = [...state.multisampleFiles];
+      const [movedFile] = reorderedFiles.splice(action.payload.fromIndex, 1);
+      reorderedFiles.splice(action.payload.toIndex, 0, movedFile);
+      return { ...state, multisampleFiles: reorderedFiles };
       
     case 'SET_SELECTED_MULTISAMPLE':
       return { ...state, selectedMultisample: action.payload };
