@@ -82,10 +82,10 @@ export function DrumSampleTable({ onFileUpload, onClearSample }: DrumSampleTable
         textTransform: 'uppercase',
         letterSpacing: '0.05em'
       }}>
-        <div>Drum Key</div>
-        <div>File Details</div>
-        <div>Waveform</div>
-        <div>Actions</div>
+        <div>drum key</div>
+        <div>file details</div>
+        <div>waveform</div>
+        <div>actions</div>
       </div>
 
       {/* Sample Rows */}
@@ -196,7 +196,7 @@ export function DrumSampleTable({ onFileUpload, onClearSample }: DrumSampleTable
                         e.currentTarget.style.color = '#666';
                       }}
                     >
-                      Drop sample here or click to browse
+                      drop sample here or click to browse
                     </button>
                   )}
                 </div>
@@ -238,7 +238,7 @@ export function DrumSampleTable({ onFileUpload, onClearSample }: DrumSampleTable
                       color: '#999',
                       fontSize: '0.7rem'
                     }}>
-                      No sample
+                      no sample
                     </div>
                   )}
                 </div>
@@ -259,7 +259,7 @@ export function DrumSampleTable({ onFileUpload, onClearSample }: DrumSampleTable
                       padding: '0 0.5rem'
                     }}
                   >
-                    Play
+                    play
                   </Button>
                   <Button
                     kind="ghost"
@@ -271,7 +271,7 @@ export function DrumSampleTable({ onFileUpload, onClearSample }: DrumSampleTable
                       padding: '0 0.5rem'
                     }}
                   >
-                    Edit
+                    edit
                   </Button>
                   <Button
                     kind="ghost"
@@ -284,7 +284,7 @@ export function DrumSampleTable({ onFileUpload, onClearSample }: DrumSampleTable
                       color: '#d32f2f'
                     }}
                   >
-                    Clear
+                    clear
                   </Button>
                 </div>
               </div>
@@ -305,14 +305,14 @@ export function DrumSampleTable({ onFileUpload, onClearSample }: DrumSampleTable
           size="sm"
           onClick={() => {/* Bulk edit */}}
         >
-          Bulk Edit
+          bulk edit
         </Button>
         <Button
           kind="ghost"
           size="sm"
           onClick={() => {/* Record */}}
         >
-          Record
+          record
         </Button>
       </div>
     </div>

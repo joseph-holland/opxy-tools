@@ -51,7 +51,7 @@ export function DrumTool() {
   };
 
   const handleClearAll = () => {
-    if (confirm('Are you sure you want to clear all loaded samples?')) {
+    if (confirm('are you sure you want to clear all loaded samples?')) {
       for (let i = 0; i < 24; i++) {
         clearDrumSample(i);
       }
@@ -87,8 +87,8 @@ export function DrumTool() {
           <div>
             <TextInput
               id="preset-name"
-              labelText="Preset Name"
-              placeholder="Enter preset name..."
+              labelText="preset name"
+              placeholder="enter preset name..."
               value={state.presetName}
               onChange={handlePresetNameChange}
               style={{ maxWidth: '400px' }}
@@ -103,7 +103,7 @@ export function DrumTool() {
           }}>
             <Select
               id="sample-rate"
-              labelText="Sample Rate"
+              labelText="sample rate"
               value={state.sampleRate.toString()}
               onChange={(e) => handleSampleRateChange(e.target.value)}
               size="sm"
@@ -115,7 +115,7 @@ export function DrumTool() {
 
             <Select
               id="bit-depth"
-              labelText="Bit Depth"
+              labelText="bit depth"
               value={state.bitDepth.toString()}
               onChange={(e) => handleBitDepthChange(e.target.value)}
               size="sm"
@@ -126,13 +126,13 @@ export function DrumTool() {
 
             <Select
               id="channels"
-              labelText="Channels"
+              labelText="channels"
               value={state.channels.toString()}
               onChange={(e) => handleChannelsChange(e.target.value)}
               size="sm"
             >
-              <SelectItem value="1" text="Mono" />
-              <SelectItem value="2" text="Stereo" />
+              <SelectItem value="1" text="mono" />
+              <SelectItem value="2" text="stereo" />
             </Select>
           </div>
         </div>
@@ -160,7 +160,7 @@ export function DrumTool() {
             gap: '0.5rem'
           }}>
             <i className="fas fa-keyboard" style={{ color: '#666' }}></i>
-            OP-XY Drum Keyboard
+            demo samples
           </h3>
           <div style={{
             display: 'flex',
@@ -171,7 +171,7 @@ export function DrumTool() {
           }}>
             <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
               <i className="fas fa-upload" style={{ color: '#666' }}></i>
-              Drag files to keys or use table below
+              drag files to keys or use table below
             </div>
             <div style={{ 
               display: 'flex', 
@@ -202,11 +202,11 @@ export function DrumTool() {
           >
             <Tab style={{ fontSize: '1rem', fontWeight: '500' }}>
               <i className="fas fa-table" style={{ marginRight: '0.5rem' }}></i>
-              Sample Table
+              sample table
             </Tab>
             <Tab style={{ fontSize: '1rem', fontWeight: '500' }}>
               <i className="fas fa-sliders-h" style={{ marginRight: '0.5rem' }}></i>
-              Advanced
+              advanced
             </Tab>
           </TabList>
           
@@ -236,7 +236,7 @@ export function DrumTool() {
                     gap: '0.5rem'
                   }}>
                     <i className="fas fa-list" style={{ color: '#666' }}></i>
-                    Sample Management
+                    sample management
                   </h3>
                   <div style={{ display: 'flex', gap: '0.75rem' }}>
                     <Button
@@ -246,7 +246,7 @@ export function DrumTool() {
                       disabled={!hasLoadedSamples}
                     >
                       <i className="fas fa-trash" style={{ marginRight: '0.5rem' }}></i>
-                      Clear All
+                      clear all
                     </Button>
                   </div>
                 </div>
@@ -282,7 +282,7 @@ export function DrumTool() {
                     gap: '0.5rem'
                   }}>
                     <i className="fas fa-cog" style={{ color: '#666' }}></i>
-                    Individual Sample Controls
+                    individual sample controls
                   </h3>
                   <div style={{
                     background: '#f8f9fa',
@@ -294,10 +294,10 @@ export function DrumTool() {
                   }}>
                     <i className="fas fa-tools" style={{ fontSize: '2rem', marginBottom: '1rem', color: '#999' }}></i>
                     <p style={{ margin: '0' }}>
-                      Select a sample from the table to edit individual settings like gain, pan, and tune.
+                      select a sample from the table to edit individual settings like gain, pan, and tune.
                     </p>
                     <p style={{ margin: '1rem 0 0 0', fontSize: '0.875rem' }}>
-                      Coming soon in the next update
+                      coming soon in the next update
                     </p>
                   </div>
                 </div>
@@ -320,7 +320,7 @@ export function DrumTool() {
                     gap: '0.5rem'
                   }}>
                     <i className="fas fa-microphone" style={{ color: '#666' }}></i>
-                    Recording Studio
+                    recording studio
                   </h3>
                   <div style={{
                     background: '#f8f9fa',
@@ -332,10 +332,10 @@ export function DrumTool() {
                   }}>
                     <i className="fas fa-record-vinyl" style={{ fontSize: '2rem', marginBottom: '1rem', color: '#999' }}></i>
                     <p style={{ margin: '0' }}>
-                      Record directly into any drum slot using your microphone or line input.
+                      record directly into any drum slot using your microphone or line input.
                     </p>
                     <p style={{ margin: '1rem 0 0 0', fontSize: '0.875rem' }}>
-                      Coming soon in the next update
+                      coming soon in the next update
                     </p>
                   </div>
                 </div>
@@ -359,7 +359,7 @@ export function DrumTool() {
                     gap: '0.5rem'
                   }}>
                     <i className="fas fa-exchange-alt" style={{ color: '#666' }}></i>
-                    Preset Management
+                    preset management
                   </h3>
                   <div style={{
                     display: 'grid',
@@ -381,10 +381,10 @@ export function DrumTool() {
                         gap: '0.5rem'
                       }}>
                         <i className="fas fa-download" style={{ color: '#666' }}></i>
-                        Import Settings
+                        import settings
                       </h4>
                       <p style={{ margin: '0', fontSize: '0.875rem' }}>
-                        Load preset configurations from JSON files
+                        load preset configurations from JSON files
                       </p>
                     </div>
                     <div style={{
@@ -402,10 +402,10 @@ export function DrumTool() {
                         gap: '0.5rem'
                       }}>
                         <i className="fas fa-upload" style={{ color: '#666' }}></i>
-                        Export Settings
+                        export settings
                       </h4>
                       <p style={{ margin: '0', fontSize: '0.875rem' }}>
-                        Save current preset configuration for later use
+                        save current preset configuration for later use
                       </p>
                     </div>
                   </div>
@@ -448,7 +448,7 @@ export function DrumTool() {
               disabled={!hasLoadedSamples}
             >
               <i className="fas fa-trash" style={{ marginRight: '0.5rem' }}></i>
-              Clear All
+              clear all
             </Button>
             <Button
               kind="primary"
@@ -457,7 +457,7 @@ export function DrumTool() {
               size="lg"
             >
               <i className="fas fa-download" style={{ marginRight: '0.5rem' }}></i>
-              Generate Patch
+              generate patch
             </Button>
           </div>
         </div>

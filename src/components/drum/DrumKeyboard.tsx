@@ -351,7 +351,7 @@ export function DrumKeyboard({ onFileUpload }: DrumKeyboardProps = {}) {
                   ...letterStyle,
                   color: !isActive ? '#999' : '#fff'
                 }}>
-                  {keyChar.toLowerCase()}
+                  {keyChar.toUpperCase()}
                 </div>
               )}
             </div>
@@ -586,19 +586,19 @@ export function DrumKeyboard({ onFileUpload }: DrumKeyboardProps = {}) {
       }}>
         {!isMobile && (
           <div style={{ marginBottom: '0.5rem' }}>
-            <strong>Current Octave: {currentOctave + 1}</strong>
+            <strong>current octave: {currentOctave + 1}</strong>
           </div>
         )}
         {isMobile ? (
           <>
-            <strong>Touch Interface:</strong> Tap keys to play loaded samples<br />
-            <strong>Load Samples:</strong> Tap empty keys to browse and select audio files
+            <strong>touch interface:</strong> tap keys to play loaded samples<br />
+            <strong>load samples:</strong> tap empty keys to browse and select audio files
           </>
         ) : (
           <>
-            Use keyboard keys to trigger samples<br />
+            use keyboard keys to trigger samples<br />
             <strong>Z</strong> / <strong>X</strong> to switch octaves • <strong>A-J, W, E, R, Y, U</strong> to play samples<br />
-            <strong>Load Samples:</strong> Click empty keys to browse files or drag & drop audio files directly onto any key
+            <strong>load samples:</strong> click empty keys to browse files or drag & drop audio files directly onto any key
           </>
         )}
       </div>

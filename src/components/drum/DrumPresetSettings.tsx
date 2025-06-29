@@ -39,7 +39,7 @@ export function DrumPresetSettings() {
         textTransform: 'uppercase',
         letterSpacing: '0.05em'
       }}>
-        Preset Settings
+        preset settings
       </h4>
 
       <div style={{
@@ -52,13 +52,13 @@ export function DrumPresetSettings() {
         <div>
           <Select
             id="preset-playmode"
-            labelText="Playmode"
+            labelText="playmode"
             value={state.presetSettings.playmode}
             onChange={(e) => handlePlaymodeChange(e.target.value)}
           >
-            <SelectItem value="poly" text="Poly" />
-            <SelectItem value="mono" text="Mono" />
-            <SelectItem value="legato" text="Legato" />
+            <SelectItem value="poly" text="poly" />
+            <SelectItem value="mono" text="mono" />
+            <SelectItem value="legato" text="legato" />
           </Select>
         </div>
       </div>
@@ -83,7 +83,7 @@ export function DrumPresetSettings() {
               color: '#222',
               minWidth: '80px'
             }}>
-              Transpose
+              transpose
             </label>
             <div style={{ flex: 1 }}>
               <Slider
@@ -123,7 +123,7 @@ export function DrumPresetSettings() {
               color: '#222',
               minWidth: '80px'
             }}>
-              Velocity
+              velocity
             </label>
             <div style={{ flex: 1 }}>
               <Slider
@@ -163,7 +163,7 @@ export function DrumPresetSettings() {
               color: '#222',
               minWidth: '80px'
             }}>
-              Volume
+              volume
             </label>
             <div style={{ flex: 1 }}>
               <Slider
@@ -203,7 +203,7 @@ export function DrumPresetSettings() {
               color: '#222',
               minWidth: '80px'
             }}>
-              Width
+              width
             </label>
             <div style={{ flex: 1 }}>
               <Slider
@@ -236,10 +236,10 @@ export function DrumPresetSettings() {
         color: '#666',
         lineHeight: '1.4'
       }}>
-        <strong>Transpose:</strong> Pitch adjustment in semitones (-36 to +36)<br />
-        <strong>Velocity:</strong> Velocity sensitivity (0-100%)<br />
-        <strong>Volume:</strong> Overall preset volume (0-100%)<br />
-        <strong>Width:</strong> Stereo width (0-100%)
+        <strong>transpose:</strong> pitch adjustment in semitones (-36 to +36)<br />
+        <strong>velocity:</strong> velocity sensitivity (0-100%)<br />
+        <strong>volume:</strong> overall preset volume (0-100%)<br />
+        <strong>width:</strong> stereo width (0-100%)
       </div>
     </div>
   );

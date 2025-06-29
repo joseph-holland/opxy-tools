@@ -21,6 +21,11 @@ function App() {
               fontSize: '0.9rem',
               color: '#aaa'
             }}>
+              <div style={{ marginBottom: '1rem', color: '#999', fontSize: '0.85rem' }}>
+                OP-XY is a trademark of teenage engineering. this is an unofficial tool and is not affiliated with or endorsed by teenage engineering. 
+                this software is provided "as is" without warranty of any kind. use at your own risk. 
+                for educational and personal use only.
+              </div>
               <div style={{
                 display: 'flex',
                 justifyContent: 'center',

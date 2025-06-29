@@ -75,7 +75,7 @@ export function MultisampleTool() {
           color: '#222',
           fontFamily: '"Montserrat", "Arial", sans-serif'
         }}>
-          Multisample Tool
+          multisample tool
         </h3>
         
         <p style={{ 
@@ -83,7 +83,7 @@ export function MultisampleTool() {
           marginBottom: '1.5rem',
           fontSize: '0.9rem'
         }}>
-          Create custom multisample presets for the OP-XY. Upload samples and assign them to keyboard notes.
+          create custom multisample presets for the OP-XY. upload samples and assign them to keyboard notes.
         </p>
 
         {state.error && (
@@ -132,13 +132,13 @@ export function MultisampleTool() {
           }}
         >
           <div style={{ color: '#666', fontSize: '1.1rem', marginBottom: '1rem' }}>
-            {state.isLoading ? 'Processing files...' : 'Drop audio files here or click to browse'}
+            {state.isLoading ? 'processing files...' : 'drop audio files here or click to browse'}
           </div>
           <Button 
             kind="secondary"
             disabled={state.isLoading}
           >
-            {state.isLoading ? 'Loading...' : 'Browse Files'}
+            {state.isLoading ? 'loading...' : 'browse files'}
           </Button>
         </div>
 
@@ -150,7 +150,7 @@ export function MultisampleTool() {
               color: '#222',
               fontFamily: '"Montserrat", "Arial", sans-serif'
             }}>
-              Loaded Samples ({state.multisampleFiles.length})
+              loaded samples ({state.multisampleFiles.length})
             </h4>
             
             <div style={{ 
@@ -174,8 +174,8 @@ export function MultisampleTool() {
                       {sample.name}
                     </div>
                     <div style={{ fontSize: '0.9rem', color: '#666' }}>
-                      Note: {sample.note || 'Auto-detect'} • 
-                      Duration: {sample.audioBuffer ? `${sample.audioBuffer.duration.toFixed(2)}s` : 'Unknown'}
+                      note: {sample.note || 'auto-detect'} • 
+                      duration: {sample.audioBuffer ? `${sample.audioBuffer.duration.toFixed(2)}s` : 'unknown'}
                     </div>
                   </div>
                   <Button 
@@ -183,7 +183,7 @@ export function MultisampleTool() {
                     size="sm"
                     onClick={() => handleRemoveSample(index)}
                   >
-                    Remove
+                    remove
                   </Button>
                 </div>
               ))}
@@ -197,14 +197,14 @@ export function MultisampleTool() {
             disabled={!hasAnySamples || state.isLoading}
             onClick={handleGeneratePatch}
           >
-            {state.isLoading ? 'Generating...' : 'Generate Patch'}
+            {state.isLoading ? 'generating...' : 'generate patch'}
           </Button>
           <Button 
             kind="secondary" 
             disabled={!hasAnySamples}
             onClick={clearAllSamples}
           >
-            Clear All
+            clear all
           </Button>
         </div>
       </div>

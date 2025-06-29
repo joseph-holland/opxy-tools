@@ -134,18 +134,18 @@ export function PatchSizeIndicator({ type, className = '' }: PatchSizeIndicatorP
           borderRadius: '0.25rem',
           border: '1px solid #e0e0e0'
         }}>
-          <strong>Optimization tips:</strong>
+          <strong>optimization tips:</strong>
           <ul style={{ margin: '0.25rem 0 0 1rem', padding: 0 }}>
             {state.sampleRate > 22050 && (
-              <li>Reduce sample rate to 22kHz for smaller size</li>
+              <li>reduce sample rate to 22kHz for smaller size</li>
             )}
             {state.bitDepth > 16 && (
-              <li>Use 16-bit instead of 24-bit</li>
+              <li>use 16-bit instead of 24-bit</li>
             )}
             {state.channels === 2 && (
-              <li>Convert to mono if stereo imaging isn't needed</li>
+              <li>convert to mono if stereo imaging isn't needed</li>
             )}
-            <li>Trim unused portions of samples</li>
+            <li>trim unused portions of samples</li>
           </ul>
         </div>
       )}
