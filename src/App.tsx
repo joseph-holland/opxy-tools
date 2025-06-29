@@ -3,13 +3,26 @@ import { AppHeader } from './components/common/AppHeader';
 import { MainTabs } from './components/common/MainTabs';
 import { AppContextProvider } from './context/AppContext';
 import './theme/opxy-theme.scss';
+import { useState, useEffect } from 'react';
 
 function App() {
+  const [isMobile, setIsMobile] = useState(false);
+
+  useEffect(() => {
+    const checkMobile = () => {
+      setIsMobile(window.innerWidth < 768);
+    };
+    
+    checkMobile();
+    window.addEventListener('resize', checkMobile);
+    return () => window.removeEventListener('resize', checkMobile);
+  }, []);
+
   return (
     <AppContextProvider>
       <Theme theme="white" className="opxy-theme">
         <div style={{ minHeight: '100vh', backgroundColor: '#fff' }}>
-          <Content style={{ padding: '2rem' }}>
+          <Content style={{ padding: isMobile ? '0.5rem' : '2rem' }}>
             <AppHeader />
             <MainTabs />
             

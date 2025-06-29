@@ -176,16 +176,18 @@ export function DrumKeyboard({ onFileUpload }: DrumKeyboardProps = {}) {
     const isActive = hasContent; // Key is only active when it has content
     const canPlaySound = isActive && isActiveOctave; // Can only play sound if active and in current octave
     
-    // Key dimensions - exact 1:1 and 1:1.5 ratios
-    const baseSize = 56; // Increased base size for more prominence
-    const keyWidth = isLarge ? `${Math.round(baseSize * 1.5) + (keyChar === 'W' ? 1 : 0)}px` : `${baseSize}px`; // 85px for W, 84px for R/Y/U, 56px for others
-    const keyHeight = `${baseSize}px`; // Always 56px for proper proportions
+    // Key dimensions - 44px minimum for mobile touch targets (Apple HIG)
+    const baseSize = isMobile ? 48 : 56; // 48px on mobile for proper touch targets
+    const keyWidth = isLarge ? `${Math.round(baseSize * 1.5) + (keyChar === 'W' || keyChar === 'U' ? 1 : 0)}px` : `${baseSize}px`; // Mobile: 73px for W/U, 72px for R/Y, 48px for others
+    const keyHeight = `${baseSize}px`; // Mobile: 48px, Desktop: 56px
     
     // Circle positioning based on offset
+    const circleSize = isMobile ? 30 : 35; // Proportional circles on mobile
+    const fontSize = isMobile ? 18 : 21; // Proportional font on mobile
     let circleStyle: React.CSSProperties = {
       position: 'absolute',
-      width: '35px', // Scaled up proportionally
-      height: '35px',
+      width: `${circleSize}px`,
+      height: `${circleSize}px`,
       borderRadius: '50%',
       background: !isActive ? '#333' : (isPressed && isActiveOctave ? '#666' : '#111'),
       display: 'flex',
@@ -195,12 +197,12 @@ export function DrumKeyboard({ onFileUpload }: DrumKeyboardProps = {}) {
       top: '50%',
       transform: 'translateY(-50%)',
       left: '50%',
-      marginLeft: '-17.5px' // Half of width to center
+      marginLeft: `-${circleSize / 2}px` // Half of width to center
     };
 
     let letterStyle: React.CSSProperties = {
       color: '#fff',
-      fontSize: '21px', // Scaled up proportionally
+      fontSize: `${fontSize}px`,
       fontWeight: 'normal',
       pointerEvents: 'none'
     };
@@ -327,16 +329,16 @@ export function DrumKeyboard({ onFileUpload }: DrumKeyboardProps = {}) {
           {/* Outer ring around black circle */}
           <div style={{
             ...circleStyle,
-            width: '52px', // Larger outer ring that touches key border
-            height: '52px',
+            width: `${isMobile ? 45 : 52}px`, // Proportional outer ring on mobile
+            height: `${isMobile ? 45 : 52}px`,
             background: 'transparent',
             border: !isActive ? '1px solid #666' : '1px solid #000',
-            marginLeft: circleStyle.marginLeft === '0' ? '0' : '-26px' // Conditional centering
+            marginLeft: circleStyle.marginLeft === '0' ? '0' : `-${isMobile ? 22.5 : 26}px` // Conditional centering
           }}>
             {/* Inner black circle */}
             <div style={{
-              width: '35px',
-              height: '35px',
+              width: `${circleSize}px`,
+              height: `${circleSize}px`,
               borderRadius: '50%',
               background: !isActive ? '#555' : '#222',
               display: 'flex',
@@ -406,12 +408,24 @@ export function DrumKeyboard({ onFileUpload }: DrumKeyboardProps = {}) {
       {/* OP-XY Keyboard Layout - Side by Side on Desktop, Stacked on Mobile */}
       <div style={{
         display: 'flex',
-        flexDirection: isMobile ? 'column' : 'row',
-        alignItems: 'center',
         justifyContent: 'center',
-        gap: isMobile ? '1.5rem' : '1px',
         margin: '0 auto 2rem'
       }}>
+        <div style={{
+          display: 'inline-flex',
+          flexDirection: isMobile ? 'column' : 'row',
+          alignItems: 'center',
+          gap: isMobile ? '1.5rem' : '1px',
+          padding: '3px',
+          background: '#f8f9fa',
+          border: '1px solid #ddd',
+          borderRadius: '6px',
+          ...(isMobile && {
+            maxWidth: 'calc(100vw - 2rem)',
+            width: 'fit-content',
+            overflow: 'hidden'
+          })
+        }}>
         {/* Octave 1 (Lower) */}
         <div style={{
           display: 'flex',
@@ -569,6 +583,7 @@ export function DrumKeyboard({ onFileUpload }: DrumKeyboardProps = {}) {
             ))}
           </div>
         </div>
+      </div>
       </div>
 
       {/* Instructions */}

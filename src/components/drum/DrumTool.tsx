@@ -93,7 +93,7 @@ export function DrumTool() {
 
   return (
     <div style={{ 
-      maxWidth: '1400px', 
+      maxWidth: isMobile ? '100%' : '1400px', 
       margin: '0 auto',
       fontFamily: '"Montserrat", "Arial", sans-serif',
       minHeight: '100vh',
@@ -104,7 +104,7 @@ export function DrumTool() {
       <div style={{
         background: '#fff',
         borderBottom: '1px solid #e0e0e0',
-        padding: isMobile ? '1rem' : '1.5rem 2rem',
+        padding: isMobile ? '1rem 0.5rem' : '1.5rem 2rem',
         marginBottom: '0'
       }}>
         <div style={{
@@ -143,7 +143,7 @@ export function DrumTool() {
       <div style={{
         background: '#fff',
         borderBottom: '1px solid #e0e0e0',
-        padding: isMobile ? '1rem' : '2rem'
+        padding: isMobile ? '1rem 0.5rem' : '2rem'
       }}>
         <div style={{
           display: 'flex',
