@@ -6,23 +6,23 @@ export function DrumPresetSettings() {
   const { state, dispatch } = useAppContext();
 
   const handlePlaymodeChange = (value: string) => {
-    dispatch({ type: 'SET_PRESET_PLAYMODE', payload: value as 'poly' | 'mono' | 'legato' });
+    dispatch({ type: 'SET_DRUM_PRESET_PLAYMODE', payload: value as 'poly' | 'mono' | 'legato' });
   };
 
   const handleTransposeChange = (value: number) => {
-    dispatch({ type: 'SET_PRESET_TRANSPOSE', payload: value });
+    dispatch({ type: 'SET_DRUM_PRESET_TRANSPOSE', payload: value });
   };
 
   const handleVelocityChange = (value: number) => {
-    dispatch({ type: 'SET_PRESET_VELOCITY', payload: value });
+    dispatch({ type: 'SET_DRUM_PRESET_VELOCITY', payload: value });
   };
 
   const handleVolumeChange = (value: number) => {
-    dispatch({ type: 'SET_PRESET_VOLUME', payload: value });
+    dispatch({ type: 'SET_DRUM_PRESET_VOLUME', payload: value });
   };
 
   const handleWidthChange = (value: number) => {
-    dispatch({ type: 'SET_PRESET_WIDTH', payload: value });
+    dispatch({ type: 'SET_DRUM_PRESET_WIDTH', payload: value });
   };
 
   return (
@@ -31,16 +31,18 @@ export function DrumPresetSettings() {
       paddingBottom: '1.5rem',
       borderBottom: '1px solid #f0f0f0'
     }}>
-      <h4 style={{ 
-        marginBottom: '1rem',
-        color: '#888',
-        fontWeight: 'bold',
-        fontSize: '0.9rem',
-        textTransform: 'uppercase',
-        letterSpacing: '0.05em'
+      <h3 style={{ 
+        margin: '0',
+        marginBottom: '1.5rem',
+        color: '#222',
+        fontSize: '1.25rem',
+        fontWeight: '300',
+        display: 'flex',
+        alignItems: 'center',
+        gap: '0.5rem'
       }}>
         preset settings
-      </h4>
+      </h3>
 
       <div style={{
         display: 'grid',
@@ -53,7 +55,7 @@ export function DrumPresetSettings() {
           <Select
             id="preset-playmode"
             labelText="playmode"
-            value={state.presetSettings.playmode}
+            value={state.drumSettings.presetSettings.playmode}
             onChange={(e) => handlePlaymodeChange(e.target.value)}
           >
             <SelectItem value="poly" text="poly" />
@@ -78,7 +80,7 @@ export function DrumPresetSettings() {
             marginBottom: '0.5rem'
           }}>
             <label style={{
-              fontSize: '0.8rem',
+              fontSize: '0.9rem',
               fontWeight: '500',
               color: '#222',
               minWidth: '80px'
@@ -91,7 +93,7 @@ export function DrumPresetSettings() {
                 min={-36}
                 max={36}
                 step={1}
-                value={state.presetSettings.transpose}
+                value={state.drumSettings.presetSettings.transpose}
                 onChange={({ value }) => handleTransposeChange(value)}
                 hideTextInput
               />
@@ -101,7 +103,7 @@ export function DrumPresetSettings() {
               min={-36}
               max={36}
               step={1}
-              value={state.presetSettings.transpose}
+              value={state.drumSettings.presetSettings.transpose}
               onChange={(e, { value }) => handleTransposeChange(typeof value === 'number' ? value : 0)}
               size="sm"
               style={{ width: '80px' }}
@@ -118,7 +120,7 @@ export function DrumPresetSettings() {
             marginBottom: '0.5rem'
           }}>
             <label style={{
-              fontSize: '0.8rem',
+              fontSize: '0.9rem',
               fontWeight: '500',
               color: '#222',
               minWidth: '80px'
@@ -131,7 +133,7 @@ export function DrumPresetSettings() {
                 min={0}
                 max={100}
                 step={1}
-                value={state.presetSettings.velocity}
+                value={state.drumSettings.presetSettings.velocity}
                 onChange={({ value }) => handleVelocityChange(value)}
                 hideTextInput
               />
@@ -141,7 +143,7 @@ export function DrumPresetSettings() {
               min={0}
               max={100}
               step={1}
-              value={state.presetSettings.velocity}
+              value={state.drumSettings.presetSettings.velocity}
               onChange={(e, { value }) => handleVelocityChange(typeof value === 'number' ? value : 0)}
               size="sm"
               style={{ width: '80px' }}
@@ -158,7 +160,7 @@ export function DrumPresetSettings() {
             marginBottom: '0.5rem'
           }}>
             <label style={{
-              fontSize: '0.8rem',
+              fontSize: '0.9rem',
               fontWeight: '500',
               color: '#222',
               minWidth: '80px'
@@ -171,7 +173,7 @@ export function DrumPresetSettings() {
                 min={0}
                 max={100}
                 step={1}
-                value={state.presetSettings.volume}
+                value={state.drumSettings.presetSettings.volume}
                 onChange={({ value }) => handleVolumeChange(value)}
                 hideTextInput
               />
@@ -181,7 +183,7 @@ export function DrumPresetSettings() {
               min={0}
               max={100}
               step={1}
-              value={state.presetSettings.volume}
+              value={state.drumSettings.presetSettings.volume}
               onChange={(e, { value }) => handleVolumeChange(typeof value === 'number' ? value : 0)}
               size="sm"
               style={{ width: '80px' }}
@@ -198,7 +200,7 @@ export function DrumPresetSettings() {
             marginBottom: '0.5rem'
           }}>
             <label style={{
-              fontSize: '0.8rem',
+              fontSize: '0.9rem',
               fontWeight: '500',
               color: '#222',
               minWidth: '80px'
@@ -211,7 +213,7 @@ export function DrumPresetSettings() {
                 min={0}
                 max={100}
                 step={1}
-                value={state.presetSettings.width}
+                value={state.drumSettings.presetSettings.width}
                 onChange={({ value }) => handleWidthChange(value)}
                 hideTextInput
               />
@@ -221,7 +223,7 @@ export function DrumPresetSettings() {
               min={0}
               max={100}
               step={1}
-              value={state.presetSettings.width}
+              value={state.drumSettings.presetSettings.width}
               onChange={(e, { value }) => handleWidthChange(typeof value === 'number' ? value : 0)}
               size="sm"
               style={{ width: '80px' }}

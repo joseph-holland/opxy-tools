@@ -339,7 +339,7 @@ export function WaveformEditor({
             size="sm"
             onClick={handlePlay}
             disabled={isPlaying}
-            label={isPlaying ? "Playing..." : "Play region"}
+            label={isPlaying ? "playing..." : "play region"}
           >
             {isPlaying ? <Pause /> : <Play />}
           </IconButton>
@@ -347,7 +347,7 @@ export function WaveformEditor({
             kind="ghost"
             size="sm"
             onClick={handleReset}
-            label="Reset markers"
+            label="reset markers"
           >
             <Reset />
           </IconButton>

@@ -21,7 +21,7 @@ export function ErrorDisplay({ message, style }: ErrorDisplayProps) {
 
   return (
     <div style={defaultStyle}>
-      <i className="fas fa-exclamation-triangle" style={{ marginRight: '0.5rem', color: '#666' }}></i>
+              <i className="fas fa-exclamation-triangle" style={{ marginRight: '0.5rem', color: '#666' }}></i>
       {message}
     </div>
   );

@@ -2,6 +2,16 @@
 
 All notable changes to this project will be documented in this file.
 
+## [v1.0.0] - First Stable Release
+- **Major UI/UX Overhaul**: Complete redesign with modern tab interface matching legacy Bootstrap styling
+- **Mobile Optimization**: Responsive design with proper mobile layouts and touch-friendly controls
+- **Dynamic Version Loading**: Version now automatically loaded from package.json
+- **Improved Typography**: Consistent text sizing and better readability across all components
+- **Clean Interface**: Removed unnecessary icons for a more minimal, focused design
+- **Enhanced Mobile Experience**: Proper dropdown positioning and vertical stacking on mobile devices
+- **Legacy Design Consistency**: Tab styling now matches the original tool's appearance
+- **Background Color Updates**: Consistent grey background (#ececec) throughout the application
+
 ## [v0.4.0] - UI changes and new features 
 - More UI changes for consistancy
 - New buttons to help with bulk edit and clear samples

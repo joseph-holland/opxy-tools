@@ -525,5 +525,28 @@ export function getPatchSizeWarning(sizeBytes: number): string | null {
   return null;
 }
 
+/**
+ * Get the effective sample rate (NO upsampling)
+ * Matches legacy behavior: "0"=keep original, "44100"=44.1kHz, "22050"=22kHz, "11025"=11kHz
+ */
+export function getEffectiveSampleRate(originalSampleRate: number, selectedRate: string | number): number {
+  const selected = selectedRate.toString();
+  
+  if (selected === "0") {
+    // Keep original
+    return originalSampleRate;
+  }
+
+  const targetRate = parseInt(selected, 10);
+  
+  // If original is 48kHz, allow conversion to any standard rate
+  if (originalSampleRate === 48000) {
+    return targetRate;
+  }
+  
+  // For other rates, prevent upsampling
+  return Math.min(originalSampleRate, targetRate);
+}
+
 // Export metadata type for use in components
 export type { WavMetadata };

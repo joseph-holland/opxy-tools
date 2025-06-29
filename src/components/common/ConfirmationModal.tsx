@@ -35,7 +35,7 @@ export function ConfirmationModal({
       <div 
         style={{
           backgroundColor: '#fff',
-          borderRadius: '3px',
+          borderRadius: '6px',
           boxShadow: '0 8px 32px rgba(0, 0, 0, 0.15)',
           maxWidth: '400px',
           width: '90%',
@@ -51,15 +51,15 @@ export function ConfirmationModal({
         }}>
           <h3 style={{
             margin: '0',
-            fontSize: '1.1rem',
-            fontWeight: '600',
+            fontSize: '1.25rem',
+            fontWeight: '300',
             color: '#222',
             display: 'flex',
             alignItems: 'center',
             gap: '0.5rem'
           }}>
             <i className="fas fa-exclamation-triangle" style={{ 
-              color: '#666', 
+              color: '#222', 
               fontSize: '1rem' 
             }}></i>
             confirm action

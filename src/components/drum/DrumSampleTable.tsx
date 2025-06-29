@@ -7,6 +7,7 @@ import { FileDetailsBadges } from '../common/FileDetailsBadges';
 interface DrumSampleTableProps {
   onFileUpload: (index: number, file: File) => void;
   onClearSample: (index: number) => void;
+  onRecordSample?: (index: number) => void;
 }
 
 // Full drum names from OP-XY documentation - all lowercase
@@ -17,7 +18,7 @@ const drumSampleNames = [
   'triangle', 'low tom', 'low conga', 'clave', 'hi-conga', 'guiro'
 ];
 
-export function DrumSampleTable({ onFileUpload, onClearSample }: DrumSampleTableProps) {
+export function DrumSampleTable({ onFileUpload, onClearSample, onRecordSample }: DrumSampleTableProps) {
   const { state, dispatch } = useAppContext();
   const fileInputRefs = useRef<(HTMLInputElement | null)[]>([]);
   const [isMobile, setIsMobile] = useState(false);
@@ -81,19 +82,7 @@ export function DrumSampleTable({ onFileUpload, onClearSample }: DrumSampleTable
       <div style={{
         fontFamily: '"Montserrat", "Arial", sans-serif'
       }}>
-        {/* Mobile Header */}
-        <div style={{
-          padding: '1rem',
-          background: '#f8f9fa',
-          borderRadius: '3px',
-          marginBottom: '1rem',
-          textAlign: 'center',
-          fontSize: '0.9rem',
-          fontWeight: 'bold',
-          color: '#666'
-        }}>
-          sample management
-        </div>
+
 
         {/* Mobile Cards */}
         <div style={{
@@ -193,6 +182,26 @@ export function DrumSampleTable({ onFileUpload, onClearSample }: DrumSampleTable
                          title="clear"
                        >
                          <i className="fas fa-times"></i>
+                       </Button>
+                       <Button
+                         kind="ghost"
+                         size="sm"
+                         onClick={() => onRecordSample?.(index)}
+                         style={{
+                           minHeight: '32px',
+                           width: '32px',
+                           padding: '0',
+                           display: 'flex',
+                           alignItems: 'center',
+                           justifyContent: 'center',
+                           border: '1px solid #ccc',
+                           borderRadius: '3px',
+                           backgroundColor: '#fff',
+                           color: '#333'
+                         }}
+                         title="record"
+                       >
+                         <i className="fas fa-microphone"></i>
                        </Button>
                        <Button
                          kind="ghost"
@@ -328,11 +337,11 @@ export function DrumSampleTable({ onFileUpload, onClearSample }: DrumSampleTable
       {/* Table Header */}
       <div style={{
         display: 'grid',
-        gridTemplateColumns: '140px 1fr 120px 120px',
+        gridTemplateColumns: '140px 1fr 120px 140px',
         gap: '0.5rem',
         padding: '0.75rem',
         background: '#f8f9fa',
-        borderRadius: '3px 3px 0 0',
+        borderRadius: '6px 6px 0 0',
         border: '1px solid #e0e0e0',
         borderBottom: 'none',
         fontSize: '0.8rem',
@@ -348,7 +357,7 @@ export function DrumSampleTable({ onFileUpload, onClearSample }: DrumSampleTable
       {/* Sample Rows */}
       <div style={{
         border: '1px solid #e0e0e0',
-        borderRadius: '0 0 3px 3px',
+        borderRadius: '0 0 6px 6px',
         overflow: 'hidden'
       }}>
         {Array.from({ length: 24 }, (_, index) => {
@@ -374,7 +383,7 @@ export function DrumSampleTable({ onFileUpload, onClearSample }: DrumSampleTable
               <div
                 style={{
                   display: 'grid',
-                  gridTemplateColumns: '140px 1fr 120px 120px',
+                  gridTemplateColumns: '140px 1fr 120px 140px',
                   gap: '0.5rem',
                   padding: '0.75rem',
                   background: isLoaded ? '#f8f9fa' : '#fff',
@@ -548,6 +557,26 @@ export function DrumSampleTable({ onFileUpload, onClearSample }: DrumSampleTable
                   <Button
                     kind="ghost"
                     size="sm"
+                    onClick={() => onRecordSample?.(index)}
+                    style={{
+                      minHeight: '28px',
+                      width: '28px',
+                      padding: '0',
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      border: '1px solid #ccc',
+                      borderRadius: '3px',
+                      backgroundColor: '#fff',
+                      color: '#333'
+                    }}
+                    title="record"
+                  >
+                    <i className="fas fa-microphone"></i>
+                  </Button>
+                  <Button
+                    kind="ghost"
+                    size="sm"
                     disabled={!isLoaded}
                     onClick={() => {/* Settings/advanced options */}}
                     style={{
@@ -573,28 +602,7 @@ export function DrumSampleTable({ onFileUpload, onClearSample }: DrumSampleTable
         })}
       </div>
 
-      {/* Bulk Actions - Record moved here */}
-      <div style={{
-        marginTop: '1rem',
-        display: 'flex',
-        gap: '0.5rem',
-        alignItems: 'center'
-      }}>
-        <Button
-          kind="ghost"
-          size="sm"
-          onClick={() => {/* Bulk edit */}}
-        >
-          bulk edit
-        </Button>
-        <Button
-          kind="ghost"
-          size="sm"
-          onClick={() => {/* Record */}}
-        >
-          record
-        </Button>
-      </div>
+
     </div>
   );
 } 

@@ -45,23 +45,31 @@ export interface AppState {
   // Current tab
   currentTab: 'drum' | 'multisample';
   
-  // Audio settings
-  sampleRate: number;
-  bitDepth: number;
-  channels: number;
+  // Drum tool settings
+  drumSettings: {
+    sampleRate: number;
+    bitDepth: number;
+    channels: number;
+    presetName: string;
+    presetSettings: {
+      playmode: 'poly' | 'mono' | 'legato';
+      transpose: number; // -36 to +36
+      velocity: number; // 0-100%
+      volume: number; // 0-100%
+      width: number; // 0-100%
+    };
+  };
+  
+  // Multisample tool settings
+  multisampleSettings: {
+    sampleRate: number;
+    bitDepth: number;
+    channels: number;
+    presetName: string;
+  };
   
   // Drum samples (24 samples for full OP-XY compatibility)
   drumSamples: DrumSample[];
-  
-  // Preset settings
-  presetName: string;
-  presetSettings: {
-    playmode: 'poly' | 'mono' | 'legato';
-    transpose: number; // -36 to +36
-    velocity: number; // 0-100%
-    volume: number; // 0-100%
-    width: number; // 0-100%
-  };
   
   // Multisample files
   multisampleFiles: MultisampleFile[];
@@ -75,15 +83,19 @@ export interface AppState {
 // Define enhanced action types
 export type AppAction = 
   | { type: 'SET_TAB'; payload: 'drum' | 'multisample' }
-  | { type: 'SET_SAMPLE_RATE'; payload: number }
-  | { type: 'SET_BIT_DEPTH'; payload: number }
-  | { type: 'SET_CHANNELS'; payload: number }
-  | { type: 'SET_PRESET_NAME'; payload: string }
-  | { type: 'SET_PRESET_PLAYMODE'; payload: 'poly' | 'mono' | 'legato' }
-  | { type: 'SET_PRESET_TRANSPOSE'; payload: number }
-  | { type: 'SET_PRESET_VELOCITY'; payload: number }
-  | { type: 'SET_PRESET_VOLUME'; payload: number }
-  | { type: 'SET_PRESET_WIDTH'; payload: number }
+  | { type: 'SET_DRUM_SAMPLE_RATE'; payload: number }
+  | { type: 'SET_DRUM_BIT_DEPTH'; payload: number }
+  | { type: 'SET_DRUM_CHANNELS'; payload: number }
+  | { type: 'SET_DRUM_PRESET_NAME'; payload: string }
+  | { type: 'SET_DRUM_PRESET_PLAYMODE'; payload: 'poly' | 'mono' | 'legato' }
+  | { type: 'SET_DRUM_PRESET_TRANSPOSE'; payload: number }
+  | { type: 'SET_DRUM_PRESET_VELOCITY'; payload: number }
+  | { type: 'SET_DRUM_PRESET_VOLUME'; payload: number }
+  | { type: 'SET_DRUM_PRESET_WIDTH'; payload: number }
+  | { type: 'SET_MULTISAMPLE_SAMPLE_RATE'; payload: number }
+  | { type: 'SET_MULTISAMPLE_BIT_DEPTH'; payload: number }
+  | { type: 'SET_MULTISAMPLE_CHANNELS'; payload: number }
+  | { type: 'SET_MULTISAMPLE_PRESET_NAME'; payload: string }
   | { type: 'LOAD_DRUM_SAMPLE'; payload: { index: number; file: File; audioBuffer: AudioBuffer; metadata: WavMetadata } }
   | { type: 'CLEAR_DRUM_SAMPLE'; payload: number }
   | { type: 'UPDATE_DRUM_SAMPLE'; payload: { index: number; updates: Partial<DrumSample> } }
@@ -121,18 +133,26 @@ const initialMultisampleFile: MultisampleFile = {
 
 const initialState: AppState = {
   currentTab: 'drum',
-  sampleRate: 44100,
-  bitDepth: 16,
-  channels: 2,
-  drumSamples: Array(24).fill(null).map(() => ({ ...initialDrumSample })),
-  presetName: '',
-  presetSettings: {
-    playmode: 'poly',
-    transpose: 0,
-    velocity: 60,
-    volume: 56,
-    width: 0
+  drumSettings: {
+    sampleRate: 0,
+    bitDepth: 0,
+    channels: 0,
+    presetName: '',
+    presetSettings: {
+      playmode: 'poly',
+      transpose: 0,
+      velocity: 60,
+      volume: 56,
+      width: 0
+    }
   },
+  multisampleSettings: {
+    sampleRate: 0,
+    bitDepth: 0,
+    channels: 0,
+    presetName: ''
+  },
+  drumSamples: Array(24).fill(null).map(() => ({ ...initialDrumSample })),
   multisampleFiles: [], // Dynamic array, 1-24 samples max
   selectedMultisample: null,
   isLoading: false,
@@ -145,46 +165,97 @@ function appReducer(state: AppState, action: AppAction): AppState {
     case 'SET_TAB':
       return { ...state, currentTab: action.payload };
       
-    case 'SET_SAMPLE_RATE':
-      return { ...state, sampleRate: action.payload };
-      
-    case 'SET_BIT_DEPTH':
-      return { ...state, bitDepth: action.payload };
-      
-    case 'SET_CHANNELS':
-      return { ...state, channels: action.payload };
-      
-    case 'SET_PRESET_NAME':
-      return { ...state, presetName: action.payload };
-      
-    case 'SET_PRESET_PLAYMODE':
+    case 'SET_DRUM_SAMPLE_RATE':
       return { 
         ...state, 
-        presetSettings: { ...state.presetSettings, playmode: action.payload }
+        drumSettings: { ...state.drumSettings, sampleRate: action.payload }
       };
       
-    case 'SET_PRESET_TRANSPOSE':
+    case 'SET_DRUM_BIT_DEPTH':
       return { 
         ...state, 
-        presetSettings: { ...state.presetSettings, transpose: action.payload }
+        drumSettings: { ...state.drumSettings, bitDepth: action.payload }
       };
       
-    case 'SET_PRESET_VELOCITY':
+    case 'SET_DRUM_CHANNELS':
       return { 
         ...state, 
-        presetSettings: { ...state.presetSettings, velocity: action.payload }
+        drumSettings: { ...state.drumSettings, channels: action.payload }
       };
       
-    case 'SET_PRESET_VOLUME':
+    case 'SET_DRUM_PRESET_NAME':
       return { 
         ...state, 
-        presetSettings: { ...state.presetSettings, volume: action.payload }
+        drumSettings: { ...state.drumSettings, presetName: action.payload }
       };
       
-    case 'SET_PRESET_WIDTH':
+    case 'SET_DRUM_PRESET_PLAYMODE':
       return { 
         ...state, 
-        presetSettings: { ...state.presetSettings, width: action.payload }
+        drumSettings: { 
+          ...state.drumSettings, 
+          presetSettings: { ...state.drumSettings.presetSettings, playmode: action.payload }
+        }
+      };
+      
+    case 'SET_DRUM_PRESET_TRANSPOSE':
+      return { 
+        ...state, 
+        drumSettings: { 
+          ...state.drumSettings, 
+          presetSettings: { ...state.drumSettings.presetSettings, transpose: action.payload }
+        }
+      };
+      
+    case 'SET_DRUM_PRESET_VELOCITY':
+      return { 
+        ...state, 
+        drumSettings: { 
+          ...state.drumSettings, 
+          presetSettings: { ...state.drumSettings.presetSettings, velocity: action.payload }
+        }
+      };
+      
+    case 'SET_DRUM_PRESET_VOLUME':
+      return { 
+        ...state, 
+        drumSettings: { 
+          ...state.drumSettings, 
+          presetSettings: { ...state.drumSettings.presetSettings, volume: action.payload }
+        }
+      };
+      
+    case 'SET_DRUM_PRESET_WIDTH':
+      return { 
+        ...state, 
+        drumSettings: { 
+          ...state.drumSettings, 
+          presetSettings: { ...state.drumSettings.presetSettings, width: action.payload }
+        }
+      };
+      
+    case 'SET_MULTISAMPLE_SAMPLE_RATE':
+      return { 
+        ...state, 
+        multisampleSettings: { ...state.multisampleSettings, sampleRate: action.payload }
+      };
+      
+    case 'SET_MULTISAMPLE_BIT_DEPTH':
+      return { 
+        ...state, 
+        multisampleSettings: { ...state.multisampleSettings, bitDepth: action.payload }
+      };
+      
+    case 'SET_MULTISAMPLE_CHANNELS':
+      return { 
+        ...state, 
+        multisampleSettings: { ...state.multisampleSettings, channels: action.payload }
+      };
+      
+    case 'SET_MULTISAMPLE_PRESET_NAME':
+      return { 
+        ...state, 
+        multisampleSettings: { ...state.multisampleSettings, presetName: action.payload }
       };
       
     case 'LOAD_DRUM_SAMPLE':

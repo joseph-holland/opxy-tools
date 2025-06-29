@@ -21,8 +21,13 @@ function App() {
   return (
     <AppContextProvider>
       <Theme theme="white" className="opxy-theme">
-        <div style={{ minHeight: '100vh', backgroundColor: '#fff' }}>
-          <Content style={{ padding: isMobile ? '0.5rem' : '2rem' }}>
+        <div style={{ minHeight: '100vh', backgroundColor: '#ececec' }}>
+          <Content style={{ 
+            padding: isMobile ? '0.5rem' : '2rem',
+            backgroundColor: '#ececec',
+            maxWidth: '1400px',
+            margin: '0 auto'
+          }}>
             <AppHeader />
             <MainTabs />
             
@@ -35,9 +40,8 @@ function App() {
               color: '#aaa'
             }}>
               <div style={{ marginBottom: '1rem', color: '#999', fontSize: '0.85rem' }}>
-                OP-XY is a trademark of teenage engineering. this is an unofficial tool and is not affiliated with or endorsed by teenage engineering. 
-                this software is provided "as is" without warranty of any kind. use at your own risk. 
-                for educational and personal use only.
+                OP-XY is a trademark of teenage engineering. this is an unofficial tool and is not affiliated with or endorsed by teenage engineering. <br />
+                this software is provided "as is" without warranty of any kind. use at your own risk. for educational and personal use only.
               </div>
               <div style={{
                 display: 'flex',
@@ -47,7 +51,7 @@ function App() {
                 gap: '1.2em',
                 fontSize: '0.98em'
               }}>
-                <span style={{ color: '#999' }}>v0.4.0</span>
+                <span style={{ color: '#999' }}>v{__APP_VERSION__}</span>
                 <a 
                   href="https://github.com/joseph-holland/opxy-tools" 
                   target="_blank" 

@@ -176,14 +176,14 @@ export function DrumKeyboard({ onFileUpload }: DrumKeyboardProps = {}) {
     const isActive = hasContent; // Key is only active when it has content
     const canPlaySound = isActive && isActiveOctave; // Can only play sound if active and in current octave
     
-    // Key dimensions - 44px minimum for mobile touch targets (Apple HIG)
-    const baseSize = isMobile ? 48 : 56; // 48px on mobile for proper touch targets
-    const keyWidth = isLarge ? `${Math.round(baseSize * 1.5) + (keyChar === 'W' || keyChar === 'U' ? 1 : 0)}px` : `${baseSize}px`; // Mobile: 73px for W/U, 72px for R/Y, 48px for others
-    const keyHeight = `${baseSize}px`; // Mobile: 48px, Desktop: 56px
+    // Key dimensions - scaled for mobile to fit all screen sizes
+    const baseSize = isMobile ? 40 : 56; // 40px on mobile to fit smaller screens
+    const keyWidth = isLarge ? `${Math.round(baseSize * 1.5) + (keyChar === 'W' || keyChar === 'U' ? 1 : 0)}px` : `${baseSize}px`; // Mobile: 61px for W/U, 60px for R/Y, 40px for others
+    const keyHeight = `${baseSize}px`; // Mobile: 40px, Desktop: 56px
     
     // Circle positioning based on offset
-    const circleSize = isMobile ? 30 : 35; // Proportional circles on mobile
-    const fontSize = isMobile ? 18 : 21; // Proportional font on mobile
+    const circleSize = isMobile ? 25 : 35; // Smaller circles on mobile
+    const fontSize = isMobile ? 15 : 21; // Smaller font on mobile
     let circleStyle: React.CSSProperties = {
       position: 'absolute',
       width: `${circleSize}px`,
@@ -329,11 +329,11 @@ export function DrumKeyboard({ onFileUpload }: DrumKeyboardProps = {}) {
           {/* Outer ring around black circle */}
           <div style={{
             ...circleStyle,
-            width: `${isMobile ? 45 : 52}px`, // Proportional outer ring on mobile
-            height: `${isMobile ? 45 : 52}px`,
+            width: `${isMobile ? 37 : 52}px`, // Smaller outer ring on mobile
+            height: `${isMobile ? 37 : 52}px`,
             background: 'transparent',
             border: !isActive ? '1px solid #666' : '1px solid #000',
-            marginLeft: circleStyle.marginLeft === '0' ? '0' : `-${isMobile ? 22.5 : 26}px` // Conditional centering
+            marginLeft: circleStyle.marginLeft === '0' ? '0' : `-${isMobile ? 18.5 : 26}px` // Conditional centering
           }}>
             {/* Inner black circle */}
             <div style={{
@@ -380,7 +380,6 @@ export function DrumKeyboard({ onFileUpload }: DrumKeyboardProps = {}) {
                 padding: '2px 4px',
                 borderRadius: '2px',
                 lineHeight: '1',
-                textTransform: 'uppercase',
                 letterSpacing: '0.5px'
               }}>
                 {mapping.label}
@@ -601,8 +600,7 @@ export function DrumKeyboard({ onFileUpload }: DrumKeyboardProps = {}) {
           </>
         ) : (
           <>
-            use keyboard keys to trigger samples<br />
-            <strong>Z</strong> / <strong>X</strong> to switch octaves • <strong>A-J, W, E, R, Y, U</strong> to play samples<br />
+            use keyboard keys (<strong>A-J, W, E, R, Y, U</strong>) to trigger samples and <strong>Z</strong> / <strong>X</strong> to switch octaves<br />
             <strong>load samples:</strong> click empty keys to browse files or drag & drop audio files directly onto any key
           </>
         )}

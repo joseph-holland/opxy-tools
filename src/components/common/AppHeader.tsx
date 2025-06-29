@@ -7,7 +7,7 @@ export function AppHeader() {
       fontFamily: '"Montserrat", "Arial", sans-serif',
       color: '#222'
     }}>
-      unofficial OP-XY tools (beta)
+      unofficial OP-XY tools
     </div>
   );
 }

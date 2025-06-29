@@ -62,7 +62,7 @@ export function FileDropZone({
   const defaultStyle: React.CSSProperties = {
     background: '#f8f9fa',
     border: '2px dashed #ced4da',
-    borderRadius: '3px',
+    borderRadius: '6px',
     padding: '3rem 2rem',
     textAlign: 'center',
     cursor: disabled ? 'not-allowed' : 'pointer',

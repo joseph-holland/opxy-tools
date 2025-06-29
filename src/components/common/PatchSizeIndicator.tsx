@@ -13,10 +13,12 @@ export function PatchSizeIndicator({ type, className = '' }: PatchSizeIndicatorP
   const [patchSize, setPatchSize] = useState(0);
   const [isCalculating, setIsCalculating] = useState(false);
 
-  // Get relevant audio buffers based on type
+  // Get relevant audio buffers and settings based on type
   const audioBuffers = type === 'drum' 
     ? state.drumSamples.filter(s => s.audioBuffer).map(s => s.audioBuffer!)
     : state.multisampleFiles.filter(f => f.audioBuffer).map(f => f.audioBuffer!);
+
+  const settings = type === 'drum' ? state.drumSettings : state.multisampleSettings;
 
   // Calculate patch size when samples or settings change
   useEffect(() => {
@@ -29,9 +31,9 @@ export function PatchSizeIndicator({ type, className = '' }: PatchSizeIndicatorP
       setIsCalculating(true);
       try {
         const size = await calculatePatchSize(audioBuffers, {
-          sampleRate: state.sampleRate,
-          bitDepth: state.bitDepth,
-          channels: state.channels,
+          sampleRate: settings.sampleRate,
+          bitDepth: settings.bitDepth,
+          channels: settings.channels,
         });
         setPatchSize(size);
       } catch (error) {
@@ -43,7 +45,7 @@ export function PatchSizeIndicator({ type, className = '' }: PatchSizeIndicatorP
     };
 
     calculateSize();
-  }, [audioBuffers.length, state.sampleRate, state.bitDepth, state.channels]);
+  }, [audioBuffers.length, settings.sampleRate, settings.bitDepth, settings.channels]);
 
   // Calculate percentage and get warning
   const maxSize = 8 * 1024 * 1024; // 8MB limit
@@ -76,7 +78,7 @@ export function PatchSizeIndicator({ type, className = '' }: PatchSizeIndicatorP
           fontWeight: '500',
           color: '#222'
         }}>
-          Patch Size
+          patch size
         </span>
         <span style={{ 
           fontSize: '0.9rem',
@@ -118,9 +120,9 @@ export function PatchSizeIndicator({ type, className = '' }: PatchSizeIndicatorP
         marginTop: '0.25rem'
       }}>
         {audioBuffers.length} sample{audioBuffers.length !== 1 ? 's' : ''} • 
-        {' '}{state.sampleRate === 44100 ? '44.1' : state.sampleRate / 1000}kHz • 
-        {' '}{state.bitDepth}bit • 
-        {' '}{state.channels === 1 ? 'mono' : 'stereo'}
+        {' '}{settings.sampleRate === 0 ? 'original' : settings.sampleRate === 44100 ? '44.1khz' : `${settings.sampleRate / 1000}khz`} • 
+        {' '}{settings.bitDepth === 0 ? 'original' : `${settings.bitDepth}bit`} • 
+        {' '}{settings.channels === 0 ? 'original' : settings.channels === 1 ? 'mono' : 'stereo'}
       </div>
 
       {/* Recommendations for optimization */}
@@ -136,13 +138,13 @@ export function PatchSizeIndicator({ type, className = '' }: PatchSizeIndicatorP
         }}>
           <strong>optimization tips:</strong>
           <ul style={{ margin: '0.25rem 0 0 1rem', padding: 0 }}>
-            {state.sampleRate > 22050 && (
-              <li>reduce sample rate to 22kHz for smaller size</li>
+            {(settings.sampleRate === 0 || settings.sampleRate > 22050) && (
+              <li>reduce sample rate to 22khz for smaller size</li>
             )}
-            {state.bitDepth > 16 && (
+            {(settings.bitDepth === 0 || settings.bitDepth > 16) && (
               <li>use 16-bit instead of 24-bit</li>
             )}
-            {state.channels === 2 && (
+            {(settings.channels === 0 || settings.channels === 2) && (
               <li>convert to mono if stereo imaging isn't needed</li>
             )}
             <li>trim unused portions of samples</li>
