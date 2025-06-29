@@ -8,7 +8,7 @@ interface DrumSampleTableProps {
   onClearSample: (index: number) => void;
 }
 
-// Full drum names from OP-XY documentation
+// Full drum names from OP-XY documentation - all lowercase
 const drumSampleNames = [
   'kick', 'kick alt', 'snare', 'snare alt', 'rim', 'hand clap', 
   'tambourine', 'shaker', 'closed hi-hat', 'clave', 'open hi-hat', 'cabasa',
@@ -78,9 +78,7 @@ export function DrumSampleTable({ onFileUpload, onClearSample }: DrumSampleTable
         borderBottom: 'none',
         fontSize: '0.8rem',
         fontWeight: 'bold',
-        color: '#666',
-        textTransform: 'uppercase',
-        letterSpacing: '0.05em'
+        color: '#666'
       }}>
         <div>drum key</div>
         <div>file details</div>
@@ -141,8 +139,7 @@ export function DrumSampleTable({ onFileUpload, onClearSample }: DrumSampleTable
                 <div style={{
                   fontSize: '0.8rem',
                   fontWeight: '500',
-                  color: '#222',
-                  textTransform: 'capitalize'
+                  color: '#222'
                 }}>
                   {drumSampleNames[index]}
                 </div>
@@ -243,7 +240,7 @@ export function DrumSampleTable({ onFileUpload, onClearSample }: DrumSampleTable
                   )}
                 </div>
 
-                {/* Actions */}
+                {/* Actions - Only play, clear, and settings */}
                 <div style={{
                   display: 'flex',
                   gap: '0.25rem',
@@ -256,22 +253,19 @@ export function DrumSampleTable({ onFileUpload, onClearSample }: DrumSampleTable
                     onClick={() => playSample(index)}
                     style={{
                       minHeight: '28px',
-                      padding: '0 0.5rem'
+                      width: '28px',
+                      padding: '0',
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      border: '1px solid #ccc',
+                      borderRadius: '4px',
+                      backgroundColor: '#fff',
+                      color: isLoaded ? '#333' : '#999'
                     }}
+                    title="play"
                   >
-                    play
-                  </Button>
-                  <Button
-                    kind="ghost"
-                    size="sm"
-                    disabled={!isLoaded}
-                    onClick={() => {/* Advanced settings */}}
-                    style={{
-                      minHeight: '28px',
-                      padding: '0 0.5rem'
-                    }}
-                  >
-                    edit
+                    <i className="fas fa-play"></i>
                   </Button>
                   <Button
                     kind="ghost"
@@ -280,11 +274,40 @@ export function DrumSampleTable({ onFileUpload, onClearSample }: DrumSampleTable
                     onClick={() => onClearSample(index)}
                     style={{
                       minHeight: '28px',
-                      padding: '0 0.5rem',
-                      color: '#d32f2f'
+                      width: '28px',
+                      padding: '0',
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      border: '1px solid #ccc',
+                      borderRadius: '4px',
+                      backgroundColor: '#fff',
+                      color: isLoaded ? '#666' : '#999'
                     }}
+                    title="clear"
                   >
-                    clear
+                    <i className="fas fa-times"></i>
+                  </Button>
+                  <Button
+                    kind="ghost"
+                    size="sm"
+                    disabled={!isLoaded}
+                    onClick={() => {/* Settings/advanced options */}}
+                    style={{
+                      minHeight: '28px',
+                      width: '28px',
+                      padding: '0',
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      border: '1px solid #ccc',
+                      borderRadius: '4px',
+                      backgroundColor: '#fff',
+                      color: isLoaded ? '#333' : '#999'
+                    }}
+                    title="settings"
+                  >
+                    <i className="fas fa-cog"></i>
                   </Button>
                 </div>
               </div>
@@ -293,7 +316,7 @@ export function DrumSampleTable({ onFileUpload, onClearSample }: DrumSampleTable
         })}
       </div>
 
-      {/* Bulk Actions */}
+      {/* Bulk Actions - Record moved here */}
       <div style={{
         marginTop: '1rem',
         display: 'flex',

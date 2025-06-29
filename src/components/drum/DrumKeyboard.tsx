@@ -202,8 +202,7 @@ export function DrumKeyboard({ onFileUpload }: DrumKeyboardProps = {}) {
       color: '#fff',
       fontSize: '21px', // Scaled up proportionally
       fontWeight: 'normal',
-      pointerEvents: 'none',
-      textTransform: 'lowercase'
+      pointerEvents: 'none'
     };
 
     // Apply offsets for large keys
@@ -411,11 +410,6 @@ export function DrumKeyboard({ onFileUpload }: DrumKeyboardProps = {}) {
         alignItems: 'center',
         justifyContent: 'center',
         gap: isMobile ? '1.5rem' : '0px',
-        padding: '20px',
-        background: '#f8f8f8',
-        borderRadius: '8px',
-        boxShadow: 'inset 0 0 5px rgba(0, 0, 0, 0.1)',
-        maxWidth: isMobile ? '600px' : '1000px',
         margin: '0 auto 2rem'
       }}>
         {/* Octave 1 (Lower) */}
