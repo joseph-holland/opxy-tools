@@ -2,59 +2,52 @@ import { Button } from '@carbon/react';
 import { useAppContext } from '../../context/AppContext';
 import { useFileUpload } from '../../hooks/useFileUpload';
 import { usePatchGeneration } from '../../hooks/usePatchGeneration';
-import { useRef } from 'react';
-import type { DragEvent, ChangeEvent } from 'react';
+import { FileDetailsBadges } from '../common/FileDetailsBadges';
+import { ConfirmationModal } from '../common/ConfirmationModal';
+import { FileDropZone } from '../common/FileDropZone';
+import { ErrorDisplay } from '../common/ErrorDisplay';
+import { useState } from 'react';
 
 export function MultisampleTool() {
   const { state } = useAppContext();
   const { handleMultisampleUpload, clearMultisampleFile } = useFileUpload();
   const { generateMultisamplePatchFile } = usePatchGeneration();
-  const fileInputRef = useRef<HTMLInputElement>(null);
+  const [confirmDialog, setConfirmDialog] = useState<{
+    isOpen: boolean;
+    message: string;
+    onConfirm: () => void;
+  }>({ isOpen: false, message: '', onConfirm: () => {} });
 
-  const handleDragOver = (e: DragEvent) => {
-    e.preventDefault();
-    e.stopPropagation();
-  };
-
-  const handleDrop = async (e: DragEvent) => {
-    e.preventDefault();
-    e.stopPropagation();
-    
-    const files = Array.from(e.dataTransfer.files);
-    const audioFiles = files.filter(file => 
-      file.type.startsWith('audio/') || file.name.toLowerCase().endsWith('.wav')
-    );
-    
+  const handleFilesSelected = async (files: File[]) => {
     // Process files one by one
-    for (const file of audioFiles) {
+    for (const file of files) {
       await handleMultisampleUpload(file);
     }
   };
 
-  const handleFileSelect = async (e: ChangeEvent<HTMLInputElement>) => {
-    const files = e.target.files;
-    if (files) {
-      for (let i = 0; i < files.length; i++) {
-        await handleMultisampleUpload(files[i]);
-      }
-    }
-    // Reset input
-    e.target.value = '';
-  };
-
-  const openFileDialog = () => {
-    fileInputRef.current?.click();
-  };
-
   const handleRemoveSample = (index: number) => {
-    clearMultisampleFile(index);
+    setConfirmDialog({
+      isOpen: true,
+      message: 'are you sure you want to remove this sample?',
+      onConfirm: () => {
+        clearMultisampleFile(index);
+        setConfirmDialog({ isOpen: false, message: '', onConfirm: () => {} });
+      }
+    });
   };
 
   const clearAllSamples = () => {
-    // Clear all samples by index
-    for (let i = state.multisampleFiles.length - 1; i >= 0; i--) {
-      clearMultisampleFile(i);
-    }
+    setConfirmDialog({
+      isOpen: true,
+      message: 'are you sure you want to remove all samples?',
+      onConfirm: () => {
+        // Clear all samples by index
+        for (let i = state.multisampleFiles.length - 1; i >= 0; i--) {
+          clearMultisampleFile(i);
+        }
+        setConfirmDialog({ isOpen: false, message: '', onConfirm: () => {} });
+      }
+    });
   };
 
   const handleGeneratePatch = () => {
@@ -86,61 +79,15 @@ export function MultisampleTool() {
           create custom multisample presets for the OP-XY. upload samples and assign them to keyboard notes.
         </p>
 
-        {state.error && (
-          <div style={{
-            background: '#fff2f2',
-            border: '1px solid #fee',
-            borderRadius: '0.375rem',
-            padding: '1rem',
-            marginBottom: '1rem',
-            color: '#d32f2f'
-          }}>
-            {state.error}
-          </div>
-        )}
+        <ErrorDisplay message={state.error || ''} />
 
         {/* Drop area */}
-        <input
-          type="file"
-          accept="audio/*,.wav"
-          multiple
-          style={{ display: 'none' }}
-          ref={fileInputRef}
-          onChange={handleFileSelect}
+        <FileDropZone
+          onFilesSelected={handleFilesSelected}
+          multiple={true}
+          disabled={state.isLoading}
+          style={{ marginBottom: '2rem' }}
         />
-        <div 
-          style={{
-            background: '#f8f9fa',
-            border: '2px dashed #ced4da',
-            borderRadius: '0.375rem',
-            padding: '3rem 2rem',
-            textAlign: 'center',
-            marginBottom: '2rem',
-            cursor: 'pointer',
-            transition: 'all 0.2s ease'
-          }}
-          onDragOver={handleDragOver}
-          onDrop={handleDrop}
-          onClick={openFileDialog}
-          onMouseEnter={(e) => {
-            e.currentTarget.style.background = '#f0f0f0';
-            e.currentTarget.style.borderColor = '#999';
-          }}
-          onMouseLeave={(e) => {
-            e.currentTarget.style.background = '#f8f9fa';
-            e.currentTarget.style.borderColor = '#ced4da';
-          }}
-        >
-          <div style={{ color: '#666', fontSize: '1.1rem', marginBottom: '1rem' }}>
-            {state.isLoading ? 'processing files...' : 'drop audio files here or click to browse'}
-          </div>
-          <Button 
-            kind="secondary"
-            disabled={state.isLoading}
-          >
-            {state.isLoading ? 'loading...' : 'browse files'}
-          </Button>
-        </div>
 
         {/* Sample list */}
         {hasAnySamples && (
@@ -156,27 +103,34 @@ export function MultisampleTool() {
             <div style={{ 
               background: '#fff',
               border: '1px solid #e0e0e0',
-              borderRadius: '0.375rem'
+              borderRadius: '3px'
             }}>
               {state.multisampleFiles.map((sample, index) => (
                 <div 
                   key={index}
                   style={{
                     padding: '1rem',
-                    borderBottom: index < state.multisampleFiles.length - 1 ? '1px solid #f0f0f0' : 'none',
+                    background: '#f8f9fa',
+                    borderBottom: index < state.multisampleFiles.length - 1 ? '1px solid #e0e0e0' : 'none',
                     display: 'flex',
                     justifyContent: 'space-between',
                     alignItems: 'center'
                   }}
                 >
                   <div>
-                    <div style={{ fontWeight: '500', color: '#222' }}>
+                    <div style={{ fontWeight: '500', color: '#222', marginBottom: '0.5rem' }}>
                       {sample.name}
                     </div>
-                    <div style={{ fontSize: '0.9rem', color: '#666' }}>
-                      note: {sample.note || 'auto-detect'} • 
-                      duration: {sample.audioBuffer ? `${sample.audioBuffer.duration.toFixed(2)}s` : 'unknown'}
+                    <div style={{ fontSize: '0.9rem', color: '#666', marginBottom: '0.5rem' }}>
+                      note: {sample.note || 'auto-detect'}
                     </div>
+                    <FileDetailsBadges
+                      duration={sample.duration}
+                      fileSize={sample.fileSize}
+                      channels={sample.originalChannels}
+                      bitDepth={sample.originalBitDepth}
+                      sampleRate={sample.originalSampleRate}
+                    />
                   </div>
                   <Button 
                     kind="ghost" 
@@ -208,6 +162,14 @@ export function MultisampleTool() {
           </Button>
         </div>
       </div>
+
+      {/* Confirmation Modal */}
+      <ConfirmationModal
+        isOpen={confirmDialog.isOpen}
+        message={confirmDialog.message}
+        onConfirm={confirmDialog.onConfirm}
+        onCancel={() => setConfirmDialog({ isOpen: false, message: '', onConfirm: () => {} })}
+      />
     </div>
   );
 }

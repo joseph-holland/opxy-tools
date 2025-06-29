@@ -1,7 +1,8 @@
-import React, { useRef } from 'react';
+import React, { useRef, useState, useEffect } from 'react';
 import { useAppContext } from '../../context/AppContext';
 import { Button } from '@carbon/react';
 import { WaveformEditor } from '../common/WaveformEditor';
+import { FileDetailsBadges } from '../common/FileDetailsBadges';
 
 interface DrumSampleTableProps {
   onFileUpload: (index: number, file: File) => void;
@@ -19,6 +20,18 @@ const drumSampleNames = [
 export function DrumSampleTable({ onFileUpload, onClearSample }: DrumSampleTableProps) {
   const { state, dispatch } = useAppContext();
   const fileInputRefs = useRef<(HTMLInputElement | null)[]>([]);
+  const [isMobile, setIsMobile] = useState(false);
+
+  // Detect mobile screen size
+  useEffect(() => {
+    const checkMobile = () => {
+      setIsMobile(window.innerWidth < 768);
+    };
+    
+    checkMobile();
+    window.addEventListener('resize', checkMobile);
+    return () => window.removeEventListener('resize', checkMobile);
+  }, []);
 
   const handleFileSelect = (index: number, file: File) => {
     onFileUpload(index, file);
@@ -62,6 +75,252 @@ export function DrumSampleTable({ onFileUpload, onClearSample }: DrumSampleTable
     }
   };
 
+  if (isMobile) {
+    // Mobile Card Layout
+    return (
+      <div style={{
+        fontFamily: '"Montserrat", "Arial", sans-serif'
+      }}>
+        {/* Mobile Header */}
+        <div style={{
+          padding: '1rem',
+          background: '#f8f9fa',
+          borderRadius: '3px',
+          marginBottom: '1rem',
+          textAlign: 'center',
+          fontSize: '0.9rem',
+          fontWeight: 'bold',
+          color: '#666'
+        }}>
+          sample management
+        </div>
+
+        {/* Mobile Cards */}
+        <div style={{
+          display: 'flex',
+          flexDirection: 'column',
+          gap: '0.75rem'
+        }}>
+          {Array.from({ length: 24 }, (_, index) => {
+            const sample = state.drumSamples[index];
+            const isLoaded = sample?.isLoaded;
+            
+            return (
+              <div key={index}>
+                <input
+                  type="file"
+                  accept="audio/*,.wav"
+                  style={{ display: 'none' }}
+                  ref={(el) => { fileInputRefs.current[index] = el; }}
+                  onChange={(e) => {
+                    const file = e.target.files?.[0];
+                    if (file) {
+                      handleFileSelect(index, file);
+                    }
+                    e.target.value = '';
+                  }}
+                />
+                
+                <div
+                  style={{
+                    background: isLoaded ? '#f8f9fa' : '#fff',
+                    border: '1px solid #e0e0e0',
+                    borderRadius: '3px',
+                    padding: '1rem',
+                    transition: 'background 0.2s ease'
+                  }}
+                  onDragOver={handleDragOver}
+                  onDrop={(e) => handleDrop(e, index)}
+                >
+                  {/* Card Header */}
+                  <div style={{
+                    display: 'flex',
+                    justifyContent: 'space-between',
+                    alignItems: 'center',
+                    marginBottom: '0.75rem'
+                  }}>
+                    <div style={{
+                      fontSize: '0.9rem',
+                      fontWeight: '600',
+                      color: '#222'
+                    }}>
+                      {drumSampleNames[index]}
+                    </div>
+                    
+                                         {/* Actions - Play, Clear, and Settings */}
+                     <div style={{
+                       display: 'flex',
+                       gap: '0.25rem'
+                     }}>
+                       <Button
+                         kind="ghost"
+                         size="sm"
+                         disabled={!isLoaded}
+                         onClick={() => playSample(index)}
+                         style={{
+                           minHeight: '32px',
+                           width: '32px',
+                           padding: '0',
+                           display: 'flex',
+                           alignItems: 'center',
+                           justifyContent: 'center',
+                           border: '1px solid #ccc',
+                           borderRadius: '3px',
+                           backgroundColor: '#fff',
+                           color: isLoaded ? '#333' : '#999'
+                         }}
+                         title="play"
+                       >
+                         <i className="fas fa-play"></i>
+                       </Button>
+                       <Button
+                         kind="ghost"
+                         size="sm"
+                         disabled={!isLoaded}
+                         onClick={() => onClearSample(index)}
+                         style={{
+                           minHeight: '32px',
+                           width: '32px',
+                           padding: '0',
+                           display: 'flex',
+                           alignItems: 'center',
+                           justifyContent: 'center',
+                           border: '1px solid #ccc',
+                           borderRadius: '3px',
+                           backgroundColor: '#fff',
+                           color: isLoaded ? '#666' : '#999'
+                         }}
+                         title="clear"
+                       >
+                         <i className="fas fa-times"></i>
+                       </Button>
+                       <Button
+                         kind="ghost"
+                         size="sm"
+                         disabled={!isLoaded}
+                         onClick={() => {/* Settings/advanced options */}}
+                         style={{
+                           minHeight: '32px',
+                           width: '32px',
+                           padding: '0',
+                           display: 'flex',
+                           alignItems: 'center',
+                           justifyContent: 'center',
+                           border: '1px solid #ccc',
+                           borderRadius: '3px',
+                           backgroundColor: '#fff',
+                           color: isLoaded ? '#333' : '#999'
+                         }}
+                         title="settings"
+                       >
+                         <i className="fas fa-cog"></i>
+                       </Button>
+                     </div>
+                  </div>
+
+                  {/* Card Content */}
+                  {isLoaded ? (
+                    <>
+                      {/* File Name */}
+                      <div style={{
+                        fontSize: '0.85rem',
+                        fontWeight: '500',
+                        color: '#222',
+                        marginBottom: '0.5rem',
+                        wordBreak: 'break-word'
+                      }}>
+                        {sample.name}
+                      </div>
+                      
+                      {/* File Details */}
+                      <div style={{ marginBottom: '0.75rem' }}>
+                        <FileDetailsBadges
+                          duration={sample.duration}
+                          fileSize={sample.fileSize}
+                          channels={sample.originalChannels}
+                          bitDepth={sample.originalBitDepth}
+                          sampleRate={sample.originalSampleRate}
+                        />
+                      </div>
+
+                                             {/* Waveform */}
+                       <div style={{
+                         height: '50px',
+                         marginBottom: '0.5rem'
+                       }}>
+                         {sample.audioBuffer ? (
+                           <WaveformEditor
+                             audioBuffer={sample.audioBuffer}
+                             height={50}
+                             inPoint={sample.inPoint || 0}
+                             outPoint={sample.outPoint || sample.audioBuffer.length - 1}
+                             onMarkersChange={(markers) => {
+                               dispatch({
+                                 type: 'UPDATE_DRUM_SAMPLE',
+                                 payload: {
+                                   index,
+                                   updates: {
+                                     inPoint: markers.inPoint,
+                                     outPoint: markers.outPoint
+                                   }
+                                 }
+                               });
+                             }}
+                           />
+                         ) : (
+                           <div style={{
+                             width: '100%',
+                             height: '50px',
+                             background: '#f0f0f0',
+                             borderRadius: '3px',
+                             display: 'flex',
+                             alignItems: 'center',
+                             justifyContent: 'center',
+                             color: '#999',
+                             fontSize: '0.7rem'
+                           }}>
+                             no sample
+                           </div>
+                         )}
+                       </div>
+                    </>
+                  ) : (
+                    <button
+                      onClick={() => openFileDialog(index)}
+                      style={{
+                        width: '100%',
+                        background: 'none',
+                        border: '2px dashed #ccc',
+                        borderRadius: '3px',
+                        padding: '1.5rem 1rem',
+                        color: '#666',
+                        fontSize: '0.9rem',
+                        cursor: 'pointer',
+                        transition: 'all 0.2s ease',
+                        textAlign: 'center'
+                      }}
+                      onTouchStart={(e) => {
+                        e.currentTarget.style.borderColor = '#999';
+                        e.currentTarget.style.color = '#333';
+                      }}
+                      onTouchEnd={(e) => {
+                        e.currentTarget.style.borderColor = '#ccc';
+                        e.currentTarget.style.color = '#666';
+                      }}
+                    >
+                      tap to browse for audio file
+                    </button>
+                  )}
+                </div>
+              </div>
+            );
+          })}
+        </div>
+      </div>
+    );
+  }
+
+  // Desktop Table Layout
   return (
     <div style={{
       fontFamily: '"Montserrat", "Arial", sans-serif'
@@ -73,7 +332,7 @@ export function DrumSampleTable({ onFileUpload, onClearSample }: DrumSampleTable
         gap: '0.5rem',
         padding: '0.75rem',
         background: '#f8f9fa',
-        borderRadius: '0.375rem 0.375rem 0 0',
+        borderRadius: '3px 3px 0 0',
         border: '1px solid #e0e0e0',
         borderBottom: 'none',
         fontSize: '0.8rem',
@@ -89,7 +348,7 @@ export function DrumSampleTable({ onFileUpload, onClearSample }: DrumSampleTable
       {/* Sample Rows */}
       <div style={{
         border: '1px solid #e0e0e0',
-        borderRadius: '0 0 0.375rem 0.375rem',
+        borderRadius: '0 0 3px 3px',
         overflow: 'hidden'
       }}>
         {Array.from({ length: 24 }, (_, index) => {
@@ -118,7 +377,7 @@ export function DrumSampleTable({ onFileUpload, onClearSample }: DrumSampleTable
                   gridTemplateColumns: '140px 1fr 120px 120px',
                   gap: '0.5rem',
                   padding: '0.75rem',
-                  background: isLoaded ? '#f0f8f0' : '#fff',
+                  background: isLoaded ? '#f8f9fa' : '#fff',
                   borderBottom: index < 23 ? '1px solid #e0e0e0' : 'none',
                   transition: 'background 0.2s ease',
                   alignItems: 'center',
@@ -132,7 +391,7 @@ export function DrumSampleTable({ onFileUpload, onClearSample }: DrumSampleTable
                   }
                 }}
                 onMouseLeave={(e) => {
-                  e.currentTarget.style.background = isLoaded ? '#f0f8f0' : '#fff';
+                  e.currentTarget.style.background = isLoaded ? '#f8f9fa' : '#fff';
                 }}
               >
                 {/* Drum Name */}
@@ -156,19 +415,18 @@ export function DrumSampleTable({ onFileUpload, onClearSample }: DrumSampleTable
                         fontSize: '0.8rem',
                         fontWeight: '500',
                         color: '#222',
-                        wordBreak: 'break-word'
+                        wordBreak: 'break-word',
+                        marginBottom: '0.25rem'
                       }}>
                         {sample.name}
                       </div>
-                      <div style={{
-                        fontSize: '0.7rem',
-                        color: '#666'
-                      }}>
-                        {sample.audioBuffer ? 
-                          `${(sample.audioBuffer.duration).toFixed(2)}s • ${sample.audioBuffer.sampleRate}Hz` 
-                          : 'Loading...'
-                        }
-                      </div>
+                      <FileDetailsBadges
+                        duration={sample.duration}
+                        fileSize={sample.fileSize}
+                        channels={sample.originalChannels}
+                        bitDepth={sample.originalBitDepth}
+                        sampleRate={sample.originalSampleRate}
+                      />
                     </>
                   ) : (
                     <button
@@ -176,13 +434,12 @@ export function DrumSampleTable({ onFileUpload, onClearSample }: DrumSampleTable
                       style={{
                         background: 'none',
                         border: '2px dashed #ccc',
-                        borderRadius: '0.375rem',
-                        padding: '0.5rem',
+                        borderRadius: '3px',
+                        padding: '1rem',
                         color: '#666',
                         fontSize: '0.8rem',
                         cursor: 'pointer',
-                        transition: 'all 0.2s ease',
-                        textAlign: 'left'
+                        transition: 'all 0.2s ease'
                       }}
                       onMouseEnter={(e) => {
                         e.currentTarget.style.borderColor = '#999';
@@ -228,7 +485,7 @@ export function DrumSampleTable({ onFileUpload, onClearSample }: DrumSampleTable
                       width: '100%',
                       height: '40px',
                       background: '#f0f0f0',
-                      borderRadius: '0.25rem',
+                      borderRadius: '3px',
                       display: 'flex',
                       alignItems: 'center',
                       justifyContent: 'center',
@@ -259,7 +516,7 @@ export function DrumSampleTable({ onFileUpload, onClearSample }: DrumSampleTable
                       alignItems: 'center',
                       justifyContent: 'center',
                       border: '1px solid #ccc',
-                      borderRadius: '4px',
+                      borderRadius: '3px',
                       backgroundColor: '#fff',
                       color: isLoaded ? '#333' : '#999'
                     }}
@@ -280,7 +537,7 @@ export function DrumSampleTable({ onFileUpload, onClearSample }: DrumSampleTable
                       alignItems: 'center',
                       justifyContent: 'center',
                       border: '1px solid #ccc',
-                      borderRadius: '4px',
+                      borderRadius: '3px',
                       backgroundColor: '#fff',
                       color: isLoaded ? '#666' : '#999'
                     }}
@@ -301,7 +558,7 @@ export function DrumSampleTable({ onFileUpload, onClearSample }: DrumSampleTable
                       alignItems: 'center',
                       justifyContent: 'center',
                       border: '1px solid #ccc',
-                      borderRadius: '4px',
+                      borderRadius: '3px',
                       backgroundColor: '#fff',
                       color: isLoaded ? '#333' : '#999'
                     }}

@@ -178,7 +178,7 @@ export function DrumKeyboard({ onFileUpload }: DrumKeyboardProps = {}) {
     
     // Key dimensions - exact 1:1 and 1:1.5 ratios
     const baseSize = 56; // Increased base size for more prominence
-    const keyWidth = isLarge ? `${Math.round(baseSize * 1.5)}px` : `${baseSize}px`; // 84px vs 56px
+    const keyWidth = isLarge ? `${Math.round(baseSize * 1.5) + (keyChar === 'W' ? 1 : 0)}px` : `${baseSize}px`; // 85px for W, 84px for R/Y/U, 56px for others
     const keyHeight = `${baseSize}px`; // Always 56px for proper proportions
     
     // Circle positioning based on offset
@@ -409,7 +409,7 @@ export function DrumKeyboard({ onFileUpload }: DrumKeyboardProps = {}) {
         flexDirection: isMobile ? 'column' : 'row',
         alignItems: 'center',
         justifyContent: 'center',
-        gap: isMobile ? '1.5rem' : '0px',
+        gap: isMobile ? '1.5rem' : '1px',
         margin: '0 auto 2rem'
       }}>
         {/* Octave 1 (Lower) */}
@@ -417,14 +417,14 @@ export function DrumKeyboard({ onFileUpload }: DrumKeyboardProps = {}) {
           display: 'flex',
           flexDirection: 'column',
           alignItems: 'center',
-          gap: '0px',
+          gap: '1px',
           position: 'relative'
         }}>
           
           {/* Top row */}
           <div style={{ 
             display: 'flex', 
-            gap: '0px', 
+            gap: '1px', 
             alignItems: 'flex-end'
           }}>
             <OPXYKey
@@ -475,7 +475,7 @@ export function DrumKeyboard({ onFileUpload }: DrumKeyboardProps = {}) {
           {/* Bottom row */}
           <div style={{ 
             display: 'flex', 
-            gap: '0px',
+            gap: '1px',
             alignItems: 'flex-start'
           }}>
             {['A', 'S', 'D', 'F', 'G', 'H', 'J'].map(key => (
@@ -496,14 +496,14 @@ export function DrumKeyboard({ onFileUpload }: DrumKeyboardProps = {}) {
           display: 'flex',
           flexDirection: 'column',
           alignItems: 'center',
-          gap: '0px',
+          gap: '1px',
           position: 'relative'
         }}>
           
           {/* Top row */}
           <div style={{ 
             display: 'flex', 
-            gap: '0px', 
+            gap: '1px', 
             alignItems: 'flex-end'
           }}>
             <OPXYKey
@@ -554,7 +554,7 @@ export function DrumKeyboard({ onFileUpload }: DrumKeyboardProps = {}) {
           {/* Bottom row */}
           <div style={{ 
             display: 'flex', 
-            gap: '0px',
+            gap: '1px',
             alignItems: 'flex-start'
           }}>
             {['A', 'S', 'D', 'F', 'G', 'H', 'J'].map(key => (
@@ -578,11 +578,7 @@ export function DrumKeyboard({ onFileUpload }: DrumKeyboardProps = {}) {
         color: '#666',
         lineHeight: '1.4'
       }}>
-        {!isMobile && (
-          <div style={{ marginBottom: '0.5rem' }}>
-            <strong>current octave: {currentOctave + 1}</strong>
-          </div>
-        )}
+
         {isMobile ? (
           <>
             <strong>touch interface:</strong> tap keys to play loaded samples<br />

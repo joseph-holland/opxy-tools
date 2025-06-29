@@ -131,7 +131,7 @@ export function PatchSizeIndicator({ type, className = '' }: PatchSizeIndicatorP
           marginTop: '0.5rem',
           padding: '0.5rem',
           backgroundColor: '#f8f9fa',
-          borderRadius: '0.25rem',
+          borderRadius: '3px',
           border: '1px solid #e0e0e0'
         }}>
           <strong>optimization tips:</strong>

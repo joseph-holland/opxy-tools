@@ -10,6 +10,12 @@ export interface DrumSample {
   isLoaded: boolean;
   inPoint: number;
   outPoint: number;
+  // WAV metadata from header parsing
+  originalBitDepth?: number;
+  originalSampleRate?: number;
+  originalChannels?: number;
+  fileSize?: number;
+  duration?: number;
   // Sample settings
   playmode: 'oneshot' | 'group';
   reverse: boolean;
@@ -24,8 +30,15 @@ export interface MultisampleFile {
   name: string;
   isLoaded: boolean;
   rootNote: number;
+  note?: string; // Detected or assigned note (e.g., "C4", "F#3")
   inPoint: number;
   outPoint: number;
+  // WAV metadata from header parsing
+  originalBitDepth?: number;
+  originalSampleRate?: number;
+  originalChannels?: number;
+  fileSize?: number;
+  duration?: number;
 }
 
 export interface AppState {
@@ -71,10 +84,10 @@ export type AppAction =
   | { type: 'SET_PRESET_VELOCITY'; payload: number }
   | { type: 'SET_PRESET_VOLUME'; payload: number }
   | { type: 'SET_PRESET_WIDTH'; payload: number }
-  | { type: 'LOAD_DRUM_SAMPLE'; payload: { index: number; file: File; audioBuffer: AudioBuffer } }
+  | { type: 'LOAD_DRUM_SAMPLE'; payload: { index: number; file: File; audioBuffer: AudioBuffer; metadata: WavMetadata } }
   | { type: 'CLEAR_DRUM_SAMPLE'; payload: number }
   | { type: 'UPDATE_DRUM_SAMPLE'; payload: { index: number; updates: Partial<DrumSample> } }
-  | { type: 'LOAD_MULTISAMPLE_FILE'; payload: { index: number; file: File; audioBuffer: AudioBuffer } }
+  | { type: 'LOAD_MULTISAMPLE_FILE'; payload: { file: File; audioBuffer: AudioBuffer; metadata: WavMetadata } }
   | { type: 'CLEAR_MULTISAMPLE_FILE'; payload: number }
   | { type: 'UPDATE_MULTISAMPLE_FILE'; payload: { index: number; updates: Partial<MultisampleFile> } }
   | { type: 'SET_SELECTED_MULTISAMPLE'; payload: number | null }
@@ -120,7 +133,7 @@ const initialState: AppState = {
     volume: 56,
     width: 0
   },
-  multisampleFiles: Array(8).fill(null).map(() => ({ ...initialMultisampleFile })),
+  multisampleFiles: [], // Dynamic array, 1-24 samples max
   selectedMultisample: null,
   isLoading: false,
   error: null
@@ -183,7 +196,13 @@ function appReducer(state: AppState, action: AppAction): AppState {
         name: action.payload.file.name,
         isLoaded: true,
         inPoint: 0,
-        outPoint: action.payload.audioBuffer.length - 1
+        outPoint: action.payload.audioBuffer.length - 1,
+        // Store WAV metadata
+        originalBitDepth: action.payload.metadata.bitDepth,
+        originalSampleRate: action.payload.metadata.sampleRate,
+        originalChannels: action.payload.metadata.channels,
+        fileSize: action.payload.metadata.fileSize,
+        duration: action.payload.metadata.duration
       };
       return { ...state, drumSamples: newDrumSamples };
       
@@ -201,17 +220,59 @@ function appReducer(state: AppState, action: AppAction): AppState {
       return { ...state, drumSamples: updatedDrumSamples };
       
     case 'LOAD_MULTISAMPLE_FILE':
-      const newMultisampleFiles = [...state.multisampleFiles];
-      newMultisampleFiles[action.payload.index] = {
-        ...newMultisampleFiles[action.payload.index],
+      // Check max limit of 24 samples
+      if (state.multisampleFiles.length >= 24) {
+        return state;
+      }
+      
+      // Auto-detect note from filename or MIDI data
+      let detectedNote = '';
+      if (action.payload.metadata.midiNote !== -1) {
+        // Use MIDI note from WAV metadata
+        detectedNote = `MIDI-${action.payload.metadata.midiNote}`;
+      } else {
+        // Try to extract from filename
+        try {
+          const match = action.payload.file.name.match(/([A-G](?:#|b)?\d+|[0-9]{1,3})/i);
+          if (match) {
+            const matchStr = match[1];
+            // Check if it's a MIDI note number (0-127)
+            if (/^\d+$/.test(matchStr)) {
+              const midiNum = parseInt(matchStr);
+              if (midiNum >= 0 && midiNum <= 127) {
+                detectedNote = `MIDI-${midiNum}`;
+              }
+            } else {
+              detectedNote = matchStr.toUpperCase();
+            }
+          }
+        } catch {
+          // Use default if can't detect
+          detectedNote = 'C4';
+        }
+      }
+      
+      const newMultisampleFile: MultisampleFile = {
+        ...initialMultisampleFile,
         file: action.payload.file,
         audioBuffer: action.payload.audioBuffer,
         name: action.payload.file.name,
         isLoaded: true,
+        note: detectedNote,
         inPoint: 0,
-        outPoint: action.payload.audioBuffer.length - 1
+        outPoint: action.payload.audioBuffer.length - 1,
+        // Store WAV metadata
+        originalBitDepth: action.payload.metadata.bitDepth,
+        originalSampleRate: action.payload.metadata.sampleRate,
+        originalChannels: action.payload.metadata.channels,
+        fileSize: action.payload.metadata.fileSize,
+        duration: action.payload.metadata.duration
       };
-      return { ...state, multisampleFiles: newMultisampleFiles };
+      
+      return { 
+        ...state, 
+        multisampleFiles: [...state.multisampleFiles, newMultisampleFile] 
+      };
       
     case 'CLEAR_MULTISAMPLE_FILE':
       const clearedMultisampleFiles = [...state.multisampleFiles];

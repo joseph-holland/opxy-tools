@@ -1,7 +1,9 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { useAppContext } from '../../context/AppContext';
-import { Button, Select, SelectItem, TextInput, Tabs, TabList, Tab, TabPanels, TabPanel } from '@carbon/react';
+import { Button, TextInput, Tabs, TabList, Tab, TabPanels, TabPanel } from '@carbon/react';
 import { PatchSizeIndicator } from '../common/PatchSizeIndicator';
+import { AudioFormatControls } from '../common/AudioFormatControls';
+import { ConfirmationModal } from '../common/ConfirmationModal';
 import { DrumKeyboard } from './DrumKeyboard';
 import { DrumSampleTable } from './DrumSampleTable';
 import { DrumPresetSettings } from './DrumPresetSettings';
@@ -12,6 +14,23 @@ export function DrumTool() {
   const { state, dispatch } = useAppContext();
   const { handleDrumSampleUpload, clearDrumSample } = useFileUpload();
   const { generateDrumPatchFile } = usePatchGeneration();
+  const [isMobile, setIsMobile] = useState(false);
+  const [confirmDialog, setConfirmDialog] = useState<{
+    isOpen: boolean;
+    message: string;
+    onConfirm: () => void;
+  }>({ isOpen: false, message: '', onConfirm: () => {} });
+
+  // Detect mobile screen size
+  useEffect(() => {
+    const checkMobile = () => {
+      setIsMobile(window.innerWidth < 768);
+    };
+    
+    checkMobile();
+    window.addEventListener('resize', checkMobile);
+    return () => window.removeEventListener('resize', checkMobile);
+  }, []);
 
   const handleSampleRateChange = (value: string) => {
     dispatch({ type: 'SET_SAMPLE_RATE', payload: parseInt(value) });
@@ -38,7 +57,14 @@ export function DrumTool() {
   };
 
   const handleClearSample = (index: number) => {
-    clearDrumSample(index);
+    setConfirmDialog({
+      isOpen: true,
+      message: 'are you sure you want to clear this sample?',
+      onConfirm: () => {
+        clearDrumSample(index);
+        setConfirmDialog({ isOpen: false, message: '', onConfirm: () => {} });
+      }
+    });
   };
 
   const handleGeneratePatch = async () => {
@@ -51,11 +77,16 @@ export function DrumTool() {
   };
 
   const handleClearAll = () => {
-    if (confirm('are you sure you want to clear all loaded samples?')) {
-      for (let i = 0; i < 24; i++) {
-        clearDrumSample(i);
+    setConfirmDialog({
+      isOpen: true,
+      message: 'are you sure you want to clear all loaded samples?',
+      onConfirm: () => {
+        for (let i = 0; i < 24; i++) {
+          clearDrumSample(i);
+        }
+        setConfirmDialog({ isOpen: false, message: '', onConfirm: () => {} });
       }
-    }
+    });
   };
 
   const hasLoadedSamples = state.drumSamples.some(s => s.isLoaded);
@@ -73,7 +104,7 @@ export function DrumTool() {
       <div style={{
         background: '#fff',
         borderBottom: '1px solid #e0e0e0',
-        padding: '1.5rem 2rem',
+        padding: isMobile ? '1rem' : '1.5rem 2rem',
         marginBottom: '0'
       }}>
         <div style={{
@@ -96,45 +127,15 @@ export function DrumTool() {
           </div>
 
           {/* Audio Format Controls */}
-          <div style={{
-            display: 'flex',
-            gap: '1rem',
-            alignItems: 'end'
-          }}>
-            <Select
-              id="sample-rate"
-              labelText="sample rate"
-              value={state.sampleRate.toString()}
-              onChange={(e) => handleSampleRateChange(e.target.value)}
-              size="sm"
-            >
-              <SelectItem value="44100" text="44.1 kHz" />
-              <SelectItem value="48000" text="48 kHz" />
-              <SelectItem value="96000" text="96 kHz" />
-            </Select>
-
-            <Select
-              id="bit-depth"
-              labelText="bit depth"
-              value={state.bitDepth.toString()}
-              onChange={(e) => handleBitDepthChange(e.target.value)}
-              size="sm"
-            >
-              <SelectItem value="16" text="16-bit" />
-              <SelectItem value="24" text="24-bit" />
-            </Select>
-
-            <Select
-              id="channels"
-              labelText="channels"
-              value={state.channels.toString()}
-              onChange={(e) => handleChannelsChange(e.target.value)}
-              size="sm"
-            >
-              <SelectItem value="1" text="mono" />
-              <SelectItem value="2" text="stereo" />
-            </Select>
-          </div>
+          <AudioFormatControls
+            sampleRate={state.sampleRate}
+            bitDepth={state.bitDepth}
+            channels={state.channels}
+            onSampleRateChange={handleSampleRateChange}
+            onBitDepthChange={handleBitDepthChange}
+            onChannelsChange={handleChannelsChange}
+            size="sm"
+          />
         </div>
       </div>
 
@@ -142,7 +143,7 @@ export function DrumTool() {
       <div style={{
         background: '#fff',
         borderBottom: '1px solid #e0e0e0',
-        padding: '2rem'
+        padding: isMobile ? '1rem' : '2rem'
       }}>
         <div style={{
           display: 'flex',
@@ -190,7 +191,7 @@ export function DrumTool() {
       {/* Tabbed Content Area */}
       <div style={{ 
         flex: 1,
-        padding: '0 2rem',
+        padding: isMobile ? '0 0.5rem' : '0 2rem',
         marginBottom: '2rem'
       }}>
         <Tabs>
@@ -215,8 +216,8 @@ export function DrumTool() {
             <TabPanel style={{ padding: '0' }}>
               <div style={{
                 background: '#fff',
-                borderRadius: '8px',
-                padding: '2rem',
+                borderRadius: '3px',
+                padding: isMobile ? '1rem' : '2rem',
                 boxShadow: '0 2px 8px rgba(0, 0, 0, 0.1)',
                 border: '1px solid #f0f0f0'
               }}>
@@ -267,7 +268,7 @@ export function DrumTool() {
                 {/* Individual Sample Controls */}
                 <div style={{
                   background: '#fff',
-                  borderRadius: '8px',
+                  borderRadius: '3px',
                   padding: '2rem',
                   boxShadow: '0 2px 8px rgba(0, 0, 0, 0.1)',
                   border: '1px solid #f0f0f0'
@@ -286,7 +287,7 @@ export function DrumTool() {
                   </h3>
                   <div style={{
                     background: '#f8f9fa',
-                    borderRadius: '6px',
+                    borderRadius: '3px',
                     padding: '2rem',
                     textAlign: 'center',
                     color: '#666',
@@ -305,7 +306,7 @@ export function DrumTool() {
                 {/* Recording Interface */}
                 <div style={{
                   background: '#fff',
-                  borderRadius: '8px',
+                  borderRadius: '3px',
                   padding: '2rem',
                   boxShadow: '0 2px 8px rgba(0, 0, 0, 0.1)',
                   border: '1px solid #f0f0f0'
@@ -324,7 +325,7 @@ export function DrumTool() {
                   </h3>
                   <div style={{
                     background: '#f8f9fa',
-                    borderRadius: '6px',
+                    borderRadius: '3px',
                     padding: '2rem',
                     textAlign: 'center',
                     color: '#666',
@@ -343,7 +344,7 @@ export function DrumTool() {
                 {/* Import/Export */}
                 <div style={{
                   background: '#fff',
-                  borderRadius: '8px',
+                  borderRadius: '3px',
                   padding: '2rem',
                   boxShadow: '0 2px 8px rgba(0, 0, 0, 0.1)',
                   border: '1px solid #f0f0f0',
@@ -368,7 +369,7 @@ export function DrumTool() {
                   }}>
                     <div style={{
                       background: '#f8f9fa',
-                      borderRadius: '6px',
+                      borderRadius: '3px',
                       padding: '1.5rem',
                       color: '#666',
                       border: '1px solid #e9ecef'
@@ -389,7 +390,7 @@ export function DrumTool() {
                     </div>
                     <div style={{
                       background: '#f8f9fa',
-                      borderRadius: '6px',
+                      borderRadius: '3px',
                       padding: '1.5rem',
                       color: '#666',
                       border: '1px solid #e9ecef'
@@ -462,6 +463,14 @@ export function DrumTool() {
           </div>
         </div>
       </div>
+
+      {/* Confirmation Modal */}
+      <ConfirmationModal
+        isOpen={confirmDialog.isOpen}
+        message={confirmDialog.message}
+        onConfirm={confirmDialog.onConfirm}
+        onCancel={() => setConfirmDialog({ isOpen: false, message: '', onConfirm: () => {} })}
+      />
     </div>
   );
 }

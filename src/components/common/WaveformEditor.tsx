@@ -314,7 +314,7 @@ export function WaveformEditor({
         alignItems: 'center', 
         justifyContent: 'center',
         backgroundColor: '#f8f9fa',
-        borderRadius: '0.25rem',
+        borderRadius: '3px',
         border: '1px solid #e0e0e0'
       }}>
         <span style={{ color: '#666', fontSize: '0.9rem' }}>No audio loaded</span>
@@ -361,7 +361,7 @@ export function WaveformEditor({
           height: height,
           cursor: dragState.type ? 'grabbing' : 'grab',
           border: '1px solid #e0e0e0',
-          borderRadius: '0.25rem',
+          borderRadius: '3px',
           backgroundColor: '#fff'
         }}
         onMouseDown={handleMouseDown}
