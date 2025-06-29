@@ -1,4 +1,3 @@
-import React, { useState } from 'react';
 import { useAppContext } from '../../context/AppContext';
 import { DrumTool } from '../drum/DrumTool';
 import { MultisampleTool } from '../multisample/MultisampleTool';

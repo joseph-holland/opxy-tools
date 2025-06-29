@@ -7,12 +7,14 @@ import { ConfirmationModal } from '../common/ConfirmationModal';
 import { FileDropZone } from '../common/FileDropZone';
 import { ErrorDisplay } from '../common/ErrorDisplay';
 import { AudioFormatControls } from '../common/AudioFormatControls';
-import { useState } from 'react';
+import { useState, useRef } from 'react';
+import { importPresetFromFile, type MultisamplePresetJson } from '../../utils/presetImport';
 
 export function MultisampleTool() {
   const { state, dispatch } = useAppContext();
   const { handleMultisampleUpload, clearMultisampleFile } = useFileUpload();
   const { generateMultisamplePatchFile } = usePatchGeneration();
+  const fileInputRef = useRef<HTMLInputElement>(null);
   const [confirmDialog, setConfirmDialog] = useState<{
     isOpen: boolean;
     message: string;
@@ -72,6 +74,65 @@ export function MultisampleTool() {
     generateMultisamplePatchFile(patchName);
   };
 
+  const handleImportClick = () => {
+    fileInputRef.current?.click();
+  };
+
+  const handleFileImport = async (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (!file) return;
+
+    // Reset the input so the same file can be selected again
+    event.target.value = '';
+
+    try {
+      const result = await importPresetFromFile(file, 'multisampler');
+      
+      if (result.success && result.data) {
+        const importedPreset = result.data as MultisamplePresetJson;
+        
+        // Store the complete imported preset for patch generation
+        dispatch({ type: 'SET_IMPORTED_MULTISAMPLE_PRESET', payload: importedPreset });
+        
+        // Note: Multisample presets don't have UI-exposed settings like drums
+        // The engine settings will be used during patch generation via the imported JSON
+        
+        // Show success notification
+        dispatch({
+          type: 'ADD_NOTIFICATION',
+          payload: {
+            id: Date.now().toString(),
+            type: 'success',
+            title: 'Settings Imported',
+            message: 'Successfully imported multisample preset settings'
+          }
+        });
+      } else {
+        // Show error notification
+        dispatch({
+          type: 'ADD_NOTIFICATION',
+          payload: {
+            id: Date.now().toString(),
+            type: 'error',
+            title: 'Import Failed',
+            message: result.error || 'Failed to import preset'
+          }
+        });
+      }
+    } catch (error) {
+      // Show error notification for unexpected errors
+      dispatch({
+        type: 'ADD_NOTIFICATION',
+        payload: {
+          id: Date.now().toString(),
+          type: 'error',
+          title: 'Import Error',
+          message: `Unexpected error: ${error instanceof Error ? error.message : 'Unknown error'}`
+        }
+      });
+    }
+  };
+
   const hasAnySamples = state.multisampleFiles.length > 0;
   const hasPresetName = state.multisampleSettings.presetName.trim().length > 0;
   const canGeneratePatch = hasAnySamples && hasPresetName;
@@ -90,7 +151,7 @@ export function MultisampleTool() {
       }}>
         <div style={{
           display: 'grid',
-          gridTemplateColumns: '1fr auto',
+          gridTemplateColumns: '1fr auto auto',
           gap: '2rem',
           alignItems: 'end',
           maxWidth: '100%'
@@ -104,6 +165,50 @@ export function MultisampleTool() {
               value={state.multisampleSettings.presetName}
               onChange={handlePresetNameChange}
               style={{ maxWidth: '400px' }}
+            />
+          </div>
+
+          {/* Import Button */}
+          <div style={{ display: 'flex', alignItems: 'end', paddingBottom: '2px' }}>
+            <button
+              onClick={handleImportClick}
+              style={{
+                padding: '0.625rem 1.25rem',
+                border: 'none',
+                borderRadius: '3px',
+                backgroundColor: '#333',
+                color: '#fff',
+                fontSize: '0.9rem',
+                fontWeight: '500',
+                cursor: 'pointer',
+                transition: 'all 0.2s ease',
+                fontFamily: 'inherit',
+                display: 'flex',
+                alignItems: 'center',
+                gap: '0.5rem',
+                height: '40px'
+              }}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.backgroundColor = '#555';
+                e.currentTarget.style.transform = 'translateY(-1px)';
+                e.currentTarget.style.boxShadow = '0 4px 12px rgba(0, 0, 0, 0.3)';
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.backgroundColor = '#333';
+                e.currentTarget.style.transform = 'translateY(0)';
+                e.currentTarget.style.boxShadow = 'none';
+              }}
+            >
+              <i className="fas fa-upload" style={{ fontSize: '0.8rem' }} />
+              import settings
+            </button>
+            
+            <input
+              ref={fileInputRef}
+              type="file"
+              accept=".json"
+              onChange={handleFileImport}
+              style={{ display: 'none' }}
             />
           </div>
 

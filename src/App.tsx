@@ -1,11 +1,13 @@
 import { Content, Theme } from '@carbon/react';
 import { AppHeader } from './components/common/AppHeader';
 import { MainTabs } from './components/common/MainTabs';
-import { AppContextProvider } from './context/AppContext';
+import { NotificationSystem } from './components/common/NotificationSystem';
+import { AppContextProvider, useAppContext } from './context/AppContext';
 import './theme/opxy-theme.scss';
 import { useState, useEffect } from 'react';
 
-function App() {
+function AppContent() {
+  const { state, dispatch } = useAppContext();
   const [isMobile, setIsMobile] = useState(false);
 
   useEffect(() => {
@@ -18,18 +20,26 @@ function App() {
     return () => window.removeEventListener('resize', checkMobile);
   }, []);
 
+  const handleDismissNotification = (id: string) => {
+    dispatch({ type: 'REMOVE_NOTIFICATION', payload: id });
+  };
+
   return (
-    <AppContextProvider>
-      <Theme theme="white" className="opxy-theme">
-        <div style={{ minHeight: '100vh', backgroundColor: '#ececec' }}>
-          <Content style={{ 
-            padding: isMobile ? '0.5rem' : '2rem',
-            backgroundColor: '#ececec',
-            maxWidth: '1400px',
-            margin: '0 auto'
-          }}>
-            <AppHeader />
-            <MainTabs />
+    <Theme theme="white" className="opxy-theme">
+      <div style={{ minHeight: '100vh', backgroundColor: '#ececec' }}>
+        <Content style={{ 
+          padding: isMobile ? '0.5rem' : '2rem',
+          backgroundColor: '#ececec',
+          maxWidth: '1400px',
+          margin: '0 auto'
+        }}>
+          <AppHeader />
+          <MainTabs />
+          
+          <NotificationSystem 
+            notifications={state.notifications}
+            onDismiss={handleDismissNotification}
+          />
             
             {/* Footer - matching legacy */}
             <footer style={{ 
@@ -85,6 +95,13 @@ function App() {
           </Content>
         </div>
       </Theme>
+    );
+}
+
+function App() {
+  return (
+    <AppContextProvider>
+      <AppContent />
     </AppContextProvider>
   );
 }

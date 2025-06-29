@@ -106,7 +106,6 @@ export function DrumTool() {
   const handleSaveRecording = async (audioBuffer: AudioBuffer) => {
     try {
       // Convert AudioBuffer to File-like object for processing
-      const audioContext = new AudioContext();
       const numberOfChannels = audioBuffer.numberOfChannels;
       const length = audioBuffer.length;
       const sampleRate = audioBuffer.sampleRate;

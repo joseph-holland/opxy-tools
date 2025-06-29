@@ -1,6 +1,7 @@
 import { createContext, useContext, useReducer } from 'react';
 import type { ReactNode } from 'react';
 import type { WavMetadata } from '../utils/audio';
+import type { Notification } from '../components/common/NotificationSystem';
 
 // Define enhanced types for the application state
 export interface DrumSample {
@@ -78,6 +79,13 @@ export interface AppState {
   // UI state
   isLoading: boolean;
   error: string | null;
+  
+  // Notifications
+  notifications: Notification[];
+  
+  // Imported preset settings (for patch generation)
+  importedDrumPreset: any | null;
+  importedMultisamplePreset: any | null;
 }
 
 // Define enhanced action types
@@ -104,7 +112,11 @@ export type AppAction =
   | { type: 'UPDATE_MULTISAMPLE_FILE'; payload: { index: number; updates: Partial<MultisampleFile> } }
   | { type: 'SET_SELECTED_MULTISAMPLE'; payload: number | null }
   | { type: 'SET_LOADING'; payload: boolean }
-  | { type: 'SET_ERROR'; payload: string | null };
+  | { type: 'SET_ERROR'; payload: string | null }
+  | { type: 'ADD_NOTIFICATION'; payload: Notification }
+  | { type: 'REMOVE_NOTIFICATION'; payload: string }
+  | { type: 'SET_IMPORTED_DRUM_PRESET'; payload: any | null }
+  | { type: 'SET_IMPORTED_MULTISAMPLE_PRESET'; payload: any | null };
 
 // Initial state
 const initialDrumSample: DrumSample = {
@@ -156,7 +168,10 @@ const initialState: AppState = {
   multisampleFiles: [], // Dynamic array, 1-24 samples max
   selectedMultisample: null,
   isLoading: false,
-  error: null
+  error: null,
+  notifications: [],
+  importedDrumPreset: null,
+  importedMultisamplePreset: null
 };
 
 // Enhanced reducer function
@@ -366,6 +381,24 @@ function appReducer(state: AppState, action: AppAction): AppState {
       
     case 'SET_ERROR':
       return { ...state, error: action.payload };
+      
+    case 'ADD_NOTIFICATION':
+      return { 
+        ...state, 
+        notifications: [...state.notifications, action.payload] 
+      };
+      
+    case 'REMOVE_NOTIFICATION':
+      return { 
+        ...state, 
+        notifications: state.notifications.filter(n => n.id !== action.payload) 
+      };
+      
+    case 'SET_IMPORTED_DRUM_PRESET':
+      return { ...state, importedDrumPreset: action.payload };
+      
+    case 'SET_IMPORTED_MULTISAMPLE_PRESET':
+      return { ...state, importedMultisamplePreset: action.payload };
       
     default:
       return state;

@@ -68,3 +68,17 @@ a:hover {
   margin: 0 auto;
   padding: 0 1rem;
 }
+
+/* Responsive grid for drum preset settings */
+.drum-preset-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 1.5rem;
+}
+
+@media (max-width: 640px) {
+  .drum-preset-grid {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+}

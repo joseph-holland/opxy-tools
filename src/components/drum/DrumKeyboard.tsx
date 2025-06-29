@@ -151,8 +151,6 @@ export function DrumKeyboard({ onFileUpload }: DrumKeyboardProps = {}) {
     };
   }, [currentOctave, state.drumSamples, isMobile]);
 
-  const currentMap = drumKeyMap[currentOctave];
-
   // OP-XY key component with exact 1:1 and 1:1.5 ratios
   const OPXYKey = ({ 
     keyChar, 
@@ -172,9 +170,7 @@ export function DrumKeyboard({ onFileUpload }: DrumKeyboardProps = {}) {
     showKeyboardLabels?: boolean;
   }) => {
     const hasContent = mapping && state.drumSamples[mapping.idx]?.isLoaded;
-    const isTopRow = ['W', 'E', 'R', 'Y', 'U'].includes(keyChar);
     const isActive = hasContent; // Key is only active when it has content
-    const canPlaySound = isActive && isActiveOctave; // Can only play sound if active and in current octave
     
     // Key dimensions - scaled for mobile to fit all screen sizes
     const baseSize = isMobile ? 40 : 56; // 40px on mobile to fit smaller screens
