@@ -103,7 +103,7 @@ a:hover {
 .drum-preset-grid {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
-  gap: 2.5rem;
+  gap: 4rem;
 }
 
 @media (max-width: 640px) {
@@ -127,7 +127,7 @@ a:hover {
 
 /* Ensure sliders have adequate width according to UI best practices */
 .cds--slider {
-  min-width: 200px !important;
+  min-width: 320px !important;
 }
 
 /* Value labels for sliders */

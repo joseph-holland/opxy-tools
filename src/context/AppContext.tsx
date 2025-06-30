@@ -56,6 +56,8 @@ export interface AppState {
     bitDepth: number;
     channels: number;
     presetName: string;
+    normalize: boolean;
+    normalizeLevel: number; // -6.0 to 0.0 dB
     presetSettings: {
       playmode: 'poly' | 'mono' | 'legato';
       transpose: number; // -36 to +36
@@ -71,6 +73,9 @@ export interface AppState {
     bitDepth: number;
     channels: number;
     presetName: string;
+    normalize: boolean;
+    normalizeLevel: number; // -6.0 to 0.0 dB
+    cutAtLoopEnd: boolean;
   };
   
   // Drum samples (24 samples for full OP-XY compatibility)
@@ -99,6 +104,8 @@ export type AppAction =
   | { type: 'SET_DRUM_BIT_DEPTH'; payload: number }
   | { type: 'SET_DRUM_CHANNELS'; payload: number }
   | { type: 'SET_DRUM_PRESET_NAME'; payload: string }
+  | { type: 'SET_DRUM_NORMALIZE'; payload: boolean }
+  | { type: 'SET_DRUM_NORMALIZE_LEVEL'; payload: number }
   | { type: 'SET_DRUM_PRESET_PLAYMODE'; payload: 'poly' | 'mono' | 'legato' }
   | { type: 'SET_DRUM_PRESET_TRANSPOSE'; payload: number }
   | { type: 'SET_DRUM_PRESET_VELOCITY'; payload: number }
@@ -108,6 +115,9 @@ export type AppAction =
   | { type: 'SET_MULTISAMPLE_BIT_DEPTH'; payload: number }
   | { type: 'SET_MULTISAMPLE_CHANNELS'; payload: number }
   | { type: 'SET_MULTISAMPLE_PRESET_NAME'; payload: string }
+  | { type: 'SET_MULTISAMPLE_NORMALIZE'; payload: boolean }
+  | { type: 'SET_MULTISAMPLE_NORMALIZE_LEVEL'; payload: number }
+  | { type: 'SET_MULTISAMPLE_CUT_AT_LOOP_END'; payload: boolean }
   | { type: 'LOAD_DRUM_SAMPLE'; payload: { index: number; file: File; audioBuffer: AudioBuffer; metadata: WavMetadata } }
   | { type: 'CLEAR_DRUM_SAMPLE'; payload: number }
   | { type: 'UPDATE_DRUM_SAMPLE'; payload: { index: number; updates: Partial<DrumSample> } }
@@ -156,6 +166,8 @@ const initialState: AppState = {
     bitDepth: 0,
     channels: 0,
     presetName: '',
+    normalize: false,
+    normalizeLevel: 0.0,
     presetSettings: {
       playmode: 'poly',
       transpose: 0,
@@ -168,7 +180,10 @@ const initialState: AppState = {
     sampleRate: 0,
     bitDepth: 0,
     channels: 0,
-    presetName: ''
+    presetName: '',
+    normalize: false,
+    normalizeLevel: 0.0,
+    cutAtLoopEnd: false
   },
   drumSamples: Array(24).fill(null).map(() => ({ ...initialDrumSample })),
   multisampleFiles: [], // Dynamic array, 1-24 samples max
@@ -208,6 +223,18 @@ function appReducer(state: AppState, action: AppAction): AppState {
       return { 
         ...state, 
         drumSettings: { ...state.drumSettings, presetName: action.payload }
+      };
+      
+    case 'SET_DRUM_NORMALIZE':
+      return { 
+        ...state, 
+        drumSettings: { ...state.drumSettings, normalize: action.payload }
+      };
+      
+    case 'SET_DRUM_NORMALIZE_LEVEL':
+      return { 
+        ...state, 
+        drumSettings: { ...state.drumSettings, normalizeLevel: action.payload }
       };
       
     case 'SET_DRUM_PRESET_PLAYMODE':
@@ -277,6 +304,24 @@ function appReducer(state: AppState, action: AppAction): AppState {
       return { 
         ...state, 
         multisampleSettings: { ...state.multisampleSettings, presetName: action.payload }
+      };
+      
+    case 'SET_MULTISAMPLE_NORMALIZE':
+      return { 
+        ...state, 
+        multisampleSettings: { ...state.multisampleSettings, normalize: action.payload }
+      };
+      
+    case 'SET_MULTISAMPLE_NORMALIZE_LEVEL':
+      return { 
+        ...state, 
+        multisampleSettings: { ...state.multisampleSettings, normalizeLevel: action.payload }
+      };
+      
+    case 'SET_MULTISAMPLE_CUT_AT_LOOP_END':
+      return { 
+        ...state, 
+        multisampleSettings: { ...state.multisampleSettings, cutAtLoopEnd: action.payload }
       };
       
     case 'LOAD_DRUM_SAMPLE':

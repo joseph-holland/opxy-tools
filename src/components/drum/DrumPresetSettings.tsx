@@ -148,15 +148,13 @@ export function DrumPresetSettings() {
   return (
     <>
       <div style={{
-        marginBottom: '2rem',
-        paddingBottom: '1.5rem',
-        borderBottom: '1px solid #e5e7eb'
+        marginBottom: '2rem'
       }}>
         {/* Header */}
         <div style={{
           display: 'flex',
           flexDirection: isMobile ? 'column' : 'row',
-          justifyContent: 'space-between',
+          justifyContent: isMobile ? 'flex-start' : 'space-between',
           alignItems: isMobile ? 'flex-start' : 'center',
           gap: isMobile ? '1rem' : '0',
           marginBottom: '1.5rem'
@@ -168,7 +166,8 @@ export function DrumPresetSettings() {
             fontWeight: '300',
             display: 'flex',
             alignItems: 'center',
-            gap: '0.5rem'
+            gap: '0.5rem',
+            alignSelf: isMobile ? 'flex-start' : 'auto'
           }}>
             preset settings
           </h3>
@@ -176,7 +175,8 @@ export function DrumPresetSettings() {
           <div style={{ 
             display: 'flex', 
             gap: '0.75rem',
-            alignSelf: isMobile ? 'stretch' : 'auto'
+            alignSelf: isMobile ? 'center' : 'auto',
+            justifyContent: isMobile ? 'center' : 'flex-start'
           }}>
             <button
               onClick={handleResetClick}
@@ -302,59 +302,130 @@ export function DrumPresetSettings() {
             {/* Left Column */}
             <div style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem' }}>
               <div>
-                <Slider
-                  labelText="transpose"
-                  id="preset-transpose"
-                  min={-36}
-                  max={36}
-                  step={1}
-                  value={state.drumSettings.presetSettings.transpose}
-                  onChange={({ value }) => handleTransposeChange(value)}
-                />
+                <div style={{
+                  fontSize: '0.9rem',
+                  fontWeight: '500',
+                  color: '#222',
+                  marginBottom: '0.5rem'
+                }}>
+                  transpose: {state.drumSettings.presetSettings.transpose}
+                </div>
+                <div style={{ width: '100%' }}>
+                  <Slider
+                    id="preset-transpose"
+                    min={-36}
+                    max={36}
+                    step={1}
+                    value={state.drumSettings.presetSettings.transpose}
+                    onChange={({ value }) => handleTransposeChange(value)}
+                    hideTextInput
+                  />
+
+                </div>
               </div>
               
               <div>
-                <Slider
-                  labelText="velocity"
-                  id="preset-velocity-sensitivity"
-                  min={0}
-                  max={100}
-                  step={1}
-                  value={state.drumSettings.presetSettings.velocity}
-                  onChange={({ value }) => handleVelocityChange(value)}
-                />
+                <div style={{
+                  fontSize: '0.9rem',
+                  fontWeight: '500',
+                  color: '#222',
+                  marginBottom: '0.5rem'
+                }}>
+                  velocity: {state.drumSettings.presetSettings.velocity}%
+                </div>
+                <div style={{ width: '100%' }}>
+                  <Slider
+                    id="preset-velocity-sensitivity"
+                    min={0}
+                    max={100}
+                    step={1}
+                    value={state.drumSettings.presetSettings.velocity}
+                    onChange={({ value }) => handleVelocityChange(value)}
+                    hideTextInput
+                  />
+                </div>
               </div>
             </div>
 
             {/* Right Column */}
             <div style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem' }}>
               <div>
-                <Slider
-                  labelText="volume"
-                  id="preset-volume"
-                  min={0}
-                  max={100}
-                  step={1}
-                  value={state.drumSettings.presetSettings.volume}
-                  onChange={({ value }) => handleVolumeChange(value)}
-                />
+                <div style={{
+                  fontSize: '0.9rem',
+                  fontWeight: '500',
+                  color: '#222',
+                  marginBottom: '0.5rem'
+                }}>
+                  volume: {state.drumSettings.presetSettings.volume}%
+                </div>
+                <div style={{ width: '100%' }}>
+                  <Slider
+                    id="preset-volume"
+                    min={0}
+                    max={100}
+                    step={1}
+                    value={state.drumSettings.presetSettings.volume}
+                    onChange={({ value }) => handleVolumeChange(value)}
+                    hideTextInput
+                  />
+                </div>
               </div>
               
               <div>
-                <Slider
-                  labelText="width"
-                  id="preset-width"
-                  min={0}
-                  max={100}
-                  step={1}
-                  value={state.drumSettings.presetSettings.width}
-                  onChange={({ value }) => handleWidthChange(value)}
-                />
+                <div style={{
+                  fontSize: '0.9rem',
+                  fontWeight: '500',
+                  color: '#222',
+                  marginBottom: '0.5rem'
+                }}>
+                  width: {state.drumSettings.presetSettings.width}%
+                </div>
+                <div style={{ width: '100%' }}>
+                  <Slider
+                    id="preset-width"
+                    min={0}
+                    max={100}
+                    step={1}
+                    value={state.drumSettings.presetSettings.width}
+                    onChange={({ value }) => handleWidthChange(value)}
+                    hideTextInput
+                  />
+                </div>
               </div>
             </div>
           </div>
         </div>
       </div>
+
+      {/* Slider Styling */}
+      <style>{`
+        #preset-transpose .cds--slider__track,
+        #preset-velocity-sensitivity .cds--slider__track,
+        #preset-volume .cds--slider__track,
+        #preset-width .cds--slider__track {
+          background: linear-gradient(to right, #e5e7eb 0%, #6b7280 100%) !important;
+        }
+        #preset-transpose .cds--slider__filled-track,
+        #preset-velocity-sensitivity .cds--slider__filled-track,
+        #preset-volume .cds--slider__filled-track,
+        #preset-width .cds--slider__filled-track {
+          background: #374151 !important;
+        }
+        #preset-transpose .cds--slider__thumb,
+        #preset-velocity-sensitivity .cds--slider__thumb,
+        #preset-volume .cds--slider__thumb,
+        #preset-width .cds--slider__thumb {
+          background: #374151 !important;
+          border: 2px solid #374151 !important;
+        }
+        #preset-transpose .cds--slider__thumb:hover,
+        #preset-velocity-sensitivity .cds--slider__thumb:hover,
+        #preset-volume .cds--slider__thumb:hover,
+        #preset-width .cds--slider__thumb:hover {
+          background: #222 !important;
+          border-color: #222 !important;
+        }
+      `}</style>
 
       {/* Confirmation Modal */}
       <ConfirmationModal

@@ -150,319 +150,535 @@ export function MultisampleAdvancedSettings({ isOpen, onClose }: MultisampleAdva
   if (!isOpen) return null;
 
   return (
-    <Modal
-      open={isOpen}
-      onRequestClose={onClose}
-      modalHeading="Advanced Multisample Settings"
-      primaryButtonText="Save Settings"
-      secondaryButtonText="Reset to Defaults"
-      onRequestSubmit={handleSave}
-      onSecondarySubmit={handleReset}
-      size="lg"
-    >
-      <div style={{ 
-        display: 'grid', 
-        gap: '2rem',
-        maxHeight: '70vh',
-        overflowY: 'auto',
-        padding: '1rem 0'
-      }}>
-        
-        {/* Playback Settings */}
-        <section>
-          <h4 style={{ 
-            marginBottom: '1rem', 
-            color: '#222',
-            fontWeight: '500',
-            borderBottom: '1px solid #e0e0e0',
-            paddingBottom: '0.5rem'
-          }}>
-            Playback
-          </h4>
+    <>
+      <Modal
+        open={isOpen}
+        onRequestClose={onClose}
+        modalHeading="Advanced Multisample Settings"
+        primaryButtonText="Save Settings"
+        secondaryButtonText="Reset to Defaults"
+        onRequestSubmit={handleSave}
+        onSecondarySubmit={handleReset}
+        size="lg"
+      >
+        <div style={{ 
+          display: 'grid', 
+          gap: '2rem',
+          maxHeight: '70vh',
+          overflowY: 'auto',
+          padding: '1rem 0'
+        }}>
           
-          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
+          {/* Playback Settings */}
+          <section>
+            <h4 style={{ 
+              marginBottom: '1rem', 
+              color: '#222',
+              fontWeight: '500',
+              borderBottom: '1px solid #e0e0e0',
+              paddingBottom: '0.5rem'
+            }}>
+              Playback
+            </h4>
+            
+            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
+              <div>
+                <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: '500' }}>
+                  Play Mode
+                </label>
+                <Select
+                  id="playmode"
+                  value={settings.playmode}
+                  onChange={(e) => updateSetting('playmode', e.target.value as any)}
+                >
+                  <SelectItem value="poly" text="Polyphonic" />
+                  <SelectItem value="mono" text="Monophonic" />
+                  <SelectItem value="legato" text="Legato" />
+                </Select>
+              </div>
+
+              <div>
+                <Toggle
+                  id="advanced-loop-enabled"
+                  labelText="Loop Enabled"
+                  toggled={settings.loopEnabled}
+                  onToggle={(checked) => updateSetting('loopEnabled', checked)}
+                />
+                <style>{`
+                  #advanced-loop-enabled .cds--toggle-input__appearance {
+                    background-color: #e5e7eb !important;
+                  }
+                  #advanced-loop-enabled .cds--toggle-input__appearance:before {
+                    background-color: #6b7280 !important;
+                  }
+                  #advanced-loop-enabled .cds--toggle-input:checked + .cds--toggle-input__appearance {
+                    background-color: #374151 !important;
+                  }
+                  #advanced-loop-enabled .cds--toggle-input:checked + .cds--toggle-input__appearance:before {
+                    background-color: #fff !important;
+                  }
+                  #advanced-loop-enabled .cds--toggle__text--off,
+                  #advanced-loop-enabled .cds--toggle__text--on {
+                    color: #6b7280 !important;
+                  }
+                `}</style>
+              </div>
+            </div>
+          </section>
+
+          {/* Global Parameters */}
+          <section>
+            <h4 style={{ 
+              marginBottom: '1rem', 
+              color: '#222',
+              fontWeight: '500',
+              borderBottom: '1px solid #e0e0e0',
+              paddingBottom: '0.5rem'
+            }}>
+              Global Parameters
+            </h4>
+            
+            <div style={{ display: 'grid', gap: '1rem' }}>
+              <div>
+                <div style={{
+                  fontSize: '0.9rem',
+                  fontWeight: '500',
+                  color: '#222',
+                  marginBottom: '0.5rem'
+                }}>
+                  transpose: {settings.transpose > 0 ? '+' : ''}{settings.transpose}
+                </div>
+                <Slider
+                  id="advanced-transpose"
+                  min={-36}
+                  max={36}
+                  step={1}
+                  value={settings.transpose}
+                  onChange={({ value }) => updateSetting('transpose', value)}
+                  hideTextInput
+                />
+              </div>
+
+              <div>
+                <div style={{
+                  fontSize: '0.9rem',
+                  fontWeight: '500',
+                  color: '#222',
+                  marginBottom: '0.5rem'
+                }}>
+                  velocity sensitivity: {settings.velocitySensitivity}%
+                </div>
+                <Slider
+                  id="advanced-velocity-sensitivity"
+                  min={0}
+                  max={100}
+                  step={1}
+                  value={settings.velocitySensitivity}
+                  onChange={({ value }) => updateSetting('velocitySensitivity', value)}
+                  hideTextInput
+                />
+              </div>
+
+              <div>
+                <div style={{
+                  fontSize: '0.9rem',
+                  fontWeight: '500',
+                  color: '#222',
+                  marginBottom: '0.5rem'
+                }}>
+                  volume: {settings.volume}%
+                </div>
+                <Slider
+                  id="advanced-volume"
+                  min={0}
+                  max={100}
+                  step={1}
+                  value={settings.volume}
+                  onChange={({ value }) => updateSetting('volume', value)}
+                  hideTextInput
+                />
+              </div>
+
+              <div>
+                <div style={{
+                  fontSize: '0.9rem',
+                  fontWeight: '500',
+                  color: '#222',
+                  marginBottom: '0.5rem'
+                }}>
+                  width: {settings.width}%
+                </div>
+                <Slider
+                  id="advanced-width"
+                  min={0}
+                  max={100}
+                  step={1}
+                  value={settings.width}
+                  onChange={({ value }) => updateSetting('width', value)}
+                  hideTextInput
+                />
+              </div>
+
+              <div>
+                <div style={{
+                  fontSize: '0.9rem',
+                  fontWeight: '500',
+                  color: '#222',
+                  marginBottom: '0.5rem'
+                }}>
+                  highpass filter: {settings.highpass}%
+                </div>
+                <Slider
+                  id="advanced-highpass"
+                  min={0}
+                  max={100}
+                  step={1}
+                  value={settings.highpass}
+                  onChange={({ value }) => updateSetting('highpass', value)}
+                  hideTextInput
+                />
+              </div>
+            </div>
+          </section>
+
+          {/* Portamento */}
+          <section>
+            <h4 style={{ 
+              marginBottom: '1rem', 
+              color: '#222',
+              fontWeight: '500',
+              borderBottom: '1px solid #e0e0e0',
+              paddingBottom: '0.5rem'
+            }}>
+              Portamento
+            </h4>
+            
+            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
+              <div>
+                <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: '500' }}>
+                  Type
+                </label>
+                <Select
+                  id="portamento-type"
+                  value={settings.portamentoType}
+                  onChange={(e) => updateSetting('portamentoType', e.target.value as any)}
+                >
+                  <SelectItem value="linear" text="Linear" />
+                  <SelectItem value="exponential" text="Exponential" />
+                </Select>
+              </div>
+
+              <div>
+                <div style={{
+                  fontSize: '0.9rem',
+                  fontWeight: '500',
+                  color: '#222',
+                  marginBottom: '0.5rem'
+                }}>
+                  amount: {settings.portamentoAmount}%
+                </div>
+                <Slider
+                  id="advanced-portamento-amount"
+                  min={0}
+                  max={100}
+                  step={1}
+                  value={settings.portamentoAmount}
+                  onChange={({ value }) => updateSetting('portamentoAmount', value)}
+                  hideTextInput
+                />
+              </div>
+            </div>
+          </section>
+
+          {/* Tuning */}
+          <section>
+            <h4 style={{ 
+              marginBottom: '1rem', 
+              color: '#222',
+              fontWeight: '500',
+              borderBottom: '1px solid #e0e0e0',
+              paddingBottom: '0.5rem'
+            }}>
+              Tuning
+            </h4>
+            
             <div>
               <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: '500' }}>
-                Play Mode
+                Root Note
               </label>
               <Select
-                id="playmode"
-                value={settings.playmode}
-                onChange={(e) => updateSetting('playmode', e.target.value as any)}
+                id="tuning-root"
+                value={settings.tuningRoot.toString()}
+                onChange={(e) => updateSetting('tuningRoot', parseInt(e.target.value))}
               >
-                <SelectItem value="poly" text="Polyphonic" />
-                <SelectItem value="mono" text="Monophonic" />
-                <SelectItem value="legato" text="Legato" />
+                {noteNames.map((note, index) => (
+                  <SelectItem key={index} value={index.toString()} text={note} />
+                ))}
               </Select>
             </div>
+          </section>
 
-            <div>
-              <Toggle
-                id="loop-enabled"
-                labelText="Loop Enabled"
-                toggled={settings.loopEnabled}
-                onToggle={(checked) => updateSetting('loopEnabled', checked)}
-              />
+          {/* Amplitude Envelope */}
+          <section>
+            <h4 style={{ 
+              marginBottom: '1rem', 
+              color: '#222',
+              fontWeight: '500',
+              borderBottom: '1px solid #e0e0e0',
+              paddingBottom: '0.5rem'
+            }}>
+              Amplitude Envelope
+            </h4>
+            
+            <div style={{ display: 'grid', gap: '1rem' }}>
+              <div>
+                <div style={{
+                  fontSize: '0.9rem',
+                  fontWeight: '500',
+                  color: '#222',
+                  marginBottom: '0.5rem'
+                }}>
+                  attack: {settings.ampEnvelope.attack}%
+                </div>
+                <Slider
+                  id="advanced-amp-attack"
+                  min={0}
+                  max={100}
+                  step={1}
+                  value={settings.ampEnvelope.attack}
+                  onChange={({ value }) => updateEnvelopeSetting('ampEnvelope', 'attack', value)}
+                  hideTextInput
+                />
+              </div>
+
+              <div>
+                <div style={{
+                  fontSize: '0.9rem',
+                  fontWeight: '500',
+                  color: '#222',
+                  marginBottom: '0.5rem'
+                }}>
+                  decay: {settings.ampEnvelope.decay}%
+                </div>
+                <Slider
+                  id="advanced-amp-decay"
+                  min={0}
+                  max={100}
+                  step={1}
+                  value={settings.ampEnvelope.decay}
+                  onChange={({ value }) => updateEnvelopeSetting('ampEnvelope', 'decay', value)}
+                  hideTextInput
+                />
+              </div>
+
+              <div>
+                <div style={{
+                  fontSize: '0.9rem',
+                  fontWeight: '500',
+                  color: '#222',
+                  marginBottom: '0.5rem'
+                }}>
+                  sustain: {settings.ampEnvelope.sustain}%
+                </div>
+                <Slider
+                  id="advanced-amp-sustain"
+                  min={0}
+                  max={100}
+                  step={1}
+                  value={settings.ampEnvelope.sustain}
+                  onChange={({ value }) => updateEnvelopeSetting('ampEnvelope', 'sustain', value)}
+                  hideTextInput
+                />
+              </div>
+
+              <div>
+                <div style={{
+                  fontSize: '0.9rem',
+                  fontWeight: '500',
+                  color: '#222',
+                  marginBottom: '0.5rem'
+                }}>
+                  release: {settings.ampEnvelope.release}%
+                </div>
+                <Slider
+                  id="advanced-amp-release"
+                  min={0}
+                  max={100}
+                  step={1}
+                  value={settings.ampEnvelope.release}
+                  onChange={({ value }) => updateEnvelopeSetting('ampEnvelope', 'release', value)}
+                  hideTextInput
+                />
+              </div>
             </div>
-          </div>
-        </section>
+          </section>
 
-        {/* Global Parameters */}
-        <section>
-          <h4 style={{ 
-            marginBottom: '1rem', 
-            color: '#222',
-            fontWeight: '500',
-            borderBottom: '1px solid #e0e0e0',
-            paddingBottom: '0.5rem'
-          }}>
-            Global Parameters
-          </h4>
-          
-          <div style={{ display: 'grid', gap: '1rem' }}>
-            <div>
-              <Slider
-                labelText={`Transpose: ${settings.transpose > 0 ? '+' : ''}${settings.transpose} semitones`}
-                min={-36}
-                max={36}
-                step={1}
-                value={settings.transpose}
-                onChange={({ value }) => updateSetting('transpose', value)}
-              />
+          {/* Filter Envelope */}
+          <section>
+            <h4 style={{ 
+              marginBottom: '1rem', 
+              color: '#222',
+              fontWeight: '500',
+              borderBottom: '1px solid #e0e0e0',
+              paddingBottom: '0.5rem'
+            }}>
+              Filter Envelope
+            </h4>
+            
+            <div style={{ display: 'grid', gap: '1rem' }}>
+              <div>
+                <div style={{
+                  fontSize: '0.9rem',
+                  fontWeight: '500',
+                  color: '#222',
+                  marginBottom: '0.5rem'
+                }}>
+                  attack: {settings.filterEnvelope.attack}%
+                </div>
+                <Slider
+                  id="advanced-filter-attack"
+                  min={0}
+                  max={100}
+                  step={1}
+                  value={settings.filterEnvelope.attack}
+                  onChange={({ value }) => updateEnvelopeSetting('filterEnvelope', 'attack', value)}
+                  hideTextInput
+                />
+              </div>
+
+              <div>
+                <div style={{
+                  fontSize: '0.9rem',
+                  fontWeight: '500',
+                  color: '#222',
+                  marginBottom: '0.5rem'
+                }}>
+                  decay: {settings.filterEnvelope.decay}%
+                </div>
+                <Slider
+                  id="advanced-filter-decay"
+                  min={0}
+                  max={100}
+                  step={1}
+                  value={settings.filterEnvelope.decay}
+                  onChange={({ value }) => updateEnvelopeSetting('filterEnvelope', 'decay', value)}
+                  hideTextInput
+                />
+              </div>
+
+              <div>
+                <div style={{
+                  fontSize: '0.9rem',
+                  fontWeight: '500',
+                  color: '#222',
+                  marginBottom: '0.5rem'
+                }}>
+                  sustain: {settings.filterEnvelope.sustain}%
+                </div>
+                <Slider
+                  id="advanced-filter-sustain"
+                  min={0}
+                  max={100}
+                  step={1}
+                  value={settings.filterEnvelope.sustain}
+                  onChange={({ value }) => updateEnvelopeSetting('filterEnvelope', 'sustain', value)}
+                  hideTextInput
+                />
+              </div>
+
+              <div>
+                <div style={{
+                  fontSize: '0.9rem',
+                  fontWeight: '500',
+                  color: '#222',
+                  marginBottom: '0.5rem'
+                }}>
+                  release: {settings.filterEnvelope.release}%
+                </div>
+                <Slider
+                  id="advanced-filter-release"
+                  min={0}
+                  max={100}
+                  step={1}
+                  value={settings.filterEnvelope.release}
+                  onChange={({ value }) => updateEnvelopeSetting('filterEnvelope', 'release', value)}
+                  hideTextInput
+                />
+              </div>
             </div>
+          </section>
+        </div>
+      </Modal>
 
-            <div>
-              <Slider
-                labelText={`Velocity Sensitivity: ${settings.velocitySensitivity}%`}
-                min={0}
-                max={100}
-                step={1}
-                value={settings.velocitySensitivity}
-                onChange={({ value }) => updateSetting('velocitySensitivity', value)}
-              />
-            </div>
-
-            <div>
-              <Slider
-                labelText={`Volume: ${settings.volume}%`}
-                min={0}
-                max={100}
-                step={1}
-                value={settings.volume}
-                onChange={({ value }) => updateSetting('volume', value)}
-              />
-            </div>
-
-            <div>
-              <Slider
-                labelText={`Width: ${settings.width}%`}
-                min={0}
-                max={100}
-                step={1}
-                value={settings.width}
-                onChange={({ value }) => updateSetting('width', value)}
-              />
-            </div>
-
-            <div>
-              <Slider
-                labelText={`Highpass Filter: ${settings.highpass}%`}
-                min={0}
-                max={100}
-                step={1}
-                value={settings.highpass}
-                onChange={({ value }) => updateSetting('highpass', value)}
-              />
-            </div>
-          </div>
-        </section>
-
-        {/* Portamento */}
-        <section>
-          <h4 style={{ 
-            marginBottom: '1rem', 
-            color: '#222',
-            fontWeight: '500',
-            borderBottom: '1px solid #e0e0e0',
-            paddingBottom: '0.5rem'
-          }}>
-            Portamento
-          </h4>
-          
-          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
-            <div>
-              <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: '500' }}>
-                Type
-              </label>
-              <Select
-                id="portamento-type"
-                value={settings.portamentoType}
-                onChange={(e) => updateSetting('portamentoType', e.target.value as any)}
-              >
-                <SelectItem value="linear" text="Linear" />
-                <SelectItem value="exponential" text="Exponential" />
-              </Select>
-            </div>
-
-            <div>
-              <Slider
-                labelText={`Amount: ${settings.portamentoAmount}%`}
-                min={0}
-                max={100}
-                step={1}
-                value={settings.portamentoAmount}
-                onChange={({ value }) => updateSetting('portamentoAmount', value)}
-              />
-            </div>
-          </div>
-        </section>
-
-        {/* Tuning */}
-        <section>
-          <h4 style={{ 
-            marginBottom: '1rem', 
-            color: '#222',
-            fontWeight: '500',
-            borderBottom: '1px solid #e0e0e0',
-            paddingBottom: '0.5rem'
-          }}>
-            Tuning
-          </h4>
-          
-          <div>
-            <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: '500' }}>
-              Root Note
-            </label>
-            <Select
-              id="tuning-root"
-              value={settings.tuningRoot.toString()}
-              onChange={(e) => updateSetting('tuningRoot', parseInt(e.target.value))}
-            >
-              {noteNames.map((note, index) => (
-                <SelectItem key={index} value={index.toString()} text={note} />
-              ))}
-            </Select>
-          </div>
-        </section>
-
-        {/* Amplitude Envelope */}
-        <section>
-          <h4 style={{ 
-            marginBottom: '1rem', 
-            color: '#222',
-            fontWeight: '500',
-            borderBottom: '1px solid #e0e0e0',
-            paddingBottom: '0.5rem'
-          }}>
-            Amplitude Envelope
-          </h4>
-          
-          <div style={{ display: 'grid', gap: '1rem' }}>
-            <div>
-              <Slider
-                labelText={`Attack: ${settings.ampEnvelope.attack}%`}
-                min={0}
-                max={100}
-                step={1}
-                value={settings.ampEnvelope.attack}
-                onChange={({ value }) => updateEnvelopeSetting('ampEnvelope', 'attack', value)}
-              />
-            </div>
-
-            <div>
-              <Slider
-                labelText={`Decay: ${settings.ampEnvelope.decay}%`}
-                min={0}
-                max={100}
-                step={1}
-                value={settings.ampEnvelope.decay}
-                onChange={({ value }) => updateEnvelopeSetting('ampEnvelope', 'decay', value)}
-              />
-            </div>
-
-            <div>
-              <Slider
-                labelText={`Sustain: ${settings.ampEnvelope.sustain}%`}
-                min={0}
-                max={100}
-                step={1}
-                value={settings.ampEnvelope.sustain}
-                onChange={({ value }) => updateEnvelopeSetting('ampEnvelope', 'sustain', value)}
-              />
-            </div>
-
-            <div>
-              <Slider
-                labelText={`Release: ${settings.ampEnvelope.release}%`}
-                min={0}
-                max={100}
-                step={1}
-                value={settings.ampEnvelope.release}
-                onChange={({ value }) => updateEnvelopeSetting('ampEnvelope', 'release', value)}
-              />
-            </div>
-          </div>
-        </section>
-
-        {/* Filter Envelope */}
-        <section>
-          <h4 style={{ 
-            marginBottom: '1rem', 
-            color: '#222',
-            fontWeight: '500',
-            borderBottom: '1px solid #e0e0e0',
-            paddingBottom: '0.5rem'
-          }}>
-            Filter Envelope
-          </h4>
-          
-          <div style={{ display: 'grid', gap: '1rem' }}>
-            <div>
-              <Slider
-                labelText={`Attack: ${settings.filterEnvelope.attack}%`}
-                min={0}
-                max={100}
-                step={1}
-                value={settings.filterEnvelope.attack}
-                onChange={({ value }) => updateEnvelopeSetting('filterEnvelope', 'attack', value)}
-              />
-            </div>
-
-            <div>
-              <Slider
-                labelText={`Decay: ${settings.filterEnvelope.decay}%`}
-                min={0}
-                max={100}
-                step={1}
-                value={settings.filterEnvelope.decay}
-                onChange={({ value }) => updateEnvelopeSetting('filterEnvelope', 'decay', value)}
-              />
-            </div>
-
-            <div>
-              <Slider
-                labelText={`Sustain: ${settings.filterEnvelope.sustain}%`}
-                min={0}
-                max={100}
-                step={1}
-                value={settings.filterEnvelope.sustain}
-                onChange={({ value }) => updateEnvelopeSetting('filterEnvelope', 'sustain', value)}
-              />
-            </div>
-
-            <div>
-              <Slider
-                labelText={`Release: ${settings.filterEnvelope.release}%`}
-                min={0}
-                max={100}
-                step={1}
-                value={settings.filterEnvelope.release}
-                onChange={({ value }) => updateEnvelopeSetting('filterEnvelope', 'release', value)}
-              />
-            </div>
-          </div>
-        </section>
-      </div>
-    </Modal>
+      {/* Slider Styling */}
+      <style>{`
+        #advanced-transpose .cds--slider__track,
+        #advanced-velocity-sensitivity .cds--slider__track,
+        #advanced-volume .cds--slider__track,
+        #advanced-width .cds--slider__track,
+        #advanced-highpass .cds--slider__track,
+        #advanced-portamento-amount .cds--slider__track,
+        #advanced-amp-attack .cds--slider__track,
+        #advanced-amp-decay .cds--slider__track,
+        #advanced-amp-sustain .cds--slider__track,
+        #advanced-amp-release .cds--slider__track,
+        #advanced-filter-attack .cds--slider__track,
+        #advanced-filter-decay .cds--slider__track,
+        #advanced-filter-sustain .cds--slider__track,
+        #advanced-filter-release .cds--slider__track {
+          background: linear-gradient(to right, #e5e7eb 0%, #6b7280 100%) !important;
+        }
+        #advanced-transpose .cds--slider__filled-track,
+        #advanced-velocity-sensitivity .cds--slider__filled-track,
+        #advanced-volume .cds--slider__filled-track,
+        #advanced-width .cds--slider__filled-track,
+        #advanced-highpass .cds--slider__filled-track,
+        #advanced-portamento-amount .cds--slider__filled-track,
+        #advanced-amp-attack .cds--slider__filled-track,
+        #advanced-amp-decay .cds--slider__filled-track,
+        #advanced-amp-sustain .cds--slider__filled-track,
+        #advanced-amp-release .cds--slider__filled-track,
+        #advanced-filter-attack .cds--slider__filled-track,
+        #advanced-filter-decay .cds--slider__filled-track,
+        #advanced-filter-sustain .cds--slider__filled-track,
+        #advanced-filter-release .cds--slider__filled-track {
+          background: #374151 !important;
+        }
+        #advanced-transpose .cds--slider__thumb,
+        #advanced-velocity-sensitivity .cds--slider__thumb,
+        #advanced-volume .cds--slider__thumb,
+        #advanced-width .cds--slider__thumb,
+        #advanced-highpass .cds--slider__thumb,
+        #advanced-portamento-amount .cds--slider__thumb,
+        #advanced-amp-attack .cds--slider__thumb,
+        #advanced-amp-decay .cds--slider__thumb,
+        #advanced-amp-sustain .cds--slider__thumb,
+        #advanced-amp-release .cds--slider__thumb,
+        #advanced-filter-attack .cds--slider__thumb,
+        #advanced-filter-decay .cds--slider__thumb,
+        #advanced-filter-sustain .cds--slider__thumb,
+        #advanced-filter-release .cds--slider__thumb {
+          background: #374151 !important;
+          border: 2px solid #374151 !important;
+        }
+        #advanced-transpose .cds--slider__thumb:hover,
+        #advanced-velocity-sensitivity .cds--slider__thumb:hover,
+        #advanced-volume .cds--slider__thumb:hover,
+        #advanced-width .cds--slider__thumb:hover,
+        #advanced-highpass .cds--slider__thumb:hover,
+        #advanced-portamento-amount .cds--slider__thumb:hover,
+        #advanced-amp-attack .cds--slider__thumb:hover,
+        #advanced-amp-decay .cds--slider__thumb:hover,
+        #advanced-amp-sustain .cds--slider__thumb:hover,
+        #advanced-amp-release .cds--slider__thumb:hover,
+        #advanced-filter-attack .cds--slider__thumb:hover,
+        #advanced-filter-decay .cds--slider__thumb:hover,
+        #advanced-filter-sustain .cds--slider__thumb:hover,
+        #advanced-filter-release .cds--slider__thumb:hover {
+          background: #222 !important;
+          border-color: #222 !important;
+        }
+      `}</style>
+    </>
   );
 }

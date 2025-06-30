@@ -58,29 +58,45 @@ function AppContent() {
                 justifyContent: 'center',
                 alignItems: 'center',
                 flexWrap: 'wrap',
-                gap: '1.2em',
+                gap: '0.5em',
                 fontSize: '0.98em'
               }}>
                 <span style={{ color: '#999' }}>v{__APP_VERSION__}</span>
+                <span style={{ color: '#999' }}>|</span>
+                <span style={{ color: '#999' }}>proudly open source</span>
+                <span style={{ color: '#999' }}>|</span>
                 <a 
                   href="https://github.com/joseph-holland/opxy-tools" 
                   target="_blank" 
                   rel="noopener"
                   style={{ color: '#666' }}
                 >
-                  github
+                  github repo
                 </a>
+              </div>
+              <div style={{ marginTop: '0.5rem' }}>
+                created with fidelity by{' '}
                 <a 
-                  href="/CHANGELOG.txt" 
+                  href="https://github.com/joseph-holland" 
                   target="_blank" 
                   rel="noopener"
                   style={{ color: '#666' }}
                 >
-                  changelog
+                  joseph-holland
+                </a>
+                {' '} | {' '}
+                <a 
+                  href="https://buymeacoffee.com/jxavierh" 
+                  target="_blank" 
+                  rel="noopener"
+                  style={{ color: '#666', display: 'inline-flex', alignItems: 'center', gap: '0.3em' }}
+                >
+                  <i className="fas fa-coffee" style={{ fontSize: '0.9em' }}></i>
+                  buy me a coffee
                 </a>
               </div>
               <div style={{ marginTop: '0.5rem' }}>
-                based on the awesome{' '}
+                inspired by the awesome{' '}
                 <a 
                   href="https://buba447.github.io/opxy-drum-tool/" 
                   target="_blank" 
@@ -89,7 +105,7 @@ function AppContent() {
                 >
                   opxy-drum-tool
                 </a>
-                {' '}created by zeitgeese
+                {' '} by zeitgeese
               </div>
             </footer>
           </Content>

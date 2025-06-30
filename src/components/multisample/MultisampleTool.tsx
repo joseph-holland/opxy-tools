@@ -1,8 +1,8 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useAppContext } from '../../context/AppContext';
-import { PresetNameSection } from '../common/PresetNameSection';
 import { ConfirmationModal } from '../common/ConfirmationModal';
 import { RecordingModal } from '../common/RecordingModal';
+import { AudioProcessingSection } from '../common/AudioProcessingSection';
 import { GeneratePresetSection } from '../common/GeneratePresetSection';
 import { ErrorDisplay } from '../common/ErrorDisplay';
 import { MultisampleSampleTable } from './MultisampleSampleTable';
@@ -57,6 +57,34 @@ export function MultisampleTool() {
 
   const handlePresetNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     dispatch({ type: 'SET_MULTISAMPLE_PRESET_NAME', payload: e.target.value });
+  };
+
+  const handleNormalizeChange = (enabled: boolean) => {
+    dispatch({ type: 'SET_MULTISAMPLE_NORMALIZE', payload: enabled });
+  };
+
+  const handleNormalizeLevelChange = (level: number) => {
+    dispatch({ type: 'SET_MULTISAMPLE_NORMALIZE_LEVEL', payload: level });
+  };
+
+  const handleCutAtLoopEndChange = (enabled: boolean) => {
+    dispatch({ type: 'SET_MULTISAMPLE_CUT_AT_LOOP_END', payload: enabled });
+  };
+
+  const handleResetAudioSettingsConfirm = () => {
+    setConfirmDialog({
+      isOpen: true,
+      message: 'are you sure you want to reset all audio processing settings to defaults?',
+      onConfirm: () => {
+        dispatch({ type: 'SET_MULTISAMPLE_SAMPLE_RATE', payload: 0 });
+        dispatch({ type: 'SET_MULTISAMPLE_BIT_DEPTH', payload: 0 });
+        dispatch({ type: 'SET_MULTISAMPLE_CHANNELS', payload: 0 });
+        dispatch({ type: 'SET_MULTISAMPLE_NORMALIZE', payload: false });
+        dispatch({ type: 'SET_MULTISAMPLE_NORMALIZE_LEVEL', payload: 0.0 });
+        dispatch({ type: 'SET_MULTISAMPLE_CUT_AT_LOOP_END', payload: false });
+        setConfirmDialog({ isOpen: false, message: '', onConfirm: () => {} });
+      }
+    });
   };
 
   const handleFilesSelected = async (files: File[]) => {
@@ -124,6 +152,11 @@ export function MultisampleTool() {
         dispatch({ type: 'SET_MULTISAMPLE_SAMPLE_RATE', payload: 0 });
         dispatch({ type: 'SET_MULTISAMPLE_BIT_DEPTH', payload: 0 });
         dispatch({ type: 'SET_MULTISAMPLE_CHANNELS', payload: 0 });
+        
+        // Reset normalize and cut settings
+        dispatch({ type: 'SET_MULTISAMPLE_NORMALIZE', payload: false });
+        dispatch({ type: 'SET_MULTISAMPLE_NORMALIZE_LEVEL', payload: 0.0 });
+        dispatch({ type: 'SET_MULTISAMPLE_CUT_AT_LOOP_END', payload: false });
         
         setConfirmDialog({ isOpen: false, message: '', onConfirm: () => {} });
       }
@@ -209,7 +242,10 @@ export function MultisampleTool() {
     hasPresetName || // Preset name entered
     state.multisampleSettings.sampleRate !== 0 || // Audio format changed
     state.multisampleSettings.bitDepth !== 0 ||
-    state.multisampleSettings.channels !== 0
+    state.multisampleSettings.channels !== 0 ||
+    state.multisampleSettings.normalize !== false || // Normalize settings changed
+    state.multisampleSettings.normalizeLevel !== 0.0 ||
+    state.multisampleSettings.cutAtLoopEnd !== false // Cut at loop end changed
     // Note: Multisample preset settings are handled in MultisamplePresetSettings component
   );
 
@@ -221,18 +257,7 @@ export function MultisampleTool() {
       height: '100%'
     }}>
       {/* Header Section */}
-      <PresetNameSection
-        presetName={state.multisampleSettings.presetName}
-        onPresetNameChange={handlePresetNameChange}
-        sampleRate={state.multisampleSettings.sampleRate}
-        bitDepth={state.multisampleSettings.bitDepth}
-        channels={state.multisampleSettings.channels}
-        onSampleRateChange={handleSampleRateChange}
-        onBitDepthChange={handleBitDepthChange}
-        onChannelsChange={handleChannelsChange}
-        samples={state.multisampleFiles}
-        inputId="preset-name-multi"
-      />
+
 
       {/* Separate input for audio files from MIDI key clicks */}
       <input
@@ -464,6 +489,25 @@ export function MultisampleTool() {
         <MultisamplePresetSettings />
       </div>
 
+      {/* Audio Processing */}
+      <AudioProcessingSection
+        type="multisample"
+        sampleRate={state.multisampleSettings.sampleRate}
+        bitDepth={state.multisampleSettings.bitDepth}
+        channels={state.multisampleSettings.channels}
+        onSampleRateChange={handleSampleRateChange}
+        onBitDepthChange={handleBitDepthChange}
+        onChannelsChange={handleChannelsChange}
+        samples={state.multisampleFiles}
+        normalize={state.multisampleSettings.normalize}
+        normalizeLevel={state.multisampleSettings.normalizeLevel}
+        onNormalizeChange={handleNormalizeChange}
+        onNormalizeLevelChange={handleNormalizeLevelChange}
+        cutAtLoopEnd={state.multisampleSettings.cutAtLoopEnd}
+        onCutAtLoopEndChange={handleCutAtLoopEndChange}
+        onResetAudioSettingsConfirm={handleResetAudioSettingsConfirm}
+      />
+
       {/* Footer - Generate Preset */}
       <GeneratePresetSection
         type="multisample"
@@ -473,10 +517,11 @@ export function MultisampleTool() {
         loadedSamplesCount={state.multisampleFiles.length}
         editedSamplesCount={0} // Multisample doesn't have individual sample editing yet
         presetName={state.multisampleSettings.presetName}
+        onPresetNameChange={handlePresetNameChange}
         hasChangesFromDefaults={hasChangesFromDefaults}
         onResetAll={handleResetAll}
         onGeneratePatch={handleGeneratePatch}
-        isMobile={isMobile}
+        inputId="preset-name-multi"
       />
 
       {/* Confirmation Modal */}

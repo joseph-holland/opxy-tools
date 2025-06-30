@@ -150,6 +150,8 @@ export function AudioFormatControls({
 
   return (
     <div style={containerStyle}>
+
+      
       <div style={{ width: isMobile ? '100%' : 'auto' }}>
         <Select
           id="sample-rate"

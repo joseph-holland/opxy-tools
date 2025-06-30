@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { TextInput } from '@carbon/react';
 import { PatchSizeIndicator } from './PatchSizeIndicator';
-import { AudioFormatControls } from './AudioFormatControls';
 
 interface GeneratePresetSectionProps {
   type: 'drum' | 'multisample';
@@ -12,13 +11,6 @@ interface GeneratePresetSectionProps {
   editedSamplesCount: number;
   presetName: string;
   onPresetNameChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
-  sampleRate: number;
-  bitDepth: number;
-  channels: number;
-  onSampleRateChange: (value: string) => void;
-  onBitDepthChange: (value: string) => void;
-  onChannelsChange: (value: string) => void;
-  samples: any[];
   hasChangesFromDefaults: boolean;
   onResetAll: () => void;
   onGeneratePatch: () => void;
@@ -34,13 +26,6 @@ export function GeneratePresetSection({
   editedSamplesCount,
   presetName,
   onPresetNameChange,
-  sampleRate,
-  bitDepth,
-  channels,
-  onSampleRateChange,
-  onBitDepthChange,
-  onChannelsChange,
-  samples,
   hasChangesFromDefaults,
   onResetAll,
   onGeneratePatch,
@@ -67,9 +52,11 @@ export function GeneratePresetSection({
       {/* Header with Buttons */}
       <div style={{
         display: 'flex',
-        justifyContent: 'space-between',
-        alignItems: 'center',
-        marginBottom: '2rem'
+        flexDirection: isMobile ? 'column' : 'row',
+        justifyContent: isMobile ? 'flex-start' : 'space-between',
+        alignItems: isMobile ? 'flex-start' : 'center',
+        marginBottom: '2rem',
+        gap: isMobile ? '1rem' : '0'
       }}>
         <h3 style={{ 
           margin: '0',
@@ -78,13 +65,20 @@ export function GeneratePresetSection({
           fontWeight: '300',
           display: 'flex',
           alignItems: 'center',
-          gap: '0.5rem'
+          gap: '0.5rem',
+          alignSelf: isMobile ? 'flex-start' : 'auto'
         }}>
           generate preset
         </h3>
         
         {/* Buttons aligned with header */}
-        <div style={{ display: 'flex', gap: '0.75rem', flexWrap: 'wrap' }}>
+        <div style={{ 
+          display: 'flex', 
+          gap: '0.75rem', 
+          flexWrap: 'wrap',
+          alignSelf: isMobile ? 'center' : 'auto',
+          justifyContent: isMobile ? 'center' : 'flex-start'
+        }}>
           <button
             onClick={onResetAll}
             disabled={!hasChangesFromDefaults}
@@ -162,22 +156,14 @@ export function GeneratePresetSection({
         </div>
       </div>
 
-      {/* Preset Name and Audio Format Controls */}
+      {/* Preset Name */}
       <div style={{
-        display: 'flex',
-        flexDirection: isMobile ? 'column' : 'row',
-        gap: isMobile ? '1.5rem' : '4rem',
-        alignItems: isMobile ? 'stretch' : 'end',
-        justifyContent: isMobile ? 'flex-start' : 'space-between',
         marginBottom: '2rem',
         paddingBottom: '1.5rem',
         borderBottom: '1px solid #e0e0e0'
       }}>
-        {/* Preset Name */}
         <div style={{ 
-          flex: isMobile ? 'none' : '1',
-          minWidth: isMobile ? '100%' : '300px',
-          maxWidth: isMobile ? '100%' : '60%'
+          width: isMobile ? '100%' : '300px'
         }}>
           <div style={{ width: '100%' }}>
             <TextInput
@@ -192,31 +178,23 @@ export function GeneratePresetSection({
                 width: 100% !important;
                 min-width: 100% !important;
               }
-              #${inputId} .cds--text-input {
+              input#${inputId}.cds--text-input {
                 width: 100% !important;
                 min-width: 100% !important;
+                background-color: #f8f9fa !important;
+                background: #f8f9fa !important;
+                text-align: left !important;
+              }
+              input#${inputId}.cds--text-input:focus {
+                background-color: #f8f9fa !important;
+                background: #f8f9fa !important;
+                text-align: left !important;
+              }
+              input#${inputId}.cds--text-input::placeholder {
+                text-align: left !important;
               }
             `}</style>
           </div>
-        </div>
-
-        {/* Audio Format Controls */}
-        <div style={{ 
-          display: 'flex',
-          justifyContent: isMobile ? 'flex-start' : 'flex-end',
-          flexShrink: 0
-        }}>
-          <AudioFormatControls
-            sampleRate={sampleRate}
-            bitDepth={bitDepth}
-            channels={channels}
-            onSampleRateChange={onSampleRateChange}
-            onBitDepthChange={onBitDepthChange}
-            onChannelsChange={onChannelsChange}
-            samples={samples}
-            size="sm"
-            isMobile={isMobile}
-          />
         </div>
       </div>
       

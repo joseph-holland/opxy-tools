@@ -226,258 +226,368 @@ export function MultisamplePresetSettings() {
   );
 
   return (
-    <div style={{
-      marginBottom: '2rem',
-      paddingBottom: '1.5rem',
-      borderBottom: '1px solid #e5e7eb'
-    }}>
-      {/* Header */}
+    <>
       <div style={{
-        display: 'flex',
-        flexDirection: isMobile ? 'column' : 'row',
-        justifyContent: 'space-between',
-        alignItems: isMobile ? 'flex-start' : 'center',
-        gap: isMobile ? '1rem' : '0',
-        marginBottom: '1.5rem'
+        marginBottom: '2rem',
+        paddingBottom: '1.5rem',
+        borderBottom: '1px solid #e5e7eb'
       }}>
-        <h3 style={{ 
-          margin: '0',
-          color: '#222',
-          fontSize: '1.25rem',
-          fontWeight: '300'
+        {/* Header */}
+        <div style={{
+          display: 'flex',
+          flexDirection: isMobile ? 'column' : 'row',
+          justifyContent: 'space-between',
+          alignItems: isMobile ? 'flex-start' : 'center',
+          gap: isMobile ? '1rem' : '0',
+          marginBottom: '1.5rem'
         }}>
-          preset settings
-        </h3>
-        
-        <div style={{ 
-          display: 'flex', 
-          gap: '0.75rem',
-          alignSelf: isMobile ? 'stretch' : 'auto'
-        }}>
-          <button
-            onClick={handleImportClick}
-            style={{
-              padding: '0.625rem 1.25rem',
-              border: 'none',
-              borderRadius: '3px',
-              backgroundColor: '#333',
-              color: '#fff',
-              fontSize: '0.9rem',
-              fontWeight: '500',
-              cursor: 'pointer',
-              transition: 'all 0.2s ease',
-              fontFamily: 'inherit',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              gap: '0.5rem',
-              flex: isMobile ? '1' : 'none'
-            }}
-            onMouseEnter={(e) => {
-              e.currentTarget.style.backgroundColor = '#555';
-              e.currentTarget.style.transform = 'translateY(-1px)';
-              e.currentTarget.style.boxShadow = '0 4px 12px rgba(0, 0, 0, 0.3)';
-            }}
-            onMouseLeave={(e) => {
-              e.currentTarget.style.backgroundColor = '#333';
-              e.currentTarget.style.transform = 'translateY(0)';
-              e.currentTarget.style.boxShadow = 'none';
-            }}
-          >
-            <i className="fas fa-upload" style={{ fontSize: '0.8rem' }} />
-            import settings
-          </button>
-
-
-
-          <button
-            onClick={handleReset}
-            disabled={!hasPresetChanges}
-            style={{
-              padding: '0.625rem 1.25rem',
-              border: '1px solid #d1d5db',
-              borderRadius: '3px',
-              backgroundColor: '#fff',
-              color: hasPresetChanges ? '#6b7280' : '#9ca3af',
-              fontSize: '0.9rem',
-              fontWeight: '500',
-              cursor: hasPresetChanges ? 'pointer' : 'not-allowed',
-              transition: 'all 0.2s ease',
-              fontFamily: 'inherit',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              gap: '0.5rem',
-              flex: isMobile ? '1' : 'none',
-              opacity: hasPresetChanges ? 1 : 0.6
-            }}
-            onMouseEnter={(e) => {
-              if (hasPresetChanges) {
-                e.currentTarget.style.backgroundColor = '#f9fafb';
-                e.currentTarget.style.borderColor = '#9ca3af';
-                e.currentTarget.style.color = '#374151';
-              }
-            }}
-            onMouseLeave={(e) => {
-              if (hasPresetChanges) {
-                e.currentTarget.style.backgroundColor = '#fff';
-                e.currentTarget.style.borderColor = '#d1d5db';
-                e.currentTarget.style.color = '#6b7280';
-              }
-            }}
-          >
-            <i className="fas fa-undo" style={{ fontSize: '0.8rem' }} />
-            reset
-          </button>
-        </div>
-        
-        <input
-          ref={fileInputRef}
-          type="file"
-          accept=".json"
-          onChange={handleFileImport}
-          style={{ display: 'none' }}
-        />
-      </div>
-
-      {/* Settings Grid */}
-      <div style={{ display: 'grid', gap: '2rem' }}>
-        
-        {/* Playback Settings */}
-        <section>
-          <h4 style={{ 
-            marginBottom: '1rem', 
+          <h3 style={{ 
+            margin: '0',
             color: '#222',
-            fontWeight: '500',
-            borderBottom: '1px solid #e0e0e0',
-            paddingBottom: '0.5rem'
+            fontSize: '1.25rem',
+            fontWeight: '300'
           }}>
-            playback
-          </h4>
+            preset settings
+          </h3>
           
-          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '3rem' }}>
-            <div>
-              <label style={{ 
-                display: 'block',
-                marginBottom: '0.5rem',
+          <div style={{ 
+            display: 'flex', 
+            gap: '0.75rem',
+            alignSelf: isMobile ? 'center' : 'auto'
+          }}>
+            <button
+              onClick={handleReset}
+              disabled={!hasPresetChanges}
+              style={{
+                padding: '0.625rem 1.25rem',
+                border: '1px solid #d1d5db',
+                borderRadius: '3px',
+                backgroundColor: '#fff',
+                color: hasPresetChanges ? '#6b7280' : '#9ca3af',
+                fontSize: '0.9rem',
                 fontWeight: '500',
-                fontSize: '0.875rem',
-                color: '#374151'
-              }}>
-                playmode
-              </label>
-              <Select
-                id="playmode"
-                labelText=""
-                value={settings.playmode}
-                onChange={(e) => updateSetting('playmode', e.target.value as any)}
-                size="sm"
-              >
-                <SelectItem value="poly" text="poly" />
-                <SelectItem value="mono" text="mono" />
-                <SelectItem value="legato" text="legato" />
-              </Select>
-            </div>
+                cursor: hasPresetChanges ? 'pointer' : 'not-allowed',
+                transition: 'all 0.2s ease',
+                fontFamily: 'inherit',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                gap: '0.5rem',
+                flex: isMobile ? '1' : 'none',
+                opacity: hasPresetChanges ? 1 : 0.6
+              }}
+              onMouseEnter={(e) => {
+                if (hasPresetChanges) {
+                  e.currentTarget.style.backgroundColor = '#f9fafb';
+                  e.currentTarget.style.borderColor = '#9ca3af';
+                  e.currentTarget.style.color = '#374151';
+                }
+              }}
+              onMouseLeave={(e) => {
+                if (hasPresetChanges) {
+                  e.currentTarget.style.backgroundColor = '#fff';
+                  e.currentTarget.style.borderColor = '#d1d5db';
+                  e.currentTarget.style.color = '#6b7280';
+                }
+              }}
+            >
+              <i className="fas fa-undo" style={{ fontSize: '0.8rem' }} />
+              reset settings
+            </button>
 
-            <div>
-              <label style={{ 
-                display: 'block',
-                marginBottom: '0.5rem',
+            <button
+              onClick={handleImportClick}
+              style={{
+                padding: '0.625rem 1.25rem',
+                border: 'none',
+                borderRadius: '3px',
+                backgroundColor: '#333',
+                color: '#fff',
+                fontSize: '0.9rem',
                 fontWeight: '500',
-                fontSize: '0.875rem',
-                color: '#374151'
-              }}>
-                loop enabled
-              </label>
-              <Toggle
-                id="loop-enabled"
-                labelText=""
-                toggled={settings.loopEnabled}
-                onToggle={(checked) => updateSetting('loopEnabled', checked)}
-                size="sm"
-              />
-            </div>
+                cursor: 'pointer',
+                transition: 'all 0.2s ease',
+                fontFamily: 'inherit',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                gap: '0.5rem',
+                flex: isMobile ? '1' : 'none'
+              }}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.backgroundColor = '#555';
+                e.currentTarget.style.transform = 'translateY(-1px)';
+                e.currentTarget.style.boxShadow = '0 4px 12px rgba(0, 0, 0, 0.3)';
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.backgroundColor = '#333';
+                e.currentTarget.style.transform = 'translateY(0)';
+                e.currentTarget.style.boxShadow = 'none';
+              }}
+            >
+              <i className="fas fa-upload" style={{ fontSize: '0.8rem' }} />
+              import settings
+            </button>
           </div>
-        </section>
-
-        {/* Sound Settings */}
-        <section>
-          <h4 style={{ 
-            marginBottom: '1rem', 
-            color: '#222',
-            fontWeight: '500',
-            borderBottom: '1px solid #e0e0e0',
-            paddingBottom: '0.5rem'
-          }}>
-            sound
-          </h4>
           
-          <div className="drum-preset-grid">
-            {/* Left Column */}
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem' }}>
+          <input
+            ref={fileInputRef}
+            type="file"
+            accept=".json"
+            onChange={handleFileImport}
+            style={{ display: 'none' }}
+          />
+        </div>
+
+        {/* Settings Grid */}
+        <div style={{ display: 'grid', gap: '2rem' }}>
+          
+          {/* Playback Settings */}
+          <section>
+            <h4 style={{ 
+              marginBottom: '1rem', 
+              color: '#222',
+              fontWeight: '500',
+              borderBottom: '1px solid #e0e0e0',
+              paddingBottom: '0.5rem'
+            }}>
+              playback
+            </h4>
+            
+            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '3rem' }}>
               <div>
-                <Slider
-                  labelText={`transpose (${settings.transpose})`}
-                  id="transpose"
-                  min={-36}
-                  max={36}
-                  step={1}
-                  value={settings.transpose}
-                  onChange={({ value }) => updateSetting('transpose', value)}
-                />
+                <label style={{ 
+                  display: 'block',
+                  marginBottom: '0.5rem',
+                  fontWeight: '500',
+                  fontSize: '0.875rem',
+                  color: '#374151'
+                }}>
+                  playmode
+                </label>
+                <div style={{ maxWidth: '150px' }}>
+                  <Select
+                    id="playmode"
+                    labelText=""
+                    value={settings.playmode}
+                    onChange={(e) => updateSetting('playmode', e.target.value as any)}
+                    size="sm"
+                  >
+                    <SelectItem value="poly" text="poly" />
+                    <SelectItem value="mono" text="mono" />
+                    <SelectItem value="legato" text="legato" />
+                  </Select>
+                </div>
               </div>
 
               <div>
-                <Slider
-                  labelText={`velocity sensitivity (${settings.velocitySensitivity}%)`}
-                  id="velocity-sensitivity"
-                  min={0}
-                  max={100}
-                  step={1}
-                  value={settings.velocitySensitivity}
-                  onChange={({ value }) => updateSetting('velocitySensitivity', value)}
+                <label style={{ 
+                  display: 'block',
+                  marginBottom: '0.5rem',
+                  fontWeight: '500',
+                  fontSize: '0.875rem',
+                  color: '#374151'
+                }}>
+                  loop enabled
+                </label>
+                <Toggle
+                  id="multisample-loop-enabled"
+                  labelText=""
+                  toggled={settings.loopEnabled}
+                  onToggle={(checked) => updateSetting('loopEnabled', checked)}
+                  size="sm"
                 />
-              </div>
-
-              <div>
-                <Slider
-                  labelText={`volume (${settings.volume}%)`}
-                  id="volume"
-                  min={0}
-                  max={100}
-                  step={1}
-                  value={settings.volume}
-                  onChange={({ value }) => updateSetting('volume', value)}
-                />
+                <style>{`
+                  #multisample-loop-enabled .cds--toggle-input__appearance {
+                    background-color: #e5e7eb !important;
+                  }
+                  #multisample-loop-enabled .cds--toggle-input__appearance:before {
+                    background-color: #6b7280 !important;
+                  }
+                  #multisample-loop-enabled .cds--toggle-input:checked + .cds--toggle-input__appearance {
+                    background-color: #374151 !important;
+                  }
+                  #multisample-loop-enabled .cds--toggle-input:checked + .cds--toggle-input__appearance:before {
+                    background-color: #fff !important;
+                  }
+                  #multisample-loop-enabled .cds--toggle__text--off,
+                  #multisample-loop-enabled .cds--toggle__text--on {
+                    color: #6b7280 !important;
+                  }
+                `}</style>
               </div>
             </div>
+          </section>
 
-            {/* Right Column */}
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem' }}>
-              <div>
-                <Slider
-                  labelText={`width (${settings.width}%)`}
-                  id="width"
-                  min={0}
-                  max={100}
-                  step={1}
-                  value={settings.width}
-                  onChange={({ value }) => updateSetting('width', value)}
-                />
+          {/* Sound Settings */}
+          <section>
+            <h4 style={{ 
+              marginBottom: '1rem', 
+              color: '#222',
+              fontWeight: '500',
+              borderBottom: '1px solid #e0e0e0',
+              paddingBottom: '0.5rem'
+            }}>
+              sound
+            </h4>
+            
+            <div className="drum-preset-grid">
+              {/* Left Column */}
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem' }}>
+                <div>
+                  <label style={{ 
+                    display: 'block', 
+                    marginBottom: '0.5rem', 
+                    fontWeight: '500',
+                    fontSize: '0.875rem',
+                    color: '#374151'
+                  }}>
+                    tuning root
+                  </label>
+                  <div style={{ maxWidth: '150px' }}>
+                    <Select
+                      id="tuning-root"
+                      labelText=""
+                      value={settings.tuningRoot.toString()}
+                      onChange={(e) => updateSetting('tuningRoot', parseInt(e.target.value))}
+                      size="sm"
+                    >
+                      {noteNames.map((note, index) => (
+                        <SelectItem key={index} value={index.toString()} text={note} />
+                      ))}
+                    </Select>
+                  </div>
+                </div>
+
+                <div>
+                  <div style={{
+                    fontSize: '0.9rem',
+                    fontWeight: '500',
+                    color: '#222',
+                    marginBottom: '0.5rem'
+                  }}>
+                    velocity sensitivity: {settings.velocitySensitivity}%
+                  </div>
+                  <div style={{ width: '100%' }}>
+                    <Slider
+                      id="multisample-velocity-sensitivity"
+                      min={0}
+                      max={100}
+                      step={1}
+                      value={settings.velocitySensitivity}
+                      onChange={({ value }) => updateSetting('velocitySensitivity', value)}
+                      hideTextInput
+                    />
+                  </div>
+                </div>
+
+                <div>
+                  <div style={{
+                    fontSize: '0.9rem',
+                    fontWeight: '500',
+                    color: '#222',
+                    marginBottom: '0.5rem'
+                  }}>
+                    volume: {settings.volume}%
+                  </div>
+                  <div style={{ width: '100%' }}>
+                    <Slider
+                      id="multisample-volume"
+                      min={0}
+                      max={100}
+                      step={1}
+                      value={settings.volume}
+                      onChange={({ value }) => updateSetting('volume', value)}
+                      hideTextInput
+                    />
+                  </div>
+                </div>
               </div>
 
-              <div>
-                <Slider
-                  labelText={`highpass (${settings.highpass}%)`}
-                  id="highpass"
-                  min={0}
-                  max={100}
-                  step={1}
-                  value={settings.highpass}
-                  onChange={({ value }) => updateSetting('highpass', value)}
-                />
-              </div>
+              {/* Right Column */}
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem' }}>
+                <div>
+                  <div style={{
+                    fontSize: '0.9rem',
+                    fontWeight: '500',
+                    color: '#222',
+                    marginBottom: '0.5rem'
+                  }}>
+                    transpose: {settings.transpose}
+                  </div>
+                  <div style={{ width: '100%' }}>
+                    <Slider
+                      id="multisample-transpose"
+                      min={-36}
+                      max={36}
+                      step={1}
+                      value={settings.transpose}
+                      onChange={({ value }) => updateSetting('transpose', value)}
+                      hideTextInput
+                    />
+                  </div>
+                </div>
 
+                <div>
+                  <div style={{
+                    fontSize: '0.9rem',
+                    fontWeight: '500',
+                    color: '#222',
+                    marginBottom: '0.5rem'
+                  }}>
+                    width: {settings.width}%
+                  </div>
+                  <div style={{ width: '100%' }}>
+                    <Slider
+                      id="multisample-width"
+                      min={0}
+                      max={100}
+                      step={1}
+                      value={settings.width}
+                      onChange={({ value }) => updateSetting('width', value)}
+                      hideTextInput
+                    />
+                  </div>
+                </div>
+
+                <div>
+                  <div style={{
+                    fontSize: '0.9rem',
+                    fontWeight: '500',
+                    color: '#222',
+                    marginBottom: '0.5rem'
+                  }}>
+                    highpass: {settings.highpass}%
+                  </div>
+                  <div style={{ width: '100%' }}>
+                    <Slider
+                      id="multisample-highpass"
+                      min={0}
+                      max={100}
+                      step={1}
+                      value={settings.highpass}
+                      onChange={({ value }) => updateSetting('highpass', value)}
+                      hideTextInput
+                    />
+                  </div>
+                </div>
+              </div>
+            </div>
+          </section>
+
+          {/* Portamento */}
+          <section>
+            <h4 style={{ 
+              marginBottom: '1rem', 
+              color: '#222',
+              fontWeight: '500',
+              borderBottom: '1px solid #e0e0e0',
+              paddingBottom: '0.5rem'
+            }}>
+              portamento
+            </h4>
+            
+            <div className="drum-preset-grid">
               <div>
                 <label style={{ 
                   display: 'block', 
@@ -486,275 +596,323 @@ export function MultisamplePresetSettings() {
                   fontSize: '0.875rem',
                   color: '#374151'
                 }}>
-                  tuning root
+                  type
                 </label>
-                <div style={{ maxWidth: '200px' }}>
+                <div style={{ maxWidth: '150px' }}>
                   <Select
-                    id="tuning-root"
+                    id="portamento-type"
                     labelText=""
-                    value={settings.tuningRoot.toString()}
-                    onChange={(e) => updateSetting('tuningRoot', parseInt(e.target.value))}
+                    value={settings.portamentoType}
+                    onChange={(e) => updateSetting('portamentoType', e.target.value as any)}
                     size="sm"
                   >
-                    {noteNames.map((note, index) => (
-                      <SelectItem key={index} value={index.toString()} text={note} />
-                    ))}
+                    <SelectItem value="linear" text="linear" />
+                    <SelectItem value="exponential" text="exponential" />
                   </Select>
                 </div>
               </div>
-            </div>
-          </div>
-        </section>
 
-        {/* Portamento */}
-        <section>
-          <h4 style={{ 
-            marginBottom: '1rem', 
-            color: '#222',
-            fontWeight: '500',
-            borderBottom: '1px solid #e0e0e0',
-            paddingBottom: '0.5rem'
-          }}>
-            portamento
-          </h4>
-          
-          <div className="drum-preset-grid">
-            <div>
-              <label style={{ 
-                display: 'block', 
-                marginBottom: '0.5rem', 
-                fontWeight: '500',
-                fontSize: '0.875rem',
-                color: '#374151'
-              }}>
-                type
-              </label>
-              <div style={{ maxWidth: '200px' }}>
-                <Select
-                  id="portamento-type"
-                  labelText=""
-                  value={settings.portamentoType}
-                  onChange={(e) => updateSetting('portamentoType', e.target.value as any)}
-                  size="sm"
-                >
-                  <SelectItem value="linear" text="linear" />
-                  <SelectItem value="exponential" text="exponential" />
-                </Select>
+              <div>
+                <div style={{
+                  fontSize: '0.9rem',
+                  fontWeight: '500',
+                  color: '#222',
+                  marginBottom: '0.5rem'
+                }}>
+                  amount: {settings.portamentoAmount}%
+                </div>
+                <div style={{ width: '100%' }}>
+                  <Slider
+                    id="multisample-portamento-amount"
+                    min={0}
+                    max={100}
+                    step={1}
+                    value={settings.portamentoAmount}
+                    onChange={({ value }) => updateSetting('portamentoAmount', value)}
+                    hideTextInput
+                  />
+                </div>
               </div>
             </div>
+          </section>
 
-            <div>
-              <Slider
-                labelText={`amount (${settings.portamentoAmount}%)`}
-                id="portamento-amount"
-                min={0}
-                max={100}
-                step={1}
-                value={settings.portamentoAmount}
-                onChange={({ value }) => updateSetting('portamentoAmount', value)}
-              />
-            </div>
-          </div>
-        </section>
+          {/* Amp Envelope */}
+          <section>
+            <h4 style={{ 
+              marginBottom: '1rem', 
+              color: '#222',
+              fontWeight: '500',
+              borderBottom: '1px solid #e0e0e0',
+              paddingBottom: '0.5rem'
+            }}>
+              amp envelope
+            </h4>
+            
+            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1.5rem' }}>
+              <div>
+                <div style={{
+                  fontSize: '0.9rem',
+                  fontWeight: '500',
+                  color: '#222',
+                  marginBottom: '0.5rem'
+                }}>
+                  attack: {settings.ampEnvelope.attack}%
+                </div>
+                <div style={{ width: '100%' }}>
+                  <Slider
+                    id="multisample-amp-attack"
+                    min={0}
+                    max={100}
+                    step={1}
+                    value={settings.ampEnvelope.attack}
+                    onChange={({ value }) => updateEnvelopeSetting('ampEnvelope', 'attack', value)}
+                    hideTextInput
+                  />
+                </div>
+              </div>
 
-        {/* Amp Envelope */}
-        <section>
-          <h4 style={{ 
-            marginBottom: '1rem', 
-            color: '#222',
-            fontWeight: '500',
-            borderBottom: '1px solid #e0e0e0',
-            paddingBottom: '0.5rem'
-          }}>
-            amp envelope
-          </h4>
-          
-          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1.5rem' }}>
-            <div>
-              <label style={{ 
-                display: 'block', 
-                marginBottom: '0.5rem', 
-                fontWeight: '500',
-                fontSize: '0.875rem',
-                color: '#374151'
-              }}>
-                attack ({settings.ampEnvelope.attack}%)
-              </label>
-              <Slider
-                id="amp-attack"
-                min={0}
-                max={100}
-                step={1}
-                value={settings.ampEnvelope.attack}
-                onChange={({ value }) => updateEnvelopeSetting('ampEnvelope', 'attack', value)}
-                labelText=""
-              />
-            </div>
+              <div>
+                <div style={{
+                  fontSize: '0.9rem',
+                  fontWeight: '500',
+                  color: '#222',
+                  marginBottom: '0.5rem'
+                }}>
+                  decay: {settings.ampEnvelope.decay}%
+                </div>
+                <div style={{ width: '100%' }}>
+                  <Slider
+                    id="multisample-amp-decay"
+                    min={0}
+                    max={100}
+                    step={1}
+                    value={settings.ampEnvelope.decay}
+                    onChange={({ value }) => updateEnvelopeSetting('ampEnvelope', 'decay', value)}
+                    hideTextInput
+                  />
+                </div>
+              </div>
 
-            <div>
-              <label style={{ 
-                display: 'block', 
-                marginBottom: '0.5rem', 
-                fontWeight: '500',
-                fontSize: '0.875rem',
-                color: '#374151'
-              }}>
-                decay ({settings.ampEnvelope.decay}%)
-              </label>
-              <Slider
-                id="amp-decay"
-                min={0}
-                max={100}
-                step={1}
-                value={settings.ampEnvelope.decay}
-                onChange={({ value }) => updateEnvelopeSetting('ampEnvelope', 'decay', value)}
-                labelText=""
-              />
-            </div>
+              <div>
+                <div style={{
+                  fontSize: '0.9rem',
+                  fontWeight: '500',
+                  color: '#222',
+                  marginBottom: '0.5rem'
+                }}>
+                  sustain: {settings.ampEnvelope.sustain}%
+                </div>
+                <div style={{ width: '100%' }}>
+                  <Slider
+                    id="multisample-amp-sustain"
+                    min={0}
+                    max={100}
+                    step={1}
+                    value={settings.ampEnvelope.sustain}
+                    onChange={({ value }) => updateEnvelopeSetting('ampEnvelope', 'sustain', value)}
+                    hideTextInput
+                  />
+                </div>
+              </div>
 
-            <div>
-              <label style={{ 
-                display: 'block', 
-                marginBottom: '0.5rem', 
-                fontWeight: '500',
-                fontSize: '0.875rem',
-                color: '#374151'
-              }}>
-                sustain ({settings.ampEnvelope.sustain}%)
-              </label>
-              <Slider
-                id="amp-sustain"
-                min={0}
-                max={100}
-                step={1}
-                value={settings.ampEnvelope.sustain}
-                onChange={({ value }) => updateEnvelopeSetting('ampEnvelope', 'sustain', value)}
-                labelText=""
-              />
+              <div>
+                <div style={{
+                  fontSize: '0.9rem',
+                  fontWeight: '500',
+                  color: '#222',
+                  marginBottom: '0.5rem'
+                }}>
+                  release: {settings.ampEnvelope.release}%
+                </div>
+                <div style={{ width: '100%' }}>
+                  <Slider
+                    id="multisample-amp-release"
+                    min={0}
+                    max={100}
+                    step={1}
+                    value={settings.ampEnvelope.release}
+                    onChange={({ value }) => updateEnvelopeSetting('ampEnvelope', 'release', value)}
+                    hideTextInput
+                  />
+                </div>
+              </div>
             </div>
+          </section>
 
-            <div>
-              <label style={{ 
-                display: 'block', 
-                marginBottom: '0.5rem', 
-                fontWeight: '500',
-                fontSize: '0.875rem',
-                color: '#374151'
-              }}>
-                release ({settings.ampEnvelope.release}%)
-              </label>
-              <Slider
-                id="amp-release"
-                min={0}
-                max={100}
-                step={1}
-                value={settings.ampEnvelope.release}
-                onChange={({ value }) => updateEnvelopeSetting('ampEnvelope', 'release', value)}
-                labelText=""
-              />
-            </div>
-          </div>
-        </section>
+          {/* Filter Envelope */}
+          <section>
+            <h4 style={{ 
+              marginBottom: '1rem', 
+              color: '#222',
+              fontWeight: '500',
+              borderBottom: '1px solid #e0e0e0',
+              paddingBottom: '0.5rem'
+            }}>
+              filter envelope
+            </h4>
+            
+            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1.5rem' }}>
+              <div>
+                <div style={{
+                  fontSize: '0.9rem',
+                  fontWeight: '500',
+                  color: '#222',
+                  marginBottom: '0.5rem'
+                }}>
+                  attack: {settings.filterEnvelope.attack}%
+                </div>
+                <div style={{ width: '100%' }}>
+                  <Slider
+                    id="multisample-filter-attack"
+                    min={0}
+                    max={100}
+                    step={1}
+                    value={settings.filterEnvelope.attack}
+                    onChange={({ value }) => updateEnvelopeSetting('filterEnvelope', 'attack', value)}
+                    hideTextInput
+                  />
+                </div>
+              </div>
 
-        {/* Filter Envelope */}
-        <section>
-          <h4 style={{ 
-            marginBottom: '1rem', 
-            color: '#222',
-            fontWeight: '500',
-            borderBottom: '1px solid #e0e0e0',
-            paddingBottom: '0.5rem'
-          }}>
-            filter envelope
-          </h4>
-          
-          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1.5rem' }}>
-            <div>
-              <label style={{ 
-                display: 'block', 
-                marginBottom: '0.5rem', 
-                fontWeight: '500',
-                fontSize: '0.875rem',
-                color: '#374151'
-              }}>
-                attack ({settings.filterEnvelope.attack}%)
-              </label>
-              <Slider
-                id="filter-attack"
-                min={0}
-                max={100}
-                step={1}
-                value={settings.filterEnvelope.attack}
-                onChange={({ value }) => updateEnvelopeSetting('filterEnvelope', 'attack', value)}
-                labelText=""
-              />
-            </div>
+              <div>
+                <div style={{
+                  fontSize: '0.9rem',
+                  fontWeight: '500',
+                  color: '#222',
+                  marginBottom: '0.5rem'
+                }}>
+                  decay: {settings.filterEnvelope.decay}%
+                </div>
+                <div style={{ width: '100%' }}>
+                  <Slider
+                    id="multisample-filter-decay"
+                    min={0}
+                    max={100}
+                    step={1}
+                    value={settings.filterEnvelope.decay}
+                    onChange={({ value }) => updateEnvelopeSetting('filterEnvelope', 'decay', value)}
+                    hideTextInput
+                  />
+                </div>
+              </div>
 
-            <div>
-              <label style={{ 
-                display: 'block', 
-                marginBottom: '0.5rem', 
-                fontWeight: '500',
-                fontSize: '0.875rem',
-                color: '#374151'
-              }}>
-                decay ({settings.filterEnvelope.decay}%)
-              </label>
-              <Slider
-                id="filter-decay"
-                min={0}
-                max={100}
-                step={1}
-                value={settings.filterEnvelope.decay}
-                onChange={({ value }) => updateEnvelopeSetting('filterEnvelope', 'decay', value)}
-                labelText=""
-              />
-            </div>
+              <div>
+                <div style={{
+                  fontSize: '0.9rem',
+                  fontWeight: '500',
+                  color: '#222',
+                  marginBottom: '0.5rem'
+                }}>
+                  sustain: {settings.filterEnvelope.sustain}%
+                </div>
+                <div style={{ width: '100%' }}>
+                  <Slider
+                    id="multisample-filter-sustain"
+                    min={0}
+                    max={100}
+                    step={1}
+                    value={settings.filterEnvelope.sustain}
+                    onChange={({ value }) => updateEnvelopeSetting('filterEnvelope', 'sustain', value)}
+                    hideTextInput
+                  />
+                </div>
+              </div>
 
-            <div>
-              <label style={{ 
-                display: 'block', 
-                marginBottom: '0.5rem', 
-                fontWeight: '500',
-                fontSize: '0.875rem',
-                color: '#374151'
-              }}>
-                sustain ({settings.filterEnvelope.sustain}%)
-              </label>
-              <Slider
-                id="filter-sustain"
-                min={0}
-                max={100}
-                step={1}
-                value={settings.filterEnvelope.sustain}
-                onChange={({ value }) => updateEnvelopeSetting('filterEnvelope', 'sustain', value)}
-                labelText=""
-              />
+              <div>
+                <div style={{
+                  fontSize: '0.9rem',
+                  fontWeight: '500',
+                  color: '#222',
+                  marginBottom: '0.5rem'
+                }}>
+                  release: {settings.filterEnvelope.release}%
+                </div>
+                <div style={{ width: '100%' }}>
+                  <Slider
+                    id="multisample-filter-release"
+                    min={0}
+                    max={100}
+                    step={1}
+                    value={settings.filterEnvelope.release}
+                    onChange={({ value }) => updateEnvelopeSetting('filterEnvelope', 'release', value)}
+                    hideTextInput
+                  />
+                </div>
+              </div>
             </div>
-
-            <div>
-              <label style={{ 
-                display: 'block', 
-                marginBottom: '0.5rem', 
-                fontWeight: '500',
-                fontSize: '0.875rem',
-                color: '#374151'
-              }}>
-                release ({settings.filterEnvelope.release}%)
-              </label>
-              <Slider
-                id="filter-release"
-                min={0}
-                max={100}
-                step={1}
-                value={settings.filterEnvelope.release}
-                onChange={({ value }) => updateEnvelopeSetting('filterEnvelope', 'release', value)}
-                labelText=""
-              />
-            </div>
-          </div>
-        </section>
+          </section>
+        </div>
       </div>
-    </div>
+
+      {/* Slider Styling */}
+      <style>{`
+        #multisample-transpose .cds--slider__track,
+        #multisample-velocity-sensitivity .cds--slider__track,
+        #multisample-volume .cds--slider__track,
+        #multisample-width .cds--slider__track,
+        #multisample-highpass .cds--slider__track,
+        #multisample-portamento-amount .cds--slider__track,
+        #multisample-amp-attack .cds--slider__track,
+        #multisample-amp-decay .cds--slider__track,
+        #multisample-amp-sustain .cds--slider__track,
+        #multisample-amp-release .cds--slider__track,
+        #multisample-filter-attack .cds--slider__track,
+        #multisample-filter-decay .cds--slider__track,
+        #multisample-filter-sustain .cds--slider__track,
+        #multisample-filter-release .cds--slider__track {
+          background: linear-gradient(to right, #e5e7eb 0%, #6b7280 100%) !important;
+        }
+        #multisample-transpose .cds--slider__filled-track,
+        #multisample-velocity-sensitivity .cds--slider__filled-track,
+        #multisample-volume .cds--slider__filled-track,
+        #multisample-width .cds--slider__filled-track,
+        #multisample-highpass .cds--slider__filled-track,
+        #multisample-portamento-amount .cds--slider__filled-track,
+        #multisample-amp-attack .cds--slider__filled-track,
+        #multisample-amp-decay .cds--slider__filled-track,
+        #multisample-amp-sustain .cds--slider__filled-track,
+        #multisample-amp-release .cds--slider__filled-track,
+        #multisample-filter-attack .cds--slider__filled-track,
+        #multisample-filter-decay .cds--slider__filled-track,
+        #multisample-filter-sustain .cds--slider__filled-track,
+        #multisample-filter-release .cds--slider__filled-track {
+          background: #374151 !important;
+        }
+        #multisample-transpose .cds--slider__thumb,
+        #multisample-velocity-sensitivity .cds--slider__thumb,
+        #multisample-volume .cds--slider__thumb,
+        #multisample-width .cds--slider__thumb,
+        #multisample-highpass .cds--slider__thumb,
+        #multisample-portamento-amount .cds--slider__thumb,
+        #multisample-amp-attack .cds--slider__thumb,
+        #multisample-amp-decay .cds--slider__thumb,
+        #multisample-amp-sustain .cds--slider__thumb,
+        #multisample-amp-release .cds--slider__thumb,
+        #multisample-filter-attack .cds--slider__thumb,
+        #multisample-filter-decay .cds--slider__thumb,
+        #multisample-filter-sustain .cds--slider__thumb,
+        #multisample-filter-release .cds--slider__thumb {
+          background: #374151 !important;
+          border: 2px solid #374151 !important;
+        }
+        #multisample-transpose .cds--slider__thumb:hover,
+        #multisample-velocity-sensitivity .cds--slider__thumb:hover,
+        #multisample-volume .cds--slider__thumb:hover,
+        #multisample-width .cds--slider__thumb:hover,
+        #multisample-highpass .cds--slider__thumb:hover,
+        #multisample-portamento-amount .cds--slider__thumb:hover,
+        #multisample-amp-attack .cds--slider__thumb:hover,
+        #multisample-amp-decay .cds--slider__thumb:hover,
+        #multisample-amp-sustain .cds--slider__thumb:hover,
+        #multisample-amp-release .cds--slider__thumb:hover,
+        #multisample-filter-attack .cds--slider__thumb:hover,
+        #multisample-filter-decay .cds--slider__thumb:hover,
+        #multisample-filter-sustain .cds--slider__thumb:hover,
+        #multisample-filter-release .cds--slider__thumb:hover {
+          background: #222 !important;
+          border-color: #222 !important;
+        }
+      `}</style>
+    </>
   );
 } 

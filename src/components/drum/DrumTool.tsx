@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useAppContext } from '../../context/AppContext';
 import { ConfirmationModal } from '../common/ConfirmationModal';
 import { RecordingModal } from '../common/RecordingModal';
+import { AudioProcessingSection } from '../common/AudioProcessingSection';
 import { GeneratePresetSection } from '../common/GeneratePresetSection';
 import { DrumKeyboard } from './DrumKeyboard';
 import { DrumSampleTable } from './DrumSampleTable';
@@ -52,6 +53,29 @@ export function DrumTool() {
 
   const handlePresetNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     dispatch({ type: 'SET_DRUM_PRESET_NAME', payload: e.target.value });
+  };
+
+  const handleNormalizeChange = (enabled: boolean) => {
+    dispatch({ type: 'SET_DRUM_NORMALIZE', payload: enabled });
+  };
+
+  const handleNormalizeLevelChange = (level: number) => {
+    dispatch({ type: 'SET_DRUM_NORMALIZE_LEVEL', payload: level });
+  };
+
+  const handleResetAudioSettingsConfirm = () => {
+    setConfirmDialog({
+      isOpen: true,
+      message: 'are you sure you want to reset all audio processing settings to defaults?',
+      onConfirm: () => {
+        dispatch({ type: 'SET_DRUM_SAMPLE_RATE', payload: 0 });
+        dispatch({ type: 'SET_DRUM_BIT_DEPTH', payload: 0 });
+        dispatch({ type: 'SET_DRUM_CHANNELS', payload: 0 });
+        dispatch({ type: 'SET_DRUM_NORMALIZE', payload: false });
+        dispatch({ type: 'SET_DRUM_NORMALIZE_LEVEL', payload: 0.0 });
+        setConfirmDialog({ isOpen: false, message: '', onConfirm: () => {} });
+      }
+    });
   };
 
   const handleFileUpload = async (index: number, file: File) => {
@@ -112,6 +136,10 @@ export function DrumTool() {
         dispatch({ type: 'SET_DRUM_SAMPLE_RATE', payload: 0 });
         dispatch({ type: 'SET_DRUM_BIT_DEPTH', payload: 0 });
         dispatch({ type: 'SET_DRUM_CHANNELS', payload: 0 });
+        
+        // Reset normalize settings
+        dispatch({ type: 'SET_DRUM_NORMALIZE', payload: false });
+        dispatch({ type: 'SET_DRUM_NORMALIZE_LEVEL', payload: 0.0 });
         
         // Reset preset settings to defaults
         dispatch({ type: 'SET_DRUM_PRESET_PLAYMODE', payload: 'poly' });
@@ -182,6 +210,8 @@ export function DrumTool() {
     state.drumSettings.sampleRate !== 0 || // Audio format changed
     state.drumSettings.bitDepth !== 0 ||
     state.drumSettings.channels !== 0 ||
+    state.drumSettings.normalize !== false || // Normalize settings changed
+    state.drumSettings.normalizeLevel !== 0.0 ||
     state.drumSettings.presetSettings.playmode !== 'poly' || // Preset settings changed
     state.drumSettings.presetSettings.transpose !== 0 ||
     state.drumSettings.presetSettings.velocity !== 20 ||
@@ -379,6 +409,23 @@ export function DrumTool() {
         <DrumPresetSettings />
       </div>
 
+      {/* Audio Processing */}
+      <AudioProcessingSection
+        type="drum"
+        sampleRate={state.drumSettings.sampleRate}
+        bitDepth={state.drumSettings.bitDepth}
+        channels={state.drumSettings.channels}
+        onSampleRateChange={handleSampleRateChange}
+        onBitDepthChange={handleBitDepthChange}
+        onChannelsChange={handleChannelsChange}
+        samples={state.drumSamples}
+        normalize={state.drumSettings.normalize}
+        normalizeLevel={state.drumSettings.normalizeLevel}
+        onNormalizeChange={handleNormalizeChange}
+        onNormalizeLevelChange={handleNormalizeLevelChange}
+        onResetAudioSettingsConfirm={handleResetAudioSettingsConfirm}
+      />
+
       {/* Footer - Generate Preset */}
       <GeneratePresetSection
         type="drum"
@@ -388,10 +435,11 @@ export function DrumTool() {
         loadedSamplesCount={state.drumSamples.filter(s => s.isLoaded).length}
         editedSamplesCount={state.drumSamples.filter(s => s.hasBeenEdited).length}
         presetName={state.drumSettings.presetName}
+        onPresetNameChange={handlePresetNameChange}
         hasChangesFromDefaults={hasChangesFromDefaults}
         onResetAll={handleResetAll}
         onGeneratePatch={handleGeneratePatch}
-        isMobile={isMobile}
+        inputId="preset-name"
       />
 
       {/* Confirmation Modal */}

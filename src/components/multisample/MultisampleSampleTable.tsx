@@ -582,9 +582,9 @@ export function MultisampleSampleTable({
             minHeight: '200px',
             cursor: 'pointer',
             transition: 'all 0.2s ease',
-            border: isDragOver ? '2px dashed #3b82f6' : '2px dashed #ccc',
+            border: isDragOver ? '2px dashed #6b7280' : '2px dashed #ccc',
             borderRadius: '6px',
-            backgroundColor: isDragOver ? '#eff6ff' : 'transparent'
+            backgroundColor: isDragOver ? '#f3f4f6' : 'transparent'
           }}
           onClick={handleEmptyAreaClick}
           onDragOver={handleTableDragOver}
@@ -653,7 +653,7 @@ export function MultisampleSampleTable({
                       gridTemplateColumns: '140px 1fr 160px',
                       gap: '0.5rem',
                       padding: '0.75rem',
-                      background: isDraggedOver ? '#f0f9ff' : '#fff',
+                      background: isDraggedOver ? '#f3f4f6' : '#fff',
                       borderBottom: index < state.multisampleFiles.length - 1 ? '1px solid #e0e0e0' : 'none',
                       transition: 'background 0.2s ease',
                       alignItems: 'center',
