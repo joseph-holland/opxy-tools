@@ -211,23 +211,26 @@ export const ADSREnvelope: React.FC<ADSREnvelopeProps> = ({
       if (idx > 0) d += ` L ${pt.x} ${pt.y}`;
     });
 
+    // Force path to the exact attack point before starting decay curve
+    d += ` L ${p.attack.x} ${p.attack.y}`;
+
     // 2. Decay — ONE cubic Bézier that ends flat on sustain line
     const dx = p.decay.x - p.attack.x;
     if (dx > 0) {
-      // Match exponential slope at start (k≈4 gives classic response)
-      const kExp = 4;
-      const alpha = 0.25; // distance of first control point from start (0–1)
-      const beta  = 0.12; // distance of second control point from end (0–1)
+      // Use the same robust geometric Bézier logic as the release curve
+      // This creates a convex shape and lands flat.
+      const delta = 0.07;  // Control point ratios for a convex curve
+      const gamma = 0.25;
 
-      const ctrl1x = p.attack.x + dx * alpha;
-      const slopeStart = (p.decay.y - p.attack.y) * kExp / dx; // dy/dx at start for exp(k)
-      const ctrl1y = Math.min(p.attack.y + slopeStart * (ctrl1x - p.attack.x), p.decay.y);
-
-      const ctrl2x = p.decay.x - dx * beta;
-      const ctrl2y = p.decay.y; // flat slope at end
-
-      const ctrl1 = { x: ctrl1x, y: ctrl1y };
-      const ctrl2 = { x: ctrl2x, y: ctrl2y };
+      const ctrl1 = {
+        x: p.attack.x + dx * delta,
+        // Drop 80% of the vertical distance quickly to mimic exponential decay
+        y: p.attack.y + (p.decay.y - p.attack.y) * 0.8
+      };
+      const ctrl2 = {
+        x: p.decay.x - dx * gamma,
+        y: p.decay.y // Ensures a flat landing on the sustain line
+      };
       d += ` C ${ctrl1.x} ${ctrl1.y}, ${ctrl2.x} ${ctrl2.y}, ${p.decay.x} ${p.decay.y}`;
     } else {
       // If no decay time, just go straight to decay position
@@ -576,7 +579,7 @@ export const ADSREnvelope: React.FC<ADSREnvelopeProps> = ({
               <text
                 x={ampPos.release.x - 30}
                 y={ampPos.release.y - 8}
-                fontSize="18"
+                fontSize="16"
                 fontWeight="500"
                 fill={activeEnvelope === 'amp' ? "#333" : "#999"}
                 textAnchor="middle"
@@ -589,7 +592,7 @@ export const ADSREnvelope: React.FC<ADSREnvelopeProps> = ({
               <text
                 x={filterPos.release.x - 30}
                 y={filterPos.release.y - 8}
-                fontSize="18"
+                fontSize="16"
                 fontWeight="500"
                 fill={activeEnvelope === 'filter' ? "#333" : "#999"}
                 textAnchor="middle"
