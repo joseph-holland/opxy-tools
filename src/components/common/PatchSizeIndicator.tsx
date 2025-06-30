@@ -184,7 +184,7 @@ export function PatchSizeIndicator({ type, className = '' }: PatchSizeIndicatorP
         }}>
           {audioBuffers.length} sample{audioBuffers.length !== 1 ? 's' : ''}
           {settings.sampleRate !== 0 && (
-            <> • {settings.sampleRate === 44100 ? '44.1khz' : `${settings.sampleRate / 1000}khz`}</>
+            <> • {settings.sampleRate === 44100 ? '44.1 khz' : settings.sampleRate === 22050 ? '22.1 khz' : settings.sampleRate === 11025 ? '11 khz' : `${settings.sampleRate / 1000} khz`}</>
           )}
           {settings.bitDepth !== 0 && (
             <> • {settings.bitDepth}bit</>
@@ -209,7 +209,7 @@ export function PatchSizeIndicator({ type, className = '' }: PatchSizeIndicatorP
           <strong>optimization tips:</strong>
           <ul style={{ margin: '0.25rem 0 0 1rem', padding: 0 }}>
             {(settings.sampleRate === 0 || settings.sampleRate > 22050) && (
-              <li>reduce sample rate to 22khz for smaller size</li>
+              <li>reduce sample rate to 22.1 khz for smaller size</li>
             )}
             {(settings.bitDepth === 0 || settings.bitDepth > 16) && (
               <li>use 16-bit instead of 24-bit</li>

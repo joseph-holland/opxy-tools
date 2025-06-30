@@ -330,7 +330,7 @@ export function MultisampleSampleTable({
               no samples loaded
             </p>
             <p style={{ margin: '0', fontSize: '0.9rem' }}>
-              drag & drop audio files or folders here, or click to browse
+              drag and drop audio files or folders here, or click to browse
             </p>
           </div>
         ) : (
@@ -596,7 +596,7 @@ export function MultisampleSampleTable({
             no samples loaded
           </p>
           <p style={{ margin: '0', fontSize: '0.9rem' }}>
-            drag & drop audio files or folders here, or click to browse
+            drag and drop audio files or folders here, or click to browse
           </p>
         </div>
       ) : (

@@ -1,7 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useAppContext } from '../../context/AppContext';
-import { TextInput } from '@carbon/react';
-import { AudioFormatControls } from '../common/AudioFormatControls';
+import { PresetNameSection } from '../common/PresetNameSection';
 import { ConfirmationModal } from '../common/ConfirmationModal';
 import { RecordingModal } from '../common/RecordingModal';
 import { GeneratePresetSection } from '../common/GeneratePresetSection';
@@ -108,6 +107,29 @@ export function MultisampleTool() {
     });
   };
 
+  const handleResetAll = () => {
+    setConfirmDialog({
+      isOpen: true,
+      message: 'are you sure you want to reset everything to defaults? this will clear all samples, reset preset name, and audio settings.',
+      onConfirm: () => {
+        // Clear all samples
+        for (let i = state.multisampleFiles.length - 1; i >= 0; i--) {
+          clearMultisampleFile(i);
+        }
+        
+        // Reset preset name
+        dispatch({ type: 'SET_MULTISAMPLE_PRESET_NAME', payload: '' });
+        
+        // Reset audio format settings to defaults (0 = original)
+        dispatch({ type: 'SET_MULTISAMPLE_SAMPLE_RATE', payload: 0 });
+        dispatch({ type: 'SET_MULTISAMPLE_BIT_DEPTH', payload: 0 });
+        dispatch({ type: 'SET_MULTISAMPLE_CHANNELS', payload: 0 });
+        
+        setConfirmDialog({ isOpen: false, message: '', onConfirm: () => {} });
+      }
+    });
+  };
+
   const handleOpenRecording = (targetIndex: number | null = null) => {
     setRecordingModal({ isOpen: true, targetIndex });
   };
@@ -180,6 +202,16 @@ export function MultisampleTool() {
   const hasLoadedSamples = state.multisampleFiles.length > 0;
   const hasPresetName = state.multisampleSettings.presetName.trim().length > 0;
   const canGeneratePatch = hasLoadedSamples && hasPresetName;
+  
+  // Check if any settings have been changed from defaults
+  const hasChangesFromDefaults = (
+    hasLoadedSamples || // Any samples loaded
+    hasPresetName || // Preset name entered
+    state.multisampleSettings.sampleRate !== 0 || // Audio format changed
+    state.multisampleSettings.bitDepth !== 0 ||
+    state.multisampleSettings.channels !== 0
+    // Note: Multisample preset settings are handled in MultisamplePresetSettings component
+  );
 
   return (
     <div style={{ 
@@ -189,56 +221,27 @@ export function MultisampleTool() {
       height: '100%'
     }}>
       {/* Header Section */}
-      <div style={{
-        background: 'transparent',
-        borderBottom: '1px solid #e0e0e0',
-        padding: isMobile ? '1rem 0.5rem' : '1.5rem 2rem',
-        margin: '0'
-      }}>
-        <div style={{
-          display: 'flex',
-          flexDirection: isMobile ? 'column' : 'row',
-          gap: isMobile ? '1.5rem' : '2rem',
-          alignItems: isMobile ? 'stretch' : 'end',
-          maxWidth: '100%'
-        }}>
-          {/* Preset Name */}
-          <div style={{ flex: isMobile ? 'none' : '1' }}>
-            <TextInput
-              id="preset-name-multi"
-              labelText="preset name"
-              placeholder="enter preset name..."
-              value={state.multisampleSettings.presetName}
-              onChange={handlePresetNameChange}
-              style={{ maxWidth: isMobile ? '100%' : '400px' }}
-            />
-          </div>
+      <PresetNameSection
+        presetName={state.multisampleSettings.presetName}
+        onPresetNameChange={handlePresetNameChange}
+        sampleRate={state.multisampleSettings.sampleRate}
+        bitDepth={state.multisampleSettings.bitDepth}
+        channels={state.multisampleSettings.channels}
+        onSampleRateChange={handleSampleRateChange}
+        onBitDepthChange={handleBitDepthChange}
+        onChannelsChange={handleChannelsChange}
+        samples={state.multisampleFiles}
+        inputId="preset-name-multi"
+      />
 
-          {/* Separate input for audio files from MIDI key clicks */}
-          <input
-            ref={audioFileInputRef}
-            type="file"
-            accept="audio/*,.wav"
-            onChange={handleAudioFileImport}
-            style={{ display: 'none' }}
-          />
-
-          {/* Audio Format Controls */}
-          <div style={{ flex: isMobile ? 'none' : 'none' }}>
-            <AudioFormatControls
-              sampleRate={state.multisampleSettings.sampleRate}
-              bitDepth={state.multisampleSettings.bitDepth}
-              channels={state.multisampleSettings.channels}
-              onSampleRateChange={handleSampleRateChange}
-              onBitDepthChange={handleBitDepthChange}
-              onChannelsChange={handleChannelsChange}
-              samples={state.multisampleFiles}
-              size="sm"
-              isMobile={isMobile}
-            />
-          </div>
-        </div>
-      </div>
+      {/* Separate input for audio files from MIDI key clicks */}
+      <input
+        ref={audioFileInputRef}
+        type="file"
+        accept="audio/*,.wav"
+        onChange={handleAudioFileImport}
+        style={{ display: 'none' }}
+      />
 
       {/* Virtual MIDI Keyboard Section */}
       <div style={{
@@ -340,7 +343,7 @@ export function MultisampleTool() {
             display: 'flex',
             flexDirection: isMobile ? 'column' : 'row',
             justifyContent: 'space-between',
-            alignItems: isMobile ? 'flex-start' : 'center',
+            alignItems: isMobile ? 'flex-start' : 'flex-start',
             marginBottom: '1.5rem',
             gap: isMobile ? '1rem' : '0'
           }}>
@@ -355,7 +358,13 @@ export function MultisampleTool() {
             }}>
               sample management
             </h3>
-            <div style={{ display: 'flex', gap: '0.75rem', flexWrap: 'wrap' }}>
+            <div style={{ 
+              display: 'flex', 
+              gap: '0.75rem', 
+              flexWrap: 'wrap',
+              justifyContent: isMobile ? 'center' : 'flex-start',
+              alignSelf: isMobile ? 'stretch' : 'auto'
+            }}>
               <button
                 onClick={() => {
                   // Trigger the browse files function from MultisampleSampleTable
@@ -376,7 +385,9 @@ export function MultisampleTool() {
                   fontFamily: 'inherit',
                   display: 'flex',
                   alignItems: 'center',
-                  gap: '0.5rem'
+                  justifyContent: 'center',
+                  gap: '0.5rem',
+                  flex: isMobile ? '1' : 'none'
                 }}
                 onMouseEnter={(e) => {
                   e.currentTarget.style.backgroundColor = '#555';
@@ -408,8 +419,10 @@ export function MultisampleTool() {
                   fontFamily: 'inherit',
                   display: 'flex',
                   alignItems: 'center',
+                  justifyContent: 'center',
                   gap: '0.5rem',
-                  opacity: hasLoadedSamples ? 1 : 0.6
+                  opacity: hasLoadedSamples ? 1 : 0.6,
+                  flex: isMobile ? '1' : 'none'
                 }}
                 onMouseEnter={(e) => {
                   if (hasLoadedSamples) {
@@ -460,7 +473,8 @@ export function MultisampleTool() {
         loadedSamplesCount={state.multisampleFiles.length}
         editedSamplesCount={0} // Multisample doesn't have individual sample editing yet
         presetName={state.multisampleSettings.presetName}
-        onClearAll={handleClearAll}
+        hasChangesFromDefaults={hasChangesFromDefaults}
+        onResetAll={handleResetAll}
         onGeneratePatch={handleGeneratePatch}
         isMobile={isMobile}
       />

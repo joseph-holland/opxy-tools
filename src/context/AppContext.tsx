@@ -159,8 +159,8 @@ const initialState: AppState = {
     presetSettings: {
       playmode: 'poly',
       transpose: 0,
-      velocity: 60,
-      volume: 56,
+      velocity: 20,
+      volume: 69,
       width: 0
     }
   },

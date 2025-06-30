@@ -150,8 +150,8 @@ export function extractDrumSettings(preset: DrumPresetJson) {
     presetSettings: {
       playmode: engine.playmode || 'poly',
       transpose: engine.transpose || 0,
-      velocity: engine['velocity.sensitivity'] ? internalToPercent(engine['velocity.sensitivity']) : 60,
-      volume: engine.volume ? internalToPercent(engine.volume) : 56,
+              velocity: engine['velocity.sensitivity'] ? internalToPercent(engine['velocity.sensitivity']) : 20,
+              volume: engine.volume ? internalToPercent(engine.volume) : 69,
       width: engine.width ? internalToPercent(engine.width) : 0
     }
   };

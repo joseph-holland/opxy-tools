@@ -504,6 +504,7 @@ export const baseDrumJson = {
 
 // Utility functions
 export function formatFileSize(bytes: number): string {
+  if (bytes === 0) return '0 mb';
   if (bytes < 1024) return bytes + ' b';
   if (bytes < 1048576) return (bytes / 1024).toFixed(1) + ' kb';
   return (bytes / 1048576).toFixed(1) + ' mb';

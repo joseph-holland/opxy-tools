@@ -1,4 +1,4 @@
-import { useRef, useState } from 'react';
+import { useRef, useState, useEffect } from 'react';
 import { useAppContext } from '../../context/AppContext';
 import { Select, SelectItem, Slider, Toggle } from '@carbon/react';
 import { importPresetFromFile, type MultisamplePresetJson } from '../../utils/presetImport';
@@ -37,8 +37,8 @@ const defaultSettings: MultisampleAdvancedSettings = {
   playmode: 'poly',
   loopEnabled: true,
   transpose: 0,
-  velocitySensitivity: 15,
-  volume: 80,
+      velocitySensitivity: 20,
+      volume: 69,
   width: 0,
   highpass: 0,
   portamentoType: 'linear',
@@ -61,7 +61,18 @@ const defaultSettings: MultisampleAdvancedSettings = {
 export function MultisamplePresetSettings() {
   const { dispatch } = useAppContext();
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const [isMobile, setIsMobile] = useState(false);
   const [settings, setSettings] = useState<MultisampleAdvancedSettings>(defaultSettings);
+
+  useEffect(() => {
+    const checkMobile = () => {
+      setIsMobile(window.innerWidth < 768);
+    };
+    
+    checkMobile();
+    window.addEventListener('resize', checkMobile);
+    return () => window.removeEventListener('resize', checkMobile);
+  }, []);
 
   const noteNames = ['C', 'C#', 'D', 'D#', 'E', 'F', 'F#', 'G', 'G#', 'A', 'A#', 'B'];
 
@@ -192,6 +203,28 @@ export function MultisamplePresetSettings() {
     }));
   };
 
+  // Check if any settings have changed from defaults
+  const hasPresetChanges = (
+    settings.playmode !== defaultSettings.playmode ||
+    settings.loopEnabled !== defaultSettings.loopEnabled ||
+    settings.transpose !== defaultSettings.transpose ||
+    settings.velocitySensitivity !== defaultSettings.velocitySensitivity ||
+    settings.volume !== defaultSettings.volume ||
+    settings.width !== defaultSettings.width ||
+    settings.highpass !== defaultSettings.highpass ||
+    settings.portamentoType !== defaultSettings.portamentoType ||
+    settings.portamentoAmount !== defaultSettings.portamentoAmount ||
+    settings.tuningRoot !== defaultSettings.tuningRoot ||
+    settings.ampEnvelope.attack !== defaultSettings.ampEnvelope.attack ||
+    settings.ampEnvelope.decay !== defaultSettings.ampEnvelope.decay ||
+    settings.ampEnvelope.sustain !== defaultSettings.ampEnvelope.sustain ||
+    settings.ampEnvelope.release !== defaultSettings.ampEnvelope.release ||
+    settings.filterEnvelope.attack !== defaultSettings.filterEnvelope.attack ||
+    settings.filterEnvelope.decay !== defaultSettings.filterEnvelope.decay ||
+    settings.filterEnvelope.sustain !== defaultSettings.filterEnvelope.sustain ||
+    settings.filterEnvelope.release !== defaultSettings.filterEnvelope.release
+  );
+
   return (
     <div style={{
       marginBottom: '2rem',
@@ -201,20 +234,26 @@ export function MultisamplePresetSettings() {
       {/* Header */}
       <div style={{
         display: 'flex',
+        flexDirection: isMobile ? 'column' : 'row',
         justifyContent: 'space-between',
-        alignItems: 'center',
+        alignItems: isMobile ? 'flex-start' : 'center',
+        gap: isMobile ? '1rem' : '0',
         marginBottom: '1.5rem'
       }}>
         <h3 style={{ 
           margin: '0',
-          color: '#374151',
-          fontSize: '1.125rem',
-          fontWeight: '600'
+          color: '#222',
+          fontSize: '1.25rem',
+          fontWeight: '300'
         }}>
           preset settings
         </h3>
         
-        <div style={{ display: 'flex', gap: '0.75rem' }}>
+        <div style={{ 
+          display: 'flex', 
+          gap: '0.75rem',
+          alignSelf: isMobile ? 'stretch' : 'auto'
+        }}>
           <button
             onClick={handleImportClick}
             style={{
@@ -230,7 +269,9 @@ export function MultisamplePresetSettings() {
               fontFamily: 'inherit',
               display: 'flex',
               alignItems: 'center',
-              gap: '0.5rem'
+              justifyContent: 'center',
+              gap: '0.5rem',
+              flex: isMobile ? '1' : 'none'
             }}
             onMouseEnter={(e) => {
               e.currentTarget.style.backgroundColor = '#555';
@@ -251,30 +292,38 @@ export function MultisamplePresetSettings() {
 
           <button
             onClick={handleReset}
+            disabled={!hasPresetChanges}
             style={{
               padding: '0.625rem 1.25rem',
               border: '1px solid #d1d5db',
               borderRadius: '3px',
               backgroundColor: '#fff',
-              color: '#6b7280',
+              color: hasPresetChanges ? '#6b7280' : '#9ca3af',
               fontSize: '0.9rem',
               fontWeight: '500',
-              cursor: 'pointer',
+              cursor: hasPresetChanges ? 'pointer' : 'not-allowed',
               transition: 'all 0.2s ease',
               fontFamily: 'inherit',
               display: 'flex',
               alignItems: 'center',
-              gap: '0.5rem'
+              justifyContent: 'center',
+              gap: '0.5rem',
+              flex: isMobile ? '1' : 'none',
+              opacity: hasPresetChanges ? 1 : 0.6
             }}
             onMouseEnter={(e) => {
-              e.currentTarget.style.backgroundColor = '#f9fafb';
-              e.currentTarget.style.borderColor = '#9ca3af';
-              e.currentTarget.style.color = '#374151';
+              if (hasPresetChanges) {
+                e.currentTarget.style.backgroundColor = '#f9fafb';
+                e.currentTarget.style.borderColor = '#9ca3af';
+                e.currentTarget.style.color = '#374151';
+              }
             }}
             onMouseLeave={(e) => {
-              e.currentTarget.style.backgroundColor = '#fff';
-              e.currentTarget.style.borderColor = '#d1d5db';
-              e.currentTarget.style.color = '#6b7280';
+              if (hasPresetChanges) {
+                e.currentTarget.style.backgroundColor = '#fff';
+                e.currentTarget.style.borderColor = '#d1d5db';
+                e.currentTarget.style.color = '#6b7280';
+              }
             }}
           >
             <i className="fas fa-undo" style={{ fontSize: '0.8rem' }} />
@@ -306,36 +355,34 @@ export function MultisamplePresetSettings() {
             playback
           </h4>
           
-          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1.5rem' }}>
+          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '3rem' }}>
             <div>
               <label style={{ 
-                display: 'block', 
-                marginBottom: '0.5rem', 
+                display: 'block',
+                marginBottom: '0.5rem',
                 fontWeight: '500',
                 fontSize: '0.875rem',
                 color: '#374151'
               }}>
                 playmode
               </label>
-              <div style={{ maxWidth: '200px' }}>
-                <Select
-                  id="playmode"
-                  labelText=""
-                  value={settings.playmode}
-                  onChange={(e) => updateSetting('playmode', e.target.value as any)}
-                  size="sm"
-                >
-                  <SelectItem value="poly" text="poly" />
-                  <SelectItem value="mono" text="mono" />
-                  <SelectItem value="legato" text="legato" />
-                </Select>
-              </div>
+              <Select
+                id="playmode"
+                labelText=""
+                value={settings.playmode}
+                onChange={(e) => updateSetting('playmode', e.target.value as any)}
+                size="sm"
+              >
+                <SelectItem value="poly" text="poly" />
+                <SelectItem value="mono" text="mono" />
+                <SelectItem value="legato" text="legato" />
+              </Select>
             </div>
 
             <div>
               <label style={{ 
-                display: 'block', 
-                marginBottom: '0.5rem', 
+                display: 'block',
+                marginBottom: '0.5rem',
                 fontWeight: '500',
                 fontSize: '0.875rem',
                 color: '#374151'
@@ -365,134 +412,95 @@ export function MultisamplePresetSettings() {
             sound
           </h4>
           
-          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1.5rem' }}>
-            <div>
-              <label style={{ 
-                display: 'block', 
-                marginBottom: '0.5rem', 
-                fontWeight: '500',
-                fontSize: '0.875rem',
-                color: '#374151'
-              }}>
-                transpose ({settings.transpose})
-              </label>
-              <Slider
-                id="transpose"
-                min={-36}
-                max={36}
-                step={1}
-                value={settings.transpose}
-                onChange={({ value }) => updateSetting('transpose', value)}
-                labelText=""
-              />
+          <div className="drum-preset-grid">
+            {/* Left Column */}
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem' }}>
+              <div>
+                <Slider
+                  labelText={`transpose (${settings.transpose})`}
+                  id="transpose"
+                  min={-36}
+                  max={36}
+                  step={1}
+                  value={settings.transpose}
+                  onChange={({ value }) => updateSetting('transpose', value)}
+                />
+              </div>
+
+              <div>
+                <Slider
+                  labelText={`velocity sensitivity (${settings.velocitySensitivity}%)`}
+                  id="velocity-sensitivity"
+                  min={0}
+                  max={100}
+                  step={1}
+                  value={settings.velocitySensitivity}
+                  onChange={({ value }) => updateSetting('velocitySensitivity', value)}
+                />
+              </div>
+
+              <div>
+                <Slider
+                  labelText={`volume (${settings.volume}%)`}
+                  id="volume"
+                  min={0}
+                  max={100}
+                  step={1}
+                  value={settings.volume}
+                  onChange={({ value }) => updateSetting('volume', value)}
+                />
+              </div>
             </div>
 
-            <div>
-              <label style={{ 
-                display: 'block', 
-                marginBottom: '0.5rem', 
-                fontWeight: '500',
-                fontSize: '0.875rem',
-                color: '#374151'
-              }}>
-                velocity sensitivity ({settings.velocitySensitivity}%)
-              </label>
-              <Slider
-                id="velocity-sensitivity"
-                min={0}
-                max={100}
-                step={1}
-                value={settings.velocitySensitivity}
-                onChange={({ value }) => updateSetting('velocitySensitivity', value)}
-                labelText=""
-              />
-            </div>
+            {/* Right Column */}
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem' }}>
+              <div>
+                <Slider
+                  labelText={`width (${settings.width}%)`}
+                  id="width"
+                  min={0}
+                  max={100}
+                  step={1}
+                  value={settings.width}
+                  onChange={({ value }) => updateSetting('width', value)}
+                />
+              </div>
 
-            <div>
-              <label style={{ 
-                display: 'block', 
-                marginBottom: '0.5rem', 
-                fontWeight: '500',
-                fontSize: '0.875rem',
-                color: '#374151'
-              }}>
-                volume ({settings.volume}%)
-              </label>
-              <Slider
-                id="volume"
-                min={0}
-                max={100}
-                step={1}
-                value={settings.volume}
-                onChange={({ value }) => updateSetting('volume', value)}
-                labelText=""
-              />
-            </div>
+              <div>
+                <Slider
+                  labelText={`highpass (${settings.highpass}%)`}
+                  id="highpass"
+                  min={0}
+                  max={100}
+                  step={1}
+                  value={settings.highpass}
+                  onChange={({ value }) => updateSetting('highpass', value)}
+                />
+              </div>
 
-            <div>
-              <label style={{ 
-                display: 'block', 
-                marginBottom: '0.5rem', 
-                fontWeight: '500',
-                fontSize: '0.875rem',
-                color: '#374151'
-              }}>
-                width ({settings.width}%)
-              </label>
-              <Slider
-                id="width"
-                min={0}
-                max={100}
-                step={1}
-                value={settings.width}
-                onChange={({ value }) => updateSetting('width', value)}
-                labelText=""
-              />
-            </div>
-
-            <div>
-              <label style={{ 
-                display: 'block', 
-                marginBottom: '0.5rem', 
-                fontWeight: '500',
-                fontSize: '0.875rem',
-                color: '#374151'
-              }}>
-                highpass ({settings.highpass}%)
-              </label>
-              <Slider
-                id="highpass"
-                min={0}
-                max={100}
-                step={1}
-                value={settings.highpass}
-                onChange={({ value }) => updateSetting('highpass', value)}
-                labelText=""
-              />
-            </div>
-
-            <div>
-              <label style={{ 
-                display: 'block', 
-                marginBottom: '0.5rem', 
-                fontWeight: '500',
-                fontSize: '0.875rem',
-                color: '#374151'
-              }}>
-                tuning root
-              </label>
-              <div style={{ maxWidth: '200px' }}>
-                <Select
-                  id="tuning-root"
-                  labelText=""
-                  value={settings.tuningRoot.toString()}
-                  onChange={(e) => updateSetting('tuningRoot', parseInt(e.target.value))}
-                  size="sm"
-                >
-                  {noteNames.map((note, index) => (
-                    <SelectItem key={index} value={index.toString()} text={note} />
-                  ))}
-                </Select>
+              <div>
+                <label style={{ 
+                  display: 'block', 
+                  marginBottom: '0.5rem', 
+                  fontWeight: '500',
+                  fontSize: '0.875rem',
+                  color: '#374151'
+                }}>
+                  tuning root
+                </label>
+                <div style={{ maxWidth: '200px' }}>
+                  <Select
+                    id="tuning-root"
+                    labelText=""
+                    value={settings.tuningRoot.toString()}
+                    onChange={(e) => updateSetting('tuningRoot', parseInt(e.target.value))}
+                    size="sm"
+                  >
+                    {noteNames.map((note, index) => (
+                      <SelectItem key={index} value={index.toString()} text={note} />
+                    ))}
+                  </Select>
+                </div>
               </div>
             </div>
           </div>
@@ -510,7 +518,7 @@ export function MultisamplePresetSettings() {
             portamento
           </h4>
           
-          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1.5rem' }}>
+          <div className="drum-preset-grid">
             <div>
               <label style={{ 
                 display: 'block', 
@@ -536,23 +544,14 @@ export function MultisamplePresetSettings() {
             </div>
 
             <div>
-              <label style={{ 
-                display: 'block', 
-                marginBottom: '0.5rem', 
-                fontWeight: '500',
-                fontSize: '0.875rem',
-                color: '#374151'
-              }}>
-                amount ({settings.portamentoAmount}%)
-              </label>
               <Slider
+                labelText={`amount (${settings.portamentoAmount}%)`}
                 id="portamento-amount"
                 min={0}
                 max={100}
                 step={1}
                 value={settings.portamentoAmount}
                 onChange={({ value }) => updateSetting('portamentoAmount', value)}
-                labelText=""
               />
             </div>
           </div>

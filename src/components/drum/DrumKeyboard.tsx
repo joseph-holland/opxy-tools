@@ -597,7 +597,7 @@ export function DrumKeyboard({ onFileUpload }: DrumKeyboardProps = {}) {
         ) : (
           <>
             use keyboard keys (<strong>A-J, W, E, R, Y, U</strong>) to trigger samples and <strong>Z</strong> / <strong>X</strong> to switch octaves<br />
-            <strong>load samples:</strong> click empty keys to browse files or drag & drop audio files directly onto any key
+            <strong>load samples:</strong> click empty keys to browse files or drag and drop audio files directly onto any key
           </>
         )}
       </div>

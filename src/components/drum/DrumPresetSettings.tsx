@@ -1,4 +1,4 @@
-import { useRef, useState } from 'react';
+import { useRef, useState, useEffect } from 'react';
 import { useAppContext } from '../../context/AppContext';
 import { Select, SelectItem, Slider } from '@carbon/react';
 import { ConfirmationModal } from '../common/ConfirmationModal';
@@ -7,11 +7,22 @@ import { importPresetFromFile, extractDrumSettings, type DrumPresetJson } from '
 export function DrumPresetSettings() {
   const { state, dispatch } = useAppContext();
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const [isMobile, setIsMobile] = useState(false);
   const [confirmDialog, setConfirmDialog] = useState<{
     isOpen: boolean;
     message: string;
     onConfirm: () => void;
   }>({ isOpen: false, message: '', onConfirm: () => {} });
+
+  useEffect(() => {
+    const checkMobile = () => {
+      setIsMobile(window.innerWidth < 768);
+    };
+    
+    checkMobile();
+    window.addEventListener('resize', checkMobile);
+    return () => window.removeEventListener('resize', checkMobile);
+  }, []);
 
   const handlePlaymodeChange = (value: string) => {
     dispatch({ type: 'SET_DRUM_PRESET_PLAYMODE', payload: value as 'poly' | 'mono' | 'legato' });
@@ -45,8 +56,8 @@ export function DrumPresetSettings() {
         // Reset to default values (from initialState in AppContext)
         dispatch({ type: 'SET_DRUM_PRESET_PLAYMODE', payload: 'poly' });
         dispatch({ type: 'SET_DRUM_PRESET_TRANSPOSE', payload: 0 });
-        dispatch({ type: 'SET_DRUM_PRESET_VELOCITY', payload: 60 });
-        dispatch({ type: 'SET_DRUM_PRESET_VOLUME', payload: 56 });
+                  dispatch({ type: 'SET_DRUM_PRESET_VELOCITY', payload: 20 });
+        dispatch({ type: 'SET_DRUM_PRESET_VOLUME', payload: 69 });
         dispatch({ type: 'SET_DRUM_PRESET_WIDTH', payload: 0 });
         
         // Show success notification
@@ -55,8 +66,8 @@ export function DrumPresetSettings() {
           payload: {
             id: Date.now().toString(),
             type: 'success',
-            title: 'Settings Reset',
-            message: 'Successfully reset preset settings to default values'
+            title: 'settings reset',
+            message: 'successfully reset preset settings to default values'
           }
         });
         
@@ -125,6 +136,15 @@ export function DrumPresetSettings() {
     }
   };
 
+  // Check if preset settings have been changed from defaults
+  const hasPresetChanges = (
+    state.drumSettings.presetSettings.playmode !== 'poly' ||
+    state.drumSettings.presetSettings.transpose !== 0 ||
+    state.drumSettings.presetSettings.velocity !== 20 ||
+    state.drumSettings.presetSettings.volume !== 69 ||
+    state.drumSettings.presetSettings.width !== 0
+  );
+
   return (
     <>
       <div style={{
@@ -135,8 +155,10 @@ export function DrumPresetSettings() {
         {/* Header */}
         <div style={{
           display: 'flex',
+          flexDirection: isMobile ? 'column' : 'row',
           justifyContent: 'space-between',
-          alignItems: 'center',
+          alignItems: isMobile ? 'flex-start' : 'center',
+          gap: isMobile ? '1rem' : '0',
           marginBottom: '1.5rem'
         }}>
           <h3 style={{ 
@@ -151,33 +173,45 @@ export function DrumPresetSettings() {
             preset settings
           </h3>
           
-          <div style={{ display: 'flex', gap: '0.75rem' }}>
+          <div style={{ 
+            display: 'flex', 
+            gap: '0.75rem',
+            alignSelf: isMobile ? 'stretch' : 'auto'
+          }}>
             <button
               onClick={handleResetClick}
+              disabled={!hasPresetChanges}
               style={{
                 padding: '0.625rem 1.25rem',
                 border: '1px solid #d1d5db',
                 borderRadius: '3px',
                 backgroundColor: '#fff',
-                color: '#6b7280',
+                color: hasPresetChanges ? '#6b7280' : '#9ca3af',
                 fontSize: '0.9rem',
                 fontWeight: '500',
-                cursor: 'pointer',
+                cursor: hasPresetChanges ? 'pointer' : 'not-allowed',
                 transition: 'all 0.2s ease',
                 fontFamily: 'inherit',
                 display: 'flex',
                 alignItems: 'center',
-                gap: '0.5rem'
+                justifyContent: 'center',
+                gap: '0.5rem',
+                flex: isMobile ? '1' : 'none',
+                opacity: hasPresetChanges ? 1 : 0.6
               }}
               onMouseEnter={(e) => {
-                e.currentTarget.style.backgroundColor = '#f9fafb';
-                e.currentTarget.style.borderColor = '#9ca3af';
-                e.currentTarget.style.color = '#374151';
+                if (hasPresetChanges) {
+                  e.currentTarget.style.backgroundColor = '#f9fafb';
+                  e.currentTarget.style.borderColor = '#9ca3af';
+                  e.currentTarget.style.color = '#374151';
+                }
               }}
               onMouseLeave={(e) => {
-                e.currentTarget.style.backgroundColor = '#fff';
-                e.currentTarget.style.borderColor = '#d1d5db';
-                e.currentTarget.style.color = '#6b7280';
+                if (hasPresetChanges) {
+                  e.currentTarget.style.backgroundColor = '#fff';
+                  e.currentTarget.style.borderColor = '#d1d5db';
+                  e.currentTarget.style.color = '#6b7280';
+                }
               }}
             >
               <i className="fas fa-undo" style={{ fontSize: '0.8rem' }} />
@@ -199,7 +233,9 @@ export function DrumPresetSettings() {
                 fontFamily: 'inherit',
                 display: 'flex',
                 alignItems: 'center',
-                gap: '0.5rem'
+                justifyContent: 'center',
+                gap: '0.5rem',
+                flex: isMobile ? '1' : 'none'
               }}
               onMouseEnter={(e) => {
                 e.currentTarget.style.backgroundColor = '#555';
@@ -226,15 +262,16 @@ export function DrumPresetSettings() {
           />
         </div>
 
-        {/* Settings Grid */}
+        {/* Settings Layout */}
         <div style={{
-          display: 'grid',
+          display: 'flex',
+          flexDirection: 'column',
           gap: '1.5rem'
         }}>
           {/* Playmode - Full Width */}
           <div style={{
             display: 'grid',
-            gridTemplateColumns: '1fr 2fr',
+            gridTemplateColumns: '100px 1fr',
             gap: '1rem',
             alignItems: 'center'
           }}>
@@ -260,106 +297,60 @@ export function DrumPresetSettings() {
             </div>
           </div>
 
-          {/* Responsive Grid for Sliders */}
+          {/* Sound Settings in Two Columns */}
           <div className="drum-preset-grid">
-            {/* Transpose */}
-            <div style={{
-              display: 'grid',
-              gridTemplateColumns: '1fr 2fr',
-              gap: '1rem',
-              alignItems: 'center'
-            }}>
-              <label style={{
-                fontSize: '0.875rem',
-                fontWeight: '500',
-                color: '#374151'
-              }}>
-                transpose
-              </label>
-              <Slider
-                id="preset-transpose"
-                labelText=""
-                min={-36}
-                max={36}
-                step={1}
-                value={state.drumSettings.presetSettings.transpose}
-                onChange={({ value }) => handleTransposeChange(value)}
-              />
+            {/* Left Column */}
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem' }}>
+              <div>
+                <Slider
+                  labelText="transpose"
+                  id="preset-transpose"
+                  min={-36}
+                  max={36}
+                  step={1}
+                  value={state.drumSettings.presetSettings.transpose}
+                  onChange={({ value }) => handleTransposeChange(value)}
+                />
+              </div>
+              
+              <div>
+                <Slider
+                  labelText="velocity"
+                  id="preset-velocity-sensitivity"
+                  min={0}
+                  max={100}
+                  step={1}
+                  value={state.drumSettings.presetSettings.velocity}
+                  onChange={({ value }) => handleVelocityChange(value)}
+                />
+              </div>
             </div>
 
-            {/* Velocity */}
-            <div style={{
-              display: 'grid',
-              gridTemplateColumns: '1fr 2fr',
-              gap: '1rem',
-              alignItems: 'center'
-            }}>
-              <label style={{
-                fontSize: '0.875rem',
-                fontWeight: '500',
-                color: '#374151'
-              }}>
-                velocity
-              </label>
-              <Slider
-                id="preset-velocity-sensitivity"
-                labelText=""
-                min={0}
-                max={100}
-                step={1}
-                value={state.drumSettings.presetSettings.velocity}
-                onChange={({ value }) => handleVelocityChange(value)}
-              />
-            </div>
-
-            {/* Width */}
-            <div style={{
-              display: 'grid',
-              gridTemplateColumns: '1fr 2fr',
-              gap: '1rem',
-              alignItems: 'center'
-            }}>
-              <label style={{
-                fontSize: '0.875rem',
-                fontWeight: '500',
-                color: '#374151'
-              }}>
-                width
-              </label>
-              <Slider
-                id="preset-width"
-                labelText=""
-                min={0}
-                max={100}
-                step={1}
-                value={state.drumSettings.presetSettings.width}
-                onChange={({ value }) => handleWidthChange(value)}
-              />
-            </div>
-
-            {/* Volume */}
-            <div style={{
-              display: 'grid',
-              gridTemplateColumns: '1fr 2fr',
-              gap: '1rem',
-              alignItems: 'center'
-            }}>
-              <label style={{
-                fontSize: '0.875rem',
-                fontWeight: '500',
-                color: '#374151'
-              }}>
-                volume
-              </label>
-              <Slider
-                id="preset-volume"
-                labelText=""
-                min={0}
-                max={100}
-                step={1}
-                value={state.drumSettings.presetSettings.volume}
-                onChange={({ value }) => handleVolumeChange(value)}
-              />
+            {/* Right Column */}
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem' }}>
+              <div>
+                <Slider
+                  labelText="volume"
+                  id="preset-volume"
+                  min={0}
+                  max={100}
+                  step={1}
+                  value={state.drumSettings.presetSettings.volume}
+                  onChange={({ value }) => handleVolumeChange(value)}
+                />
+              </div>
+              
+              <div>
+                <Slider
+                  labelText="width"
+                  id="preset-width"
+                  min={0}
+                  max={100}
+                  step={1}
+                  value={state.drumSettings.presetSettings.width}
+                  onChange={({ value }) => handleWidthChange(value)}
+                />
+              </div>
             </div>
           </div>
         </div>

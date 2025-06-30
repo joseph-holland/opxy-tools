@@ -150,7 +150,7 @@ export function AudioFormatControls({
 
   return (
     <div style={containerStyle}>
-      <div>
+      <div style={{ width: isMobile ? '100%' : 'auto' }}>
         <Select
           id="sample-rate"
           labelText="sample rate"
@@ -158,6 +158,7 @@ export function AudioFormatControls({
           onChange={(e) => onSampleRateChange(e.target.value)}
           size={size}
           disabled={disabled}
+          style={{ width: isMobile ? '100%' : 'auto' }}
         >
           <SelectItem value="0" text="original" />
           <SelectItem 
@@ -178,7 +179,7 @@ export function AudioFormatControls({
         </Select>
       </div>
 
-      <div>
+      <div style={{ width: isMobile ? '100%' : 'auto' }}>
         <Select
           id="bit-depth"
           labelText="bit depth"
@@ -186,6 +187,7 @@ export function AudioFormatControls({
           onChange={(e) => onBitDepthChange(e.target.value)}
           size={size}
           disabled={disabled}
+          style={{ width: isMobile ? '100%' : 'auto' }}
         >
           <SelectItem value="0" text="original" />
           <SelectItem 
@@ -201,7 +203,7 @@ export function AudioFormatControls({
         </Select>
       </div>
 
-      <div>
+      <div style={{ width: isMobile ? '100%' : 'auto' }}>
         <Select
           id="channels"
           labelText="channels"
@@ -209,6 +211,7 @@ export function AudioFormatControls({
           onChange={(e) => onChannelsChange(e.target.value)}
           size={size}
           disabled={disabled}
+          style={{ width: isMobile ? '100%' : 'auto' }}
         >
           <SelectItem value="0" text="original" />
           <SelectItem 
