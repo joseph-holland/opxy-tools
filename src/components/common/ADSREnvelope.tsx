@@ -519,7 +519,7 @@ export const ADSREnvelope: React.FC<ADSREnvelopeProps> = ({
                 x2={pos.attack.x} 
                 y2={envelopeBottom} 
                 stroke="#ddd" 
-                strokeWidth="1" 
+                strokeWidth="4" 
                 opacity="0.5"
               />
               
@@ -530,7 +530,7 @@ export const ADSREnvelope: React.FC<ADSREnvelopeProps> = ({
                 x2={pos.decay.x} 
                 y2={envelopeBottom} 
                 stroke="#ddd" 
-                strokeWidth="1" 
+                strokeWidth="4" 
                 opacity="0.5"
               />
               
@@ -541,7 +541,7 @@ export const ADSREnvelope: React.FC<ADSREnvelopeProps> = ({
                 x2={pos.release.x} 
                 y2={envelopeBottom} 
                 stroke="#ddd" 
-                strokeWidth="1" 
+                strokeWidth="4" 
                 opacity="0.5"
               />
             </>
