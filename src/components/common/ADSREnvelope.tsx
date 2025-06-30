@@ -395,7 +395,7 @@ export const ADSREnvelope: React.FC<ADSREnvelopeProps> = ({
   // Render handles for the active envelope
   const renderHandles = useCallback((envelope: ADSRValues, isActive: boolean = true) => {
     const positions = getHandlePositions(envelope);
-    const handleSize = 6; // Small square handles
+    const handleSize = 4; // Smaller square handles
     const hitAreaRadius = 20; // Larger invisible hit area
     
     return Object.entries(positions).map(([name, pos]) => (
@@ -417,10 +417,7 @@ export const ADSREnvelope: React.FC<ADSREnvelopeProps> = ({
           rx="3"
           ry="3"
           fill={isActive ? "#333333" : "#999999"}
-          stroke="#ffffff"
-          strokeWidth="1"
           style={{ cursor: 'grab', pointerEvents: 'none' }}
-          vectorEffect="non-scaling-stroke"
         />
       </g>
     ));
@@ -579,7 +576,7 @@ export const ADSREnvelope: React.FC<ADSREnvelopeProps> = ({
               <text
                 x={ampPos.release.x - 30}
                 y={ampPos.release.y - 8}
-                fontSize="21"
+                fontSize="18"
                 fontWeight="500"
                 fill={activeEnvelope === 'amp' ? "#333" : "#999"}
                 textAnchor="middle"
@@ -592,7 +589,7 @@ export const ADSREnvelope: React.FC<ADSREnvelopeProps> = ({
               <text
                 x={filterPos.release.x - 30}
                 y={filterPos.release.y - 8}
-                fontSize="21"
+                fontSize="18"
                 fontWeight="500"
                 fill={activeEnvelope === 'filter' ? "#333" : "#999"}
                 textAnchor="middle"
