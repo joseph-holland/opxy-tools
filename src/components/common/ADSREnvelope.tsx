@@ -501,7 +501,7 @@ export const ADSREnvelope: React.FC<ADSREnvelopeProps> = ({
           x2={(width - 550) / 2 + (550 - 460) / 2 + 460} 
           y2={(height - 250) / 2 + (250 - 200) / 2 + 200} 
           stroke="#ddd" 
-          strokeWidth="1" 
+          strokeWidth="4" 
         />
         
         {/* Vertical guide lines from key points */}
@@ -568,6 +568,38 @@ export const ADSREnvelope: React.FC<ADSREnvelopeProps> = ({
         {/* Interactive handles for active envelope only */}
         {renderHandles(currentEnvelope, true)}
         
+        {/* Fixed decorative squares at envelope start and end */}
+        {(() => {
+          const pos = getPhasePositions(currentEnvelope);
+          const envelopeBottom = (height - 250) / 2 + (250 - 200) / 2 + 200;
+          
+          return (
+            <>
+              {/* Start of envelope square */}
+              <rect
+                x={pos.start.x - 4}
+                y={envelopeBottom - 4}
+                width="8"
+                height="8"
+                fill="#000"
+                rx="3"
+                ry="3"
+              />
+              
+              {/* End of envelope square */}
+              <rect
+                x={pos.releaseEnd.x - 4}
+                y={envelopeBottom - 4}
+                width="8"
+                height="8"
+                fill="#000"
+                rx="3"
+                ry="3"
+              />
+            </>
+          );
+        })()}
+        
         {/* Envelope type labels positioned like OP-XY */}
         {(() => {
           const ampPos = getHandlePositions(ampEnvelope);
@@ -577,7 +609,7 @@ export const ADSREnvelope: React.FC<ADSREnvelopeProps> = ({
             <>
               {/* Amp label */}
               <text
-                x={ampPos.release.x - 30}
+                x={ampPos.release.x - 25}
                 y={ampPos.release.y - 8}
                 fontSize="16"
                 fontWeight="500"
@@ -590,7 +622,7 @@ export const ADSREnvelope: React.FC<ADSREnvelopeProps> = ({
               
               {/* Filter label */}
               <text
-                x={filterPos.release.x - 30}
+                x={filterPos.release.x - 25}
                 y={filterPos.release.y - 8}
                 fontSize="16"
                 fontWeight="500"
