@@ -1,5 +1,6 @@
 import React, { useState, useCallback, useMemo } from 'react';
 import { Toggle } from '@carbon/react';
+import { FourKnobControl } from './FourKnobControl';
 
 interface ADSRValues {
   attack: number;   // 0-32767 (time)
@@ -129,6 +130,37 @@ export const ADSREnvelope: React.FC<ADSREnvelopeProps> = ({
 
   const currentEnvelope = activeEnvelope === 'amp' ? ampEnvelope : filterEnvelope;
   const inactiveEnvelope = activeEnvelope === 'amp' ? filterEnvelope : ampEnvelope;
+
+  // Handle knob value changes for the active envelope
+  const handleKnobValueChange = useCallback((index: number, value: number) => {
+    const convertedValue = percentToValue(value);
+    
+    // Get the current envelope values fresh
+    const targetEnvelope = activeEnvelope === 'amp' ? ampEnvelope : filterEnvelope;
+    const newEnvelope = { ...targetEnvelope };
+    
+    switch (index) {
+      case 0: // attack
+        newEnvelope.attack = convertedValue;
+        break;
+      case 1: // decay
+        newEnvelope.decay = convertedValue;
+        break;
+      case 2: // sustain
+        newEnvelope.sustain = convertedValue;
+        break;
+      case 3: // release
+        newEnvelope.release = convertedValue;
+        break;
+    }
+    
+    // Update the active envelope
+    if (activeEnvelope === 'amp') {
+      onAmpEnvelopeChange(newEnvelope);
+    } else {
+      onFilterEnvelopeChange(newEnvelope);
+    }
+  }, [activeEnvelope, ampEnvelope, filterEnvelope, onAmpEnvelopeChange, onFilterEnvelopeChange]);
 
   // Calculate fixed positions based on OP-XY style constraints
   const getPhasePositions = useCallback((envelope: ADSRValues) => {
@@ -658,189 +690,15 @@ export const ADSREnvelope: React.FC<ADSREnvelopeProps> = ({
       </svg>
       
       {/* ADSR Control Knobs */}
-      <div style={{ 
-        display: 'flex', 
-        justifyContent: 'space-around', 
-        alignItems: 'center', 
-        marginTop: '1rem',
-        padding: '0 2rem'
-      }}>
-        {/* Attack Knob */}
-        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '0.5rem' }}>
-          <div
-            style={{
-              width: '50px',
-              height: '50px',
-              borderRadius: '50%',
-              border: '2px solid #000',
-              backgroundColor: '#000',
-              cursor: 'pointer',
-              position: 'relative',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center'
-            }}
-          >
-            <div
-              style={{
-                width: '36px',
-                height: '36px',
-                borderRadius: '50%',
-                border: '2px solid #000',
-                backgroundColor: '#fff',
-                position: 'relative',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center'
-              }}
-            >
-              <div
-                style={{
-                  width: '20px',
-                  height: '20px',
-                  borderRadius: '50%',
-                  backgroundColor: '#000',
-                  border: 'none'
-                }}
-              />
-            </div>
-          </div>
-          <span style={{ fontSize: '0.75rem', color: '#666' }}>attack</span>
-          <span style={{ fontSize: '0.7rem', color: '#999' }}>{valueToPercent(currentEnvelope.attack)}%</span>
-        </div>
-        
-        {/* Decay Knob */}
-        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '0.5rem' }}>
-          <div
-            style={{
-              width: '50px',
-              height: '50px',
-              borderRadius: '50%',
-              border: '2px solid #000',
-              backgroundColor: '#000',
-              cursor: 'pointer',
-              position: 'relative',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center'
-            }}
-          >
-            <div
-              style={{
-                width: '36px',
-                height: '36px',
-                borderRadius: '50%',
-                border: '2px solid #000',
-                backgroundColor: '#fff',
-                position: 'relative',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center'
-              }}
-            >
-              <div
-                style={{
-                  width: '20px',
-                  height: '20px',
-                  borderRadius: '50%',
-                  backgroundColor: '#666',
-                  border: 'none'
-                }}
-              />
-            </div>
-          </div>
-          <span style={{ fontSize: '0.75rem', color: '#666' }}>decay</span>
-          <span style={{ fontSize: '0.7rem', color: '#999' }}>{valueToPercent(currentEnvelope.decay)}%</span>
-        </div>
-        
-        {/* Sustain Knob */}
-        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '0.5rem' }}>
-          <div
-            style={{
-              width: '50px',
-              height: '50px',
-              borderRadius: '50%',
-              border: '2px solid #000',
-              backgroundColor: '#000',
-              cursor: 'pointer',
-              position: 'relative',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center'
-            }}
-          >
-            <div
-              style={{
-                width: '36px',
-                height: '36px',
-                borderRadius: '50%',
-                border: '2px solid #000',
-                backgroundColor: '#fff',
-                position: 'relative',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center'
-              }}
-            >
-              <div
-                style={{
-                  width: '20px',
-                  height: '20px',
-                  borderRadius: '50%',
-                  backgroundColor: '#bbb',
-                  border: 'none'
-                }}
-              />
-            </div>
-          </div>
-          <span style={{ fontSize: '0.75rem', color: '#666' }}>sustain</span>
-          <span style={{ fontSize: '0.7rem', color: '#999' }}>{valueToPercent(currentEnvelope.sustain)}%</span>
-        </div>
-        
-        {/* Release Knob */}
-        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '0.5rem' }}>
-          <div
-            style={{
-              width: '50px',
-              height: '50px',
-              borderRadius: '50%',
-              border: '2px solid #000',
-              backgroundColor: '#000',
-              cursor: 'pointer',
-              position: 'relative',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center'
-            }}
-          >
-            <div
-              style={{
-                width: '36px',
-                height: '36px',
-                borderRadius: '50%',
-                border: '2px solid #000',
-                backgroundColor: '#fff',
-                position: 'relative',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center'
-              }}
-            >
-              <div
-                style={{
-                  width: '20px',
-                  height: '20px',
-                  borderRadius: '50%',
-                  backgroundColor: '#fff',
-                  border: 'none'
-                }}
-              />
-            </div>
-          </div>
-          <span style={{ fontSize: '0.75rem', color: '#666' }}>release</span>
-          <span style={{ fontSize: '0.7rem', color: '#999' }}>{valueToPercent(currentEnvelope.release)}%</span>
-        </div>
-      </div>
+      <FourKnobControl
+        knobs={[
+          { label: 'attack', value: valueToPercent(currentEnvelope.attack), color: '#000' },
+          { label: 'decay', value: valueToPercent(currentEnvelope.decay), color: '#666' },
+          { label: 'sustain', value: valueToPercent(currentEnvelope.sustain), color: '#bbb' },
+          { label: 'release', value: valueToPercent(currentEnvelope.release), color: '#fff' }
+        ]}
+        onValueChange={handleKnobValueChange}
+      />
     </div>
   );
 }; 
