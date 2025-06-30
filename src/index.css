@@ -54,7 +54,7 @@ a:hover {
   background: #ececec;
 }
 
-/* Make Carbon Design label text larger to match patch size text */
+/* Make Carbon Design label text larger to match preset size text */
 .cds--label,
 .cds--text-input__label-text,
 .cds--list-box__label {

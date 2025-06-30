@@ -3,6 +3,7 @@ import { useAppContext } from '../../context/AppContext';
 import { Button } from '@carbon/react';
 import { WaveformEditor } from '../common/WaveformEditor';
 import { FileDetailsBadges } from '../common/FileDetailsBadges';
+import { DrumSampleSettingsModal, useDrumSampleSettingsKeyboard } from './DrumSampleSettingsModal';
 
 interface DrumSampleTableProps {
   onFileUpload: (index: number, file: File) => void;
@@ -22,6 +23,8 @@ export function DrumSampleTable({ onFileUpload, onClearSample, onRecordSample }:
   const { state, dispatch } = useAppContext();
   const fileInputRefs = useRef<(HTMLInputElement | null)[]>([]);
   const [isMobile, setIsMobile] = useState(false);
+  const [settingsModalOpen, setSettingsModalOpen] = useState(false);
+  const [selectedSampleIndex, setSelectedSampleIndex] = useState<number>(0);
 
   // Detect mobile screen size
   useEffect(() => {
@@ -75,6 +78,22 @@ export function DrumSampleTable({ onFileUpload, onClearSample, onRecordSample }:
       handleFileSelect(index, audioFile);
     }
   };
+
+  const openSettingsModal = (index: number) => {
+    setSelectedSampleIndex(index);
+    setSettingsModalOpen(true);
+  };
+
+  const closeSettingsModal = () => {
+    setSettingsModalOpen(false);
+  };
+
+  const playSelectedSample = () => {
+    playSample(selectedSampleIndex);
+  };
+
+  // Add keyboard handler for 'p' key in settings modal
+  useDrumSampleSettingsKeyboard(settingsModalOpen, playSelectedSample);
 
   if (isMobile) {
     // Mobile Card Layout
@@ -131,9 +150,23 @@ export function DrumSampleTable({ onFileUpload, onClearSample, onRecordSample }:
                     <div style={{
                       fontSize: '0.9rem',
                       fontWeight: '600',
-                      color: '#222'
+                      color: '#222',
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: '0.5rem'
                     }}>
                       {drumSampleNames[index]}
+                      {sample?.hasBeenEdited && (
+                        <i 
+                          className="fas fa-pencil-alt" 
+                          style={{ 
+                            fontSize: '0.7rem', 
+                            color: '#666',
+                            opacity: 0.8
+                          }}
+                          title="edited sample"
+                        ></i>
+                      )}
                     </div>
                     
                                          {/* Actions - Play, Clear, and Settings */}
@@ -207,7 +240,7 @@ export function DrumSampleTable({ onFileUpload, onClearSample, onRecordSample }:
                          kind="ghost"
                          size="sm"
                          disabled={!isLoaded}
-                         onClick={() => {/* Settings/advanced options */}}
+                         onClick={() => openSettingsModal(index)}
                          style={{
                            minHeight: '32px',
                            width: '32px',
@@ -405,9 +438,23 @@ export function DrumSampleTable({ onFileUpload, onClearSample, onRecordSample }:
                 <div style={{
                   fontSize: '0.8rem',
                   fontWeight: '500',
-                  color: '#222'
+                  color: '#222',
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '0.5rem'
                 }}>
                   {drumSampleNames[index]}
+                  {sample?.hasBeenEdited && (
+                    <i 
+                      className="fas fa-pencil-alt" 
+                      style={{ 
+                        fontSize: '0.6rem', 
+                        color: '#666',
+                        opacity: 0.8
+                      }}
+                      title="edited sample"
+                    ></i>
+                  )}
                 </div>
 
                 {/* Sample Info */}
@@ -576,7 +623,7 @@ export function DrumSampleTable({ onFileUpload, onClearSample, onRecordSample }:
                     kind="ghost"
                     size="sm"
                     disabled={!isLoaded}
-                    onClick={() => {/* Settings/advanced options */}}
+                    onClick={() => openSettingsModal(index)}
                     style={{
                       minHeight: '28px',
                       width: '28px',
@@ -600,7 +647,12 @@ export function DrumSampleTable({ onFileUpload, onClearSample, onRecordSample }:
         })}
       </div>
 
-
+      {/* Settings Modal */}
+      <DrumSampleSettingsModal
+        isOpen={settingsModalOpen}
+        onClose={closeSettingsModal}
+        sampleIndex={selectedSampleIndex}
+      />
     </div>
   );
 } 

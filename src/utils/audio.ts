@@ -6,7 +6,7 @@ import { audioContextManager } from './audioContext';
 // Constants preserved from legacy for compatibility
 const HEADER_LENGTH = 44;
 const MAX_AMPLITUDE = 0x7fff;
-const PATCH_SIZE_LIMIT = 8 * 1024 * 1024; // 8MB limit for OP-XY
+const PATCH_SIZE_LIMIT = 8 * 1024 * 1024; // 8mb limit for OP-XY
 
 // WAV format structures
 interface WavHeader {
@@ -220,7 +220,7 @@ export async function convertAudioFormat(
   return await offlineContext.startRendering();
 }
 
-// Calculate patch size with accurate conversion estimation
+// Calculate preset size with accurate conversion estimation
 export async function calculatePatchSize(
   audioBuffers: AudioBuffer[],
   options: ConversionOptions = {}
@@ -504,9 +504,9 @@ export const baseDrumJson = {
 
 // Utility functions
 export function formatFileSize(bytes: number): string {
-  if (bytes < 1024) return bytes + ' B';
-  if (bytes < 1048576) return (bytes / 1024).toFixed(1) + ' KB';
-  return (bytes / 1048576).toFixed(1) + ' MB';
+  if (bytes < 1024) return bytes + ' b';
+  if (bytes < 1048576) return (bytes / 1024).toFixed(1) + ' kb';
+  return (bytes / 1048576).toFixed(1) + ' mb';
 }
 
 export function isPatchSizeValid(sizeBytes: number): boolean {
@@ -517,7 +517,7 @@ export function getPatchSizeWarning(sizeBytes: number): string | null {
   const percentage = (sizeBytes / PATCH_SIZE_LIMIT) * 100;
   
   if (percentage >= 95) {
-    return "Patch size too large - reduce sample rate, bit depth, or convert to mono";
+    return "Preset size too large - reduce sample rate, bit depth, or convert to mono";
   } else if (percentage >= 75) {
     return "Approaching size limit - consider optimizing samples";
   }

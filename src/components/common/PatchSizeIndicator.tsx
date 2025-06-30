@@ -12,6 +12,18 @@ export function PatchSizeIndicator({ type, className = '' }: PatchSizeIndicatorP
   const { state } = useAppContext();
   const [patchSize, setPatchSize] = useState(0);
   const [isCalculating, setIsCalculating] = useState(false);
+  const [isMobile, setIsMobile] = useState(false);
+
+  // Detect mobile screen size
+  useEffect(() => {
+    const checkMobile = () => {
+      setIsMobile(window.innerWidth < 768);
+    };
+    
+    checkMobile();
+    window.addEventListener('resize', checkMobile);
+    return () => window.removeEventListener('resize', checkMobile);
+  }, []);
 
   // Get relevant audio buffers and settings based on type
   const audioBuffers = type === 'drum' 
@@ -20,7 +32,7 @@ export function PatchSizeIndicator({ type, className = '' }: PatchSizeIndicatorP
 
   const settings = type === 'drum' ? state.drumSettings : state.multisampleSettings;
 
-  // Calculate patch size when samples or settings change
+  // Calculate preset size when samples or settings change
   useEffect(() => {
     const calculateSize = async () => {
       if (audioBuffers.length === 0) {
@@ -37,7 +49,7 @@ export function PatchSizeIndicator({ type, className = '' }: PatchSizeIndicatorP
         });
         setPatchSize(size);
       } catch (error) {
-        console.error('Failed to calculate patch size:', error);
+        console.error('Failed to calculate preset size:', error);
         setPatchSize(0);
       } finally {
         setIsCalculating(false);
@@ -48,7 +60,7 @@ export function PatchSizeIndicator({ type, className = '' }: PatchSizeIndicatorP
   }, [audioBuffers.length, settings.sampleRate, settings.bitDepth, settings.channels]);
 
   // Calculate percentage and get warning
-  const maxSize = 8 * 1024 * 1024; // 8MB limit
+  const maxSize = 8 * 1024 * 1024; // 8mb limit
   const percentage = Math.min(100, (patchSize / maxSize) * 100);
   const warning = getPatchSizeWarning(patchSize);
   const isValid = isPatchSizeValid(patchSize);
@@ -61,12 +73,13 @@ export function PatchSizeIndicator({ type, className = '' }: PatchSizeIndicatorP
     progressStatus = 'active';
   }
 
-  if (audioBuffers.length === 0) {
-    return null;
-  }
+  // Always show the indicator, even with 0 samples
 
   return (
-    <div className={`patch-size-indicator ${className}`} style={{ marginBottom: '1rem' }}>
+    <div className={`preset-size-indicator ${className}`} style={{ 
+      marginBottom: '1rem',
+      width: '100%' // Full width of its container (which is now 50%)
+    }}>
       <div style={{ 
         display: 'flex', 
         justifyContent: 'space-between', 
@@ -78,35 +91,83 @@ export function PatchSizeIndicator({ type, className = '' }: PatchSizeIndicatorP
           fontWeight: '500',
           color: '#222'
         }}>
-          patch size
+          preset size
         </span>
         <span style={{ 
           fontSize: '0.9rem',
-          color: isValid ? '#666' : '#d32f2f'
+          color: '#666'
         }}>
           {isCalculating ? (
             <InlineLoading description="Calculating..." />
           ) : (
-            `${formatFileSize(patchSize)} / 8.0 MB`
+            formatFileSize(patchSize)
           )}
         </span>
       </div>
 
-      <div style={{ marginBottom: '0.5rem' }}>
-        <ProgressBar
-          label="Patch size progress"
-          value={percentage}
-          max={100}
-          status={progressStatus}
-          size="small"
-          hideLabel
-        />
+      {/* Custom progress bar with fixed 8mb indicator */}
+      <div style={{ 
+        marginBottom: '0.5rem',
+        position: 'relative'
+      }}>
+        {/* Background bar */}
+        <div style={{
+          width: '100%',
+          height: '8px',
+          backgroundColor: '#e0e0e0',
+          borderRadius: '4px',
+          position: 'relative',
+          overflow: 'hidden'
+        }}>
+          {/* Progress fill */}
+          <div style={{
+            width: `${Math.min(100, percentage)}%`,
+            height: '100%',
+            backgroundColor: '#666',
+            borderRadius: '4px',
+            transition: 'width 0.3s ease'
+          }} />
+          
+          {/* 8mb limit indicator line */}
+          <div style={{
+            position: 'absolute',
+            right: 0,
+            top: 0,
+            width: '2px',
+            height: '100%',
+            backgroundColor: '#999',
+            zIndex: 1
+          }} />
+        </div>
+        
+        {/* Scale labels */}
+        <div style={{
+          display: 'flex',
+          justifyContent: 'space-between',
+          marginTop: '0.25rem',
+          fontSize: '0.7rem',
+          color: '#999'
+        }}>
+          <span>0 mb</span>
+          <span style={{ display: 'flex', alignItems: 'center', gap: '0.25rem' }}>
+            <i 
+              className="fas fa-info-circle" 
+              style={{ 
+                fontSize: '0.6rem', 
+                color: '#999',
+                cursor: 'help'
+              }}
+              title="the OP-XY has 64mb allocated to samples across all presets. the 8mb limit per preset is recommended to prevent memory issues and note dropping. 16-bit samples load faster than 24-bit and help stay within memory constraints."
+            ></i>
+            8.0 mb
+          </span>
+        </div>
       </div>
 
       {warning && (
         <div style={{
           fontSize: '0.8rem',
-          color: isValid ? '#f57f17' : '#d32f2f',
+          color: '#666',
           fontStyle: 'italic',
           marginTop: '0.25rem'
         }}>
@@ -114,16 +175,25 @@ export function PatchSizeIndicator({ type, className = '' }: PatchSizeIndicatorP
         </div>
       )}
 
-      <div style={{
-        fontSize: '0.8rem',
-        color: '#666',
-        marginTop: '0.25rem'
-      }}>
-        {audioBuffers.length} sample{audioBuffers.length !== 1 ? 's' : ''} • 
-        {' '}{settings.sampleRate === 0 ? 'original' : settings.sampleRate === 44100 ? '44.1khz' : `${settings.sampleRate / 1000}khz`} • 
-        {' '}{settings.bitDepth === 0 ? 'original' : `${settings.bitDepth}bit`} • 
-        {' '}{settings.channels === 0 ? 'original' : settings.channels === 1 ? 'mono' : 'stereo'}
-      </div>
+      {/* Only show format details if any setting differs from original (0) */}
+      {(settings.sampleRate !== 0 || settings.bitDepth !== 0 || settings.channels !== 0) && (
+        <div style={{
+          fontSize: '0.8rem',
+          color: '#666',
+          marginTop: '0.25rem'
+        }}>
+          {audioBuffers.length} sample{audioBuffers.length !== 1 ? 's' : ''}
+          {settings.sampleRate !== 0 && (
+            <> • {settings.sampleRate === 44100 ? '44.1khz' : `${settings.sampleRate / 1000}khz`}</>
+          )}
+          {settings.bitDepth !== 0 && (
+            <> • {settings.bitDepth}bit</>
+          )}
+          {settings.channels !== 0 && (
+            <> • {settings.channels === 1 ? 'mono' : 'stereo'}</>
+          )}
+        </div>
+      )}
 
       {/* Recommendations for optimization */}
       {percentage >= 85 && (

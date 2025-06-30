@@ -1,7 +1,7 @@
 import { createContext, useContext, useReducer } from 'react';
 import type { ReactNode } from 'react';
 import type { WavMetadata } from '../utils/audio';
-import { parseFilename, midiNoteToString } from '../utils/audio';
+import { midiNoteToString } from '../utils/audio';
 import type { Notification } from '../components/common/NotificationSystem';
 
 // Define enhanced types for the application state
@@ -19,11 +19,14 @@ export interface DrumSample {
   fileSize?: number;
   duration?: number;
   // Sample settings
-  playmode: 'oneshot' | 'group';
+  playmode: 'oneshot' | 'group' | 'loop' | 'gate';
   reverse: boolean;
-  tune: number; // -36 to +36 semitones
+  tune: number; // -48 to +48 semitones
   pan: number; // -100 to +100
   gain: number; // -30 to +20 dB
+  
+  // Editing status
+  hasBeenEdited: boolean;
 }
 
 export interface MultisampleFile {
@@ -132,7 +135,8 @@ const initialDrumSample: DrumSample = {
   reverse: false,
   tune: 0,
   pan: 0,
-  gain: 0
+  gain: 0,
+  hasBeenEdited: false
 };
 
 const initialMultisampleFile: MultisampleFile = {

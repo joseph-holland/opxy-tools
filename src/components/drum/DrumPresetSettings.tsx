@@ -141,9 +141,12 @@ export function DrumPresetSettings() {
         }}>
           <h3 style={{ 
             margin: '0',
-            color: '#374151',
-            fontSize: '1.125rem',
-            fontWeight: '600'
+            color: '#222',
+            fontSize: '1.25rem',
+            fontWeight: '300',
+            display: 'flex',
+            alignItems: 'center',
+            gap: '0.5rem'
           }}>
             preset settings
           </h3>

@@ -1,10 +1,10 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useAppContext } from '../../context/AppContext';
 import { TextInput } from '@carbon/react';
-import { PatchSizeIndicator } from '../common/PatchSizeIndicator';
 import { AudioFormatControls } from '../common/AudioFormatControls';
 import { ConfirmationModal } from '../common/ConfirmationModal';
 import { RecordingModal } from '../common/RecordingModal';
+import { GeneratePresetSection } from '../common/GeneratePresetSection';
 import { ErrorDisplay } from '../common/ErrorDisplay';
 import { MultisampleSampleTable } from './MultisampleSampleTable';
 import { MultisamplePresetSettings } from './MultisamplePresetSettings';
@@ -451,100 +451,19 @@ export function MultisampleTool() {
         <MultisamplePresetSettings />
       </div>
 
-      {/* Footer - Patch Generation */}
-      <div style={{
-        background: '#f8f9fa',
-        borderTop: '1px solid #e0e0e0',
-        padding: '1.5rem 2rem'
-      }}>
-        <div style={{
-          display: 'flex',
-          justifyContent: 'space-between',
-          alignItems: 'center',
-          maxWidth: '100%'
-        }}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
-            <PatchSizeIndicator type="multisample" />
-          </div>
-
-          <div style={{ display: 'flex', gap: '0.75rem' }}>
-            <button
-              onClick={handleClearAll}
-              disabled={!hasLoadedSamples}
-              style={{
-                padding: '0.75rem 1.5rem',
-                border: '1px solid #d1d5db',
-                borderRadius: '3px',
-                backgroundColor: '#fff',
-                color: hasLoadedSamples ? '#6b7280' : '#9ca3af',
-                fontSize: '0.9rem',
-                fontWeight: '500',
-                cursor: hasLoadedSamples ? 'pointer' : 'not-allowed',
-                transition: 'all 0.2s ease',
-                fontFamily: 'inherit',
-                display: 'flex',
-                alignItems: 'center',
-                gap: '0.5rem',
-                opacity: hasLoadedSamples ? 1 : 0.6
-              }}
-              onMouseEnter={(e) => {
-                if (hasLoadedSamples) {
-                  e.currentTarget.style.backgroundColor = '#f9fafb';
-                  e.currentTarget.style.borderColor = '#9ca3af';
-                  e.currentTarget.style.color = '#374151';
-                }
-              }}
-              onMouseLeave={(e) => {
-                if (hasLoadedSamples) {
-                  e.currentTarget.style.backgroundColor = '#fff';
-                  e.currentTarget.style.borderColor = '#d1d5db';
-                  e.currentTarget.style.color = '#6b7280';
-                }
-              }}
-            >
-              <i className="fas fa-trash"></i>
-              clear all
-            </button>
-            <button
-              onClick={handleGeneratePatch}
-              disabled={!canGeneratePatch}
-              style={{
-                padding: '0.75rem 1.5rem',
-                border: 'none',
-                borderRadius: '3px',
-                backgroundColor: canGeneratePatch ? '#222' : '#9ca3af',
-                color: '#fff',
-                fontSize: '0.9rem',
-                fontWeight: '500',
-                cursor: canGeneratePatch ? 'pointer' : 'not-allowed',
-                transition: 'all 0.2s ease',
-                fontFamily: 'inherit',
-                display: 'flex',
-                alignItems: 'center',
-                gap: '0.5rem',
-                opacity: canGeneratePatch ? 1 : 0.6
-              }}
-              onMouseEnter={(e) => {
-                if (canGeneratePatch) {
-                  e.currentTarget.style.backgroundColor = '#444';
-                  e.currentTarget.style.transform = 'translateY(-1px)';
-                  e.currentTarget.style.boxShadow = '0 4px 12px rgba(0, 0, 0, 0.3)';
-                }
-              }}
-              onMouseLeave={(e) => {
-                if (canGeneratePatch) {
-                  e.currentTarget.style.backgroundColor = '#222';
-                  e.currentTarget.style.transform = 'translateY(0)';
-                  e.currentTarget.style.boxShadow = 'none';
-                }
-              }}
-            >
-              <i className="fas fa-download"></i>
-              generate patch
-            </button>
-          </div>
-        </div>
-      </div>
+      {/* Footer - Generate Preset */}
+      <GeneratePresetSection
+        type="multisample"
+        hasLoadedSamples={hasLoadedSamples}
+        hasPresetName={hasPresetName}
+        canGeneratePatch={canGeneratePatch}
+        loadedSamplesCount={state.multisampleFiles.length}
+        editedSamplesCount={0} // Multisample doesn't have individual sample editing yet
+        presetName={state.multisampleSettings.presetName}
+        onClearAll={handleClearAll}
+        onGeneratePatch={handleGeneratePatch}
+        isMobile={isMobile}
+      />
 
       {/* Confirmation Modal */}
       <ConfirmationModal

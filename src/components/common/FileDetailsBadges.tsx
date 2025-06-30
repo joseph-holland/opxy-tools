@@ -63,22 +63,16 @@ export function FileDetailsBadges({
       gap: '0.125rem',
       alignItems: 'center'
     }}>
-      {/* Duration */}
-      <span style={badgeStyle}>
-        <i className="fa fa-clock" style={iconStyle}></i>
-        {formatDuration(duration)}
-      </span>
-
       {/* File Size */}
       <span style={badgeStyle}>
         <i className="fa fa-hdd" style={iconStyle}></i>
         {formatFileSize(fileSize)}
       </span>
 
-      {/* Channels */}
+      {/* Duration */}
       <span style={badgeStyle}>
-        <i className={`fa ${channels === 1 ? 'fa-volume-down' : 'fa-volume-up'}`} style={iconStyle}></i>
-        {formatChannels(channels)}
+        <i className="fa fa-clock" style={iconStyle}></i>
+        {formatDuration(duration)}
       </span>
 
       {/* Bit Depth */}
@@ -91,6 +85,12 @@ export function FileDetailsBadges({
       <span style={badgeStyle}>
         <i className="fa fa-tachometer-alt" style={iconStyle}></i>
         {formatSampleRate(sampleRate)}
+      </span>
+
+      {/* Channels */}
+      <span style={badgeStyle}>
+        <i className={`fa ${channels === 1 ? 'fa-volume-down' : 'fa-volume-up'}`} style={iconStyle}></i>
+        {formatChannels(channels)}
       </span>
     </div>
   );
