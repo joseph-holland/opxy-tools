@@ -434,7 +434,7 @@ export const NOTE_NAMES = [
 export function midiNoteToString(value: number): string {
   const octave = Math.floor(value / 12);
   const noteNumber = value % 12;
-  return `${NOTE_NAMES[noteNumber]}${octave - 2}`;
+  return `${NOTE_NAMES[noteNumber]}${octave - 1}`;
 }
 
 export function noteStringToMidiValue(note: string): number {

@@ -1,6 +1,7 @@
 import { createContext, useContext, useReducer } from 'react';
 import type { ReactNode } from 'react';
 import type { WavMetadata } from '../utils/audio';
+import { parseFilename, midiNoteToString } from '../utils/audio';
 import type { Notification } from '../components/common/NotificationSystem';
 
 // Define enhanced types for the application state
@@ -110,6 +111,7 @@ export type AppAction =
   | { type: 'LOAD_MULTISAMPLE_FILE'; payload: { file: File; audioBuffer: AudioBuffer; metadata: WavMetadata } }
   | { type: 'CLEAR_MULTISAMPLE_FILE'; payload: number }
   | { type: 'UPDATE_MULTISAMPLE_FILE'; payload: { index: number; updates: Partial<MultisampleFile> } }
+  | { type: 'REORDER_MULTISAMPLE_FILES'; payload: { fromIndex: number; toIndex: number } }
   | { type: 'SET_SELECTED_MULTISAMPLE'; payload: number | null }
   | { type: 'SET_LOADING'; payload: boolean }
   | { type: 'SET_ERROR'; payload: string | null }
@@ -311,25 +313,44 @@ function appReducer(state: AppState, action: AppAction): AppState {
         return state;
       }
       
-      // Auto-detect note from filename or MIDI data
-      let detectedNote = '';
+      // Helper function to convert note name to MIDI number (corrected)
+      const noteNameToMidi = (noteName: string): number => {
+        const match = noteName.match(/^([A-G])(#|b)?(\d+)$/i);
+        if (!match) return -1;
+        
+        const noteMap: { [key: string]: number } = { C: 0, D: 2, E: 4, F: 5, G: 7, A: 9, B: 11 };
+        const [, note, accidental, octaveStr] = match;
+        const baseNote = noteMap[note.toUpperCase()];
+        if (baseNote === undefined) return -1;
+        
+        const octave = parseInt(octaveStr);
+        let midiNote = (octave + 1) * 12 + baseNote;
+        
+        if (accidental === '#') midiNote += 1;
+        else if (accidental === 'b') midiNote -= 1;
+        
+        return (midiNote >= 0 && midiNote <= 127) ? midiNote : -1;
+      };
+
+      // Auto-detect MIDI note from WAV metadata or filename
+      let detectedMidiNote = 60; // Default to middle C
+      let detectedNote = 'C4'; // Default note name
+      
       if (action.payload.metadata.midiNote !== -1) {
         // Use MIDI note from WAV metadata
-        detectedNote = `MIDI-${action.payload.metadata.midiNote}`;
+        detectedMidiNote = action.payload.metadata.midiNote;
+        detectedNote = midiNoteToString(action.payload.metadata.midiNote);
       } else {
-        // Try to extract from filename
+        // Try to extract from filename - look for note pattern at the end
         try {
-          const match = action.payload.file.name.match(/([A-G](?:#|b)?\d+|[0-9]{1,3})/i);
+          const nameWithoutExt = action.payload.file.name.replace(/\.[^/.]+$/, "");
+          const match = nameWithoutExt.match(/([A-G](?:#|b)?\d+)$/i);
           if (match) {
-            const matchStr = match[1];
-            // Check if it's a MIDI note number (0-127)
-            if (/^\d+$/.test(matchStr)) {
-              const midiNum = parseInt(matchStr);
-              if (midiNum >= 0 && midiNum <= 127) {
-                detectedNote = `MIDI-${midiNum}`;
-              }
-            } else {
-              detectedNote = matchStr.toUpperCase();
+            const noteStr = match[1];
+            const midiFromNote = noteNameToMidi(noteStr);
+            if (midiFromNote >= 0 && midiFromNote <= 127) {
+              detectedMidiNote = midiFromNote;
+              detectedNote = noteStr.toUpperCase();
             }
           }
         } catch {
@@ -344,6 +365,7 @@ function appReducer(state: AppState, action: AppAction): AppState {
         audioBuffer: action.payload.audioBuffer,
         name: action.payload.file.name,
         isLoaded: true,
+        rootNote: detectedMidiNote, // Set the actual MIDI note number
         note: detectedNote,
         inPoint: 0,
         outPoint: action.payload.audioBuffer.length - 1,
@@ -361,9 +383,8 @@ function appReducer(state: AppState, action: AppAction): AppState {
       };
       
     case 'CLEAR_MULTISAMPLE_FILE':
-      const clearedMultisampleFiles = [...state.multisampleFiles];
-      clearedMultisampleFiles[action.payload] = { ...initialMultisampleFile };
-      return { ...state, multisampleFiles: clearedMultisampleFiles };
+      const filteredMultisampleFiles = state.multisampleFiles.filter((_, index) => index !== action.payload);
+      return { ...state, multisampleFiles: filteredMultisampleFiles };
       
     case 'UPDATE_MULTISAMPLE_FILE':
       const updatedMultisampleFiles = [...state.multisampleFiles];
@@ -372,6 +393,12 @@ function appReducer(state: AppState, action: AppAction): AppState {
         ...action.payload.updates
       };
       return { ...state, multisampleFiles: updatedMultisampleFiles };
+      
+    case 'REORDER_MULTISAMPLE_FILES':
+      const reorderedFiles = [...state.multisampleFiles];
+      const [movedFile] = reorderedFiles.splice(action.payload.fromIndex, 1);
+      reorderedFiles.splice(action.payload.toIndex, 0, movedFile);
+      return { ...state, multisampleFiles: reorderedFiles };
       
     case 'SET_SELECTED_MULTISAMPLE':
       return { ...state, selectedMultisample: action.payload };

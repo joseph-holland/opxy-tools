@@ -112,7 +112,7 @@ export function DrumSampleTable({ onFileUpload, onClearSample, onRecordSample }:
                 
                 <div
                   style={{
-                    background: isLoaded ? '#f8f9fa' : '#fff',
+                    background: '#fff',
                     border: '1px solid #e0e0e0',
                     borderRadius: '3px',
                     padding: '1rem',
@@ -386,7 +386,7 @@ export function DrumSampleTable({ onFileUpload, onClearSample, onRecordSample }:
                   gridTemplateColumns: '140px 1fr 120px 140px',
                   gap: '0.5rem',
                   padding: '0.75rem',
-                  background: isLoaded ? '#f8f9fa' : '#fff',
+                  background: '#fff',
                   borderBottom: index < 23 ? '1px solid #e0e0e0' : 'none',
                   transition: 'background 0.2s ease',
                   alignItems: 'center',
@@ -395,12 +395,10 @@ export function DrumSampleTable({ onFileUpload, onClearSample, onRecordSample }:
                 onDragOver={handleDragOver}
                 onDrop={(e) => handleDrop(e, index)}
                 onMouseEnter={(e) => {
-                  if (!isLoaded) {
-                    e.currentTarget.style.background = '#f8f9fa';
-                  }
+                  e.currentTarget.style.background = '#f8f9fa';
                 }}
                 onMouseLeave={(e) => {
-                  e.currentTarget.style.background = isLoaded ? '#f8f9fa' : '#fff';
+                  e.currentTarget.style.background = '#fff';
                 }}
               >
                 {/* Drum Name */}

@@ -26,6 +26,48 @@ export function MainTabs() {
     zIndex: 1
   };
 
+  const drumTabStyle = {
+    padding: '0.75rem 1.5rem',
+    border: '1px solid #dee2e6',
+    borderBottom: 'none',
+    borderTopLeftRadius: '15px !important',
+    borderTopRightRadius: '15px !important',
+    borderBottomLeftRadius: '0 !important',
+    borderBottomRightRadius: '0 !important',
+    background: '#f8f9fa',
+    color: '#888',
+    fontWeight: '500',
+    fontFamily: '"Montserrat", "Arial", sans-serif',
+    fontSize: '0.95rem',
+    cursor: 'pointer',
+    transition: 'all 0.2s ease',
+    marginRight: '2px',
+    position: 'relative' as const,
+    zIndex: 1
+  } as React.CSSProperties;
+
+  const activeDrumTabStyle = {
+    padding: '0.75rem 1.5rem',
+    border: '1px solid #dee2e6',
+    borderBottom: 'none',
+    borderTopLeftRadius: '15px',
+    borderTopRightRadius: '15px',
+    borderBottomLeftRadius: '0',
+    borderBottomRightRadius: '0',
+    background: '#fff',
+    color: '#222',
+    borderColor: '#dee2e6 #dee2e6 #fff',
+    fontWeight: '500',
+    fontFamily: '"Montserrat", "Arial", sans-serif',
+    fontSize: '0.95rem',
+    cursor: 'pointer',
+    transition: 'all 0.2s ease',
+    marginRight: '2px',
+    position: 'relative' as const,
+    zIndex: 2,
+    marginBottom: '-1px'
+  };
+
   const activeTabStyle = {
     ...tabStyle,
     background: '#fff',
@@ -41,10 +83,14 @@ export function MainTabs() {
       <div style={{ 
         display: 'flex',
         marginBottom: '0',
-        borderBottom: '1px solid #dee2e6'
+        borderBottom: '1px solid #dee2e6',
+        marginLeft: '16px',
+        marginRight: '16px'
       }}>
         <div
-          style={state.currentTab === 'drum' ? activeTabStyle : tabStyle}
+          style={{
+            ...(state.currentTab === 'drum' ? activeDrumTabStyle : drumTabStyle)
+          }}
           onClick={() => handleTabChange('drum')}
           onMouseEnter={(e) => {
             if (state.currentTab !== 'drum') {
@@ -84,7 +130,7 @@ export function MainTabs() {
       {/* Tab Content */}
       <div style={{
         background: '#fff',
-        borderRadius: state.currentTab === 'drum' ? '0 15px 15px 15px' : '15px 0 15px 15px',
+        borderRadius: state.currentTab === 'drum' ? '15px 15px 15px 15px' : '15px 0 15px 15px',
         border: '1px solid #dee2e6',
         borderTop: 'none',
         minHeight: '500px',

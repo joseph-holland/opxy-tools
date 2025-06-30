@@ -58,7 +58,7 @@ export function ConfirmationModal({
           }}>
             <i className="fas fa-exclamation-triangle" style={{ 
               color: '#222', 
-              fontSize: '1rem' 
+              fontSize: '1.25rem' 
             }}></i>
             confirm action
           </h3>

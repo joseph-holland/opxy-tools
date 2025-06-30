@@ -1,11 +1,17 @@
-import { useRef } from 'react';
+import { useRef, useState } from 'react';
 import { useAppContext } from '../../context/AppContext';
 import { Select, SelectItem, Slider } from '@carbon/react';
+import { ConfirmationModal } from '../common/ConfirmationModal';
 import { importPresetFromFile, extractDrumSettings, type DrumPresetJson } from '../../utils/presetImport';
 
 export function DrumPresetSettings() {
   const { state, dispatch } = useAppContext();
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const [confirmDialog, setConfirmDialog] = useState<{
+    isOpen: boolean;
+    message: string;
+    onConfirm: () => void;
+  }>({ isOpen: false, message: '', onConfirm: () => {} });
 
   const handlePlaymodeChange = (value: string) => {
     dispatch({ type: 'SET_DRUM_PRESET_PLAYMODE', payload: value as 'poly' | 'mono' | 'legato' });
@@ -29,6 +35,34 @@ export function DrumPresetSettings() {
 
   const handleImportClick = () => {
     fileInputRef.current?.click();
+  };
+
+  const handleResetClick = () => {
+    setConfirmDialog({
+      isOpen: true,
+      message: 'are you sure you want to reset all preset settings to default values?',
+      onConfirm: () => {
+        // Reset to default values (from initialState in AppContext)
+        dispatch({ type: 'SET_DRUM_PRESET_PLAYMODE', payload: 'poly' });
+        dispatch({ type: 'SET_DRUM_PRESET_TRANSPOSE', payload: 0 });
+        dispatch({ type: 'SET_DRUM_PRESET_VELOCITY', payload: 60 });
+        dispatch({ type: 'SET_DRUM_PRESET_VOLUME', payload: 56 });
+        dispatch({ type: 'SET_DRUM_PRESET_WIDTH', payload: 0 });
+        
+        // Show success notification
+        dispatch({
+          type: 'ADD_NOTIFICATION',
+          payload: {
+            id: Date.now().toString(),
+            type: 'success',
+            title: 'Settings Reset',
+            message: 'Successfully reset preset settings to default values'
+          }
+        });
+        
+        setConfirmDialog({ isOpen: false, message: '', onConfirm: () => {} });
+      }
+    });
   };
 
   const handleFileImport = async (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -92,105 +126,109 @@ export function DrumPresetSettings() {
   };
 
   return (
-    <div style={{
-      marginBottom: '2rem',
-      paddingBottom: '1.5rem',
-      borderBottom: '1px solid #e5e7eb'
-    }}>
-      {/* Header */}
+    <>
       <div style={{
-        display: 'flex',
-        justifyContent: 'space-between',
-        alignItems: 'center',
-        marginBottom: '1.5rem'
+        marginBottom: '2rem',
+        paddingBottom: '1.5rem',
+        borderBottom: '1px solid #e5e7eb'
       }}>
-        <h3 style={{ 
-          margin: '0',
-          color: '#374151',
-          fontSize: '1.125rem',
-          fontWeight: '600'
+        {/* Header */}
+        <div style={{
+          display: 'flex',
+          justifyContent: 'space-between',
+          alignItems: 'center',
+          marginBottom: '1.5rem'
         }}>
-          preset settings
-        </h3>
-        
-        <button
-          onClick={handleImportClick}
-          style={{
-            padding: '0.625rem 1.25rem',
-            border: 'none',
-            borderRadius: '3px',
-            backgroundColor: '#333',
-            color: '#fff',
-            fontSize: '0.9rem',
-            fontWeight: '500',
-            cursor: 'pointer',
-            transition: 'all 0.2s ease',
-            fontFamily: 'inherit',
-            display: 'flex',
-            alignItems: 'center',
-            gap: '0.5rem'
-          }}
-          onMouseEnter={(e) => {
-            e.currentTarget.style.backgroundColor = '#555';
-            e.currentTarget.style.transform = 'translateY(-1px)';
-            e.currentTarget.style.boxShadow = '0 4px 12px rgba(0, 0, 0, 0.3)';
-          }}
-          onMouseLeave={(e) => {
-            e.currentTarget.style.backgroundColor = '#333';
-            e.currentTarget.style.transform = 'translateY(0)';
-            e.currentTarget.style.boxShadow = 'none';
-          }}
-        >
-          <i className="fas fa-upload" style={{ fontSize: '0.8rem' }} />
-          import settings
-        </button>
-        
-        <input
-          ref={fileInputRef}
-          type="file"
-          accept=".json"
-          onChange={handleFileImport}
-          style={{ display: 'none' }}
-        />
-      </div>
+          <h3 style={{ 
+            margin: '0',
+            color: '#374151',
+            fontSize: '1.125rem',
+            fontWeight: '600'
+          }}>
+            preset settings
+          </h3>
+          
+          <div style={{ display: 'flex', gap: '0.75rem' }}>
+            <button
+              onClick={handleResetClick}
+              style={{
+                padding: '0.625rem 1.25rem',
+                border: '1px solid #d1d5db',
+                borderRadius: '3px',
+                backgroundColor: '#fff',
+                color: '#6b7280',
+                fontSize: '0.9rem',
+                fontWeight: '500',
+                cursor: 'pointer',
+                transition: 'all 0.2s ease',
+                fontFamily: 'inherit',
+                display: 'flex',
+                alignItems: 'center',
+                gap: '0.5rem'
+              }}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.backgroundColor = '#f9fafb';
+                e.currentTarget.style.borderColor = '#9ca3af';
+                e.currentTarget.style.color = '#374151';
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.backgroundColor = '#fff';
+                e.currentTarget.style.borderColor = '#d1d5db';
+                e.currentTarget.style.color = '#6b7280';
+              }}
+            >
+              <i className="fas fa-undo" style={{ fontSize: '0.8rem' }} />
+              reset settings
+            </button>
+            
+            <button
+              onClick={handleImportClick}
+              style={{
+                padding: '0.625rem 1.25rem',
+                border: 'none',
+                borderRadius: '3px',
+                backgroundColor: '#333',
+                color: '#fff',
+                fontSize: '0.9rem',
+                fontWeight: '500',
+                cursor: 'pointer',
+                transition: 'all 0.2s ease',
+                fontFamily: 'inherit',
+                display: 'flex',
+                alignItems: 'center',
+                gap: '0.5rem'
+              }}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.backgroundColor = '#555';
+                e.currentTarget.style.transform = 'translateY(-1px)';
+                e.currentTarget.style.boxShadow = '0 4px 12px rgba(0, 0, 0, 0.3)';
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.backgroundColor = '#333';
+                e.currentTarget.style.transform = 'translateY(0)';
+                e.currentTarget.style.boxShadow = 'none';
+              }}
+            >
+              <i className="fas fa-upload" style={{ fontSize: '0.8rem' }} />
+              import settings
+            </button>
+          </div>
+          
+          <input
+            ref={fileInputRef}
+            type="file"
+            accept=".json"
+            onChange={handleFileImport}
+            style={{ display: 'none' }}
+          />
+        </div>
 
-      {/* Settings Grid */}
-      <div style={{
-        display: 'grid',
-        gap: '1.5rem'
-      }}>
-        {/* Playmode - Full Width */}
+        {/* Settings Grid */}
         <div style={{
           display: 'grid',
-          gridTemplateColumns: '1fr 2fr',
-          gap: '1rem',
-          alignItems: 'center'
+          gap: '1.5rem'
         }}>
-          <label style={{
-            fontSize: '0.875rem',
-            fontWeight: '500',
-            color: '#374151'
-          }}>
-            playmode
-          </label>
-          <div style={{ maxWidth: '200px' }}>
-            <Select
-              id="preset-playmode"
-              labelText=""
-              value={state.drumSettings.presetSettings.playmode}
-              onChange={(e) => handlePlaymodeChange(e.target.value)}
-              size="sm"
-            >
-              <SelectItem value="poly" text="poly" />
-              <SelectItem value="mono" text="mono" />
-              <SelectItem value="legato" text="legato" />
-            </Select>
-          </div>
-        </div>
-
-        {/* Responsive Grid for Sliders */}
-        <div className="drum-preset-grid">
-          {/* Transpose */}
+          {/* Playmode - Full Width */}
           <div style={{
             display: 'grid',
             gridTemplateColumns: '1fr 2fr',
@@ -202,95 +240,135 @@ export function DrumPresetSettings() {
               fontWeight: '500',
               color: '#374151'
             }}>
-              transpose
+              playmode
             </label>
-            <Slider
-              id="preset-transpose"
-              labelText=""
-              min={-36}
-              max={36}
-              step={1}
-              value={state.drumSettings.presetSettings.transpose}
-              onChange={({ value }) => handleTransposeChange(value)}
-            />
+            <div style={{ maxWidth: '200px' }}>
+              <Select
+                id="preset-playmode"
+                labelText=""
+                value={state.drumSettings.presetSettings.playmode}
+                onChange={(e) => handlePlaymodeChange(e.target.value)}
+                size="sm"
+              >
+                <SelectItem value="poly" text="poly" />
+                <SelectItem value="mono" text="mono" />
+                <SelectItem value="legato" text="legato" />
+              </Select>
+            </div>
           </div>
 
-          {/* Velocity */}
-          <div style={{
-            display: 'grid',
-            gridTemplateColumns: '1fr 2fr',
-            gap: '1rem',
-            alignItems: 'center'
-          }}>
-            <label style={{
-              fontSize: '0.875rem',
-              fontWeight: '500',
-              color: '#374151'
+          {/* Responsive Grid for Sliders */}
+          <div className="drum-preset-grid">
+            {/* Transpose */}
+            <div style={{
+              display: 'grid',
+              gridTemplateColumns: '1fr 2fr',
+              gap: '1rem',
+              alignItems: 'center'
             }}>
-              velocity
-            </label>
-            <Slider
-              id="preset-velocity-sensitivity"
-              labelText=""
-              min={0}
-              max={100}
-              step={1}
-              value={state.drumSettings.presetSettings.velocity}
-              onChange={({ value }) => handleVelocityChange(value)}
-            />
-          </div>
+              <label style={{
+                fontSize: '0.875rem',
+                fontWeight: '500',
+                color: '#374151'
+              }}>
+                transpose
+              </label>
+              <Slider
+                id="preset-transpose"
+                labelText=""
+                min={-36}
+                max={36}
+                step={1}
+                value={state.drumSettings.presetSettings.transpose}
+                onChange={({ value }) => handleTransposeChange(value)}
+              />
+            </div>
 
-          {/* Width */}
-          <div style={{
-            display: 'grid',
-            gridTemplateColumns: '1fr 2fr',
-            gap: '1rem',
-            alignItems: 'center'
-          }}>
-            <label style={{
-              fontSize: '0.875rem',
-              fontWeight: '500',
-              color: '#374151'
+            {/* Velocity */}
+            <div style={{
+              display: 'grid',
+              gridTemplateColumns: '1fr 2fr',
+              gap: '1rem',
+              alignItems: 'center'
             }}>
-              width
-            </label>
-            <Slider
-              id="preset-width"
-              labelText=""
-              min={0}
-              max={100}
-              step={1}
-              value={state.drumSettings.presetSettings.width}
-              onChange={({ value }) => handleWidthChange(value)}
-            />
-          </div>
+              <label style={{
+                fontSize: '0.875rem',
+                fontWeight: '500',
+                color: '#374151'
+              }}>
+                velocity
+              </label>
+              <Slider
+                id="preset-velocity-sensitivity"
+                labelText=""
+                min={0}
+                max={100}
+                step={1}
+                value={state.drumSettings.presetSettings.velocity}
+                onChange={({ value }) => handleVelocityChange(value)}
+              />
+            </div>
 
-          {/* Volume */}
-          <div style={{
-            display: 'grid',
-            gridTemplateColumns: '1fr 2fr',
-            gap: '1rem',
-            alignItems: 'center'
-          }}>
-            <label style={{
-              fontSize: '0.875rem',
-              fontWeight: '500',
-              color: '#374151'
+            {/* Width */}
+            <div style={{
+              display: 'grid',
+              gridTemplateColumns: '1fr 2fr',
+              gap: '1rem',
+              alignItems: 'center'
             }}>
-              volume
-            </label>
-            <Slider
-              id="preset-volume"
-              labelText=""
-              min={0}
-              max={100}
-              step={1}
-              value={state.drumSettings.presetSettings.volume}
-              onChange={({ value }) => handleVolumeChange(value)}
-            />
+              <label style={{
+                fontSize: '0.875rem',
+                fontWeight: '500',
+                color: '#374151'
+              }}>
+                width
+              </label>
+              <Slider
+                id="preset-width"
+                labelText=""
+                min={0}
+                max={100}
+                step={1}
+                value={state.drumSettings.presetSettings.width}
+                onChange={({ value }) => handleWidthChange(value)}
+              />
+            </div>
+
+            {/* Volume */}
+            <div style={{
+              display: 'grid',
+              gridTemplateColumns: '1fr 2fr',
+              gap: '1rem',
+              alignItems: 'center'
+            }}>
+              <label style={{
+                fontSize: '0.875rem',
+                fontWeight: '500',
+                color: '#374151'
+              }}>
+                volume
+              </label>
+              <Slider
+                id="preset-volume"
+                labelText=""
+                min={0}
+                max={100}
+                step={1}
+                value={state.drumSettings.presetSettings.volume}
+                onChange={({ value }) => handleVolumeChange(value)}
+              />
+            </div>
           </div>
         </div>
       </div>
-    </div>
+
+      {/* Confirmation Modal */}
+      <ConfirmationModal
+        isOpen={confirmDialog.isOpen}
+        message={confirmDialog.message}
+        onConfirm={confirmDialog.onConfirm}
+        onCancel={() => setConfirmDialog({ isOpen: false, message: '', onConfirm: () => {} })}
+      />
+    </>
   );
 } 

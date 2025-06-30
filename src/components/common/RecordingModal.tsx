@@ -388,7 +388,7 @@ export function RecordingModal({
           }}>
             <i className="fas fa-microphone" style={{
               color: '#222',
-              fontSize: '1rem'
+              fontSize: '1.25rem'
             }}></i>
             record audio sample
           </h3>
