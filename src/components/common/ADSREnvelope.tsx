@@ -439,16 +439,36 @@ export const ADSREnvelope: React.FC<ADSREnvelopeProps> = ({
     }}>
       {/* Header with envelope selector */}
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-        <h3 style={{ margin: 0, fontSize: '1rem', fontWeight: '500' }}>adsr envelopes</h3>
+        <h3 style={{ margin: 0, fontSize: '1rem', fontWeight: '500' }}>envelopes</h3>
         <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-          <Toggle
-            id="envelope-toggle"
-            labelA="amp"
-            labelB="filter"
-            toggled={activeEnvelope === 'filter'}
-            onToggle={(checked) => setActiveEnvelope(checked ? 'filter' : 'amp')}
-            size="sm"
-          />
+          <span style={{ fontSize: '0.875rem', color: activeEnvelope === 'amp' ? '#000' : '#999' }}>amp</span>
+          <div 
+            onClick={() => setActiveEnvelope(activeEnvelope === 'amp' ? 'filter' : 'amp')}
+            style={{
+              width: '32px',
+              height: '16px',
+              backgroundColor: '#393939',
+              borderRadius: '8px',
+              position: 'relative',
+              cursor: 'pointer',
+              transition: 'all 0.2s ease'
+            }}
+          >
+            <div
+              style={{
+                width: '10px',
+                height: '10px',
+                backgroundColor: '#fff',
+                borderRadius: '50%',
+                position: 'absolute',
+                top: '3px',
+                left: activeEnvelope === 'filter' ? '19px' : '3px',
+                transition: 'left 0.2s ease',
+                boxShadow: '0 1px 3px rgba(0, 0, 0, 0.3)'
+              }}
+            />
+          </div>
+          <span style={{ fontSize: '0.875rem', color: activeEnvelope === 'filter' ? '#000' : '#999' }}>filter</span>
         </div>
       </div>
       
