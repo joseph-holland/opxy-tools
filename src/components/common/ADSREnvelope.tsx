@@ -657,30 +657,190 @@ export const ADSREnvelope: React.FC<ADSREnvelopeProps> = ({
         })()}
       </svg>
       
-      {/* Value display */}
-              <div style={{ 
-          display: 'grid', 
-          gridTemplateColumns: 'repeat(4, 1fr)', 
-          gap: '1rem',
-          fontSize: '0.875rem'
-        }}>
-          <div style={{ textAlign: 'center' }}>
-            <div style={{ fontWeight: '500', marginBottom: '0.25rem' }}>attack</div>
-            <div style={{ color: '#666' }}>{valueToPercent(currentEnvelope.attack)}%</div>
+      {/* ADSR Control Knobs */}
+      <div style={{ 
+        display: 'flex', 
+        justifyContent: 'space-around', 
+        alignItems: 'center', 
+        marginTop: '1rem',
+        padding: '0 2rem'
+      }}>
+        {/* Attack Knob */}
+        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '0.5rem' }}>
+          <div
+            style={{
+              width: '50px',
+              height: '50px',
+              borderRadius: '50%',
+              border: '2px solid #000',
+              backgroundColor: '#000',
+              cursor: 'pointer',
+              position: 'relative',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center'
+            }}
+          >
+            <div
+              style={{
+                width: '36px',
+                height: '36px',
+                borderRadius: '50%',
+                border: '2px solid #000',
+                backgroundColor: '#fff',
+                position: 'relative',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center'
+              }}
+            >
+              <div
+                style={{
+                  width: '20px',
+                  height: '20px',
+                  borderRadius: '50%',
+                  backgroundColor: '#000',
+                  border: 'none'
+                }}
+              />
+            </div>
           </div>
-          <div style={{ textAlign: 'center' }}>
-            <div style={{ fontWeight: '500', marginBottom: '0.25rem' }}>decay</div>
-            <div style={{ color: '#666' }}>{valueToPercent(currentEnvelope.decay)}%</div>
-          </div>
-          <div style={{ textAlign: 'center' }}>
-            <div style={{ fontWeight: '500', marginBottom: '0.25rem' }}>sustain</div>
-            <div style={{ color: '#666' }}>{valueToPercent(currentEnvelope.sustain)}%</div>
-          </div>
-          <div style={{ textAlign: 'center' }}>
-            <div style={{ fontWeight: '500', marginBottom: '0.25rem' }}>release</div>
-            <div style={{ color: '#666' }}>{valueToPercent(currentEnvelope.release)}%</div>
-          </div>
+          <span style={{ fontSize: '0.75rem', color: '#666' }}>attack</span>
+          <span style={{ fontSize: '0.7rem', color: '#999' }}>{valueToPercent(currentEnvelope.attack)}%</span>
         </div>
+        
+        {/* Decay Knob */}
+        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '0.5rem' }}>
+          <div
+            style={{
+              width: '50px',
+              height: '50px',
+              borderRadius: '50%',
+              border: '2px solid #000',
+              backgroundColor: '#000',
+              cursor: 'pointer',
+              position: 'relative',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center'
+            }}
+          >
+            <div
+              style={{
+                width: '36px',
+                height: '36px',
+                borderRadius: '50%',
+                border: '2px solid #000',
+                backgroundColor: '#fff',
+                position: 'relative',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center'
+              }}
+            >
+              <div
+                style={{
+                  width: '20px',
+                  height: '20px',
+                  borderRadius: '50%',
+                  backgroundColor: '#666',
+                  border: 'none'
+                }}
+              />
+            </div>
+          </div>
+          <span style={{ fontSize: '0.75rem', color: '#666' }}>decay</span>
+          <span style={{ fontSize: '0.7rem', color: '#999' }}>{valueToPercent(currentEnvelope.decay)}%</span>
+        </div>
+        
+        {/* Sustain Knob */}
+        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '0.5rem' }}>
+          <div
+            style={{
+              width: '50px',
+              height: '50px',
+              borderRadius: '50%',
+              border: '2px solid #000',
+              backgroundColor: '#000',
+              cursor: 'pointer',
+              position: 'relative',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center'
+            }}
+          >
+            <div
+              style={{
+                width: '36px',
+                height: '36px',
+                borderRadius: '50%',
+                border: '2px solid #000',
+                backgroundColor: '#fff',
+                position: 'relative',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center'
+              }}
+            >
+              <div
+                style={{
+                  width: '20px',
+                  height: '20px',
+                  borderRadius: '50%',
+                  backgroundColor: '#bbb',
+                  border: 'none'
+                }}
+              />
+            </div>
+          </div>
+          <span style={{ fontSize: '0.75rem', color: '#666' }}>sustain</span>
+          <span style={{ fontSize: '0.7rem', color: '#999' }}>{valueToPercent(currentEnvelope.sustain)}%</span>
+        </div>
+        
+        {/* Release Knob */}
+        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '0.5rem' }}>
+          <div
+            style={{
+              width: '50px',
+              height: '50px',
+              borderRadius: '50%',
+              border: '2px solid #000',
+              backgroundColor: '#000',
+              cursor: 'pointer',
+              position: 'relative',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center'
+            }}
+          >
+            <div
+              style={{
+                width: '36px',
+                height: '36px',
+                borderRadius: '50%',
+                border: '2px solid #000',
+                backgroundColor: '#fff',
+                position: 'relative',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center'
+              }}
+            >
+              <div
+                style={{
+                  width: '20px',
+                  height: '20px',
+                  borderRadius: '50%',
+                  backgroundColor: '#fff',
+                  border: 'none'
+                }}
+              />
+            </div>
+          </div>
+          <span style={{ fontSize: '0.75rem', color: '#666' }}>release</span>
+          <span style={{ fontSize: '0.7rem', color: '#999' }}>{valueToPercent(currentEnvelope.release)}%</span>
+        </div>
+      </div>
     </div>
   );
 }; 
