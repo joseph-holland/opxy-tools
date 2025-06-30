@@ -24,34 +24,45 @@ const valueToPercent = (value: number): number => Math.round((value / 32767) * 1
 const percentToValue = (percent: number): number => Math.round((percent / 100) * 32767);
 
 // Generate mathematically accurate exponential curve points
+// One-pole filter approach for mathematically accurate exponential curves
+// Based on DSP research from music-dsp mailing list and EarLevel Engineering
 const generateExponentialCurve = (
-  startX: number, 
-  endX: number, 
-  startY: number, 
-  endY: number, 
-  isRising: boolean, 
-  numPoints: number = 20
-): Array<{x: number, y: number}> => {
-  const points: Array<{x: number, y: number}> = [];
-  
+  startX: number,
+  endX: number,
+  startY: number,
+  endY: number,
+  isRising: boolean,
+  numPoints: number = 40 // higher resolution for smoother SVG
+): Array<{ x: number; y: number }> => {
+  const points: Array<{ x: number; y: number }> = [];
+
+  // Exponential steepness factor. 4 ≈ classic synth response.
+  const k = 4;
+
   for (let i = 0; i <= numPoints; i++) {
-    const t = i / numPoints; // 0 to 1
+    const t = i / numPoints; // 0 … 1
     const x = startX + t * (endX - startX);
-    
+
+    // Rising (attack) – inverse exponential: fast rise then slow finish
+    // Falling (decay/release) – exponential: fast drop then slow tail
     let y: number;
     if (isRising) {
-      // Attack phase: exponential rise (concave) - y = 1 - e^(-4*t)
-      const expValue = 1 - Math.exp(-4 * t);
-      y = startY + expValue * (endY - startY);
+      // y(t) = start + (1 - e^(−k t)) * (end - start)
+      const shape = 1 - Math.exp(-k * t);
+      y = startY + shape * (endY - startY);
     } else {
-      // Decay/Release phase: exponential decay (convex) - y = e^(-4*t)
-      const expValue = Math.exp(-4 * t);
-      y = startY + (1 - expValue) * (endY - startY);
+      // y(t) = end + e^(−k t) * (start - end)
+      const shape = Math.exp(-k * t);
+      y = endY + shape * (startY - endY);
     }
-    
+
     points.push({ x, y });
   }
-  
+
+  // Ensure exact endpoints (floating-point guard)
+  points[0].y = startY;
+  points[points.length - 1].y = endY;
+
   return points;
 };
 
@@ -108,9 +119,10 @@ export const ADSREnvelope: React.FC<ADSREnvelopeProps> = ({
   filterEnvelope,
   onAmpEnvelopeChange,
   onFilterEnvelopeChange,
-  width = 600,
-  height = 250
+  width = 620,  // 62mm scaled 10x
+  height = 310  // 31mm scaled 10x
 }) => {
+  const svgRef = React.useRef<SVGSVGElement>(null);
   const [activeEnvelope, setActiveEnvelope] = useState<'amp' | 'filter'>('amp');
   const [isDragging, setIsDragging] = useState<string | null>(null);
   const [dragStart, setDragStart] = useState({ x: 0, y: 0 });
@@ -120,113 +132,45 @@ export const ADSREnvelope: React.FC<ADSREnvelopeProps> = ({
 
   // Calculate fixed positions based on OP-XY style constraints
   const getPhasePositions = useCallback((envelope: ADSRValues) => {
-    const padding = 3;
-    const maxY = 10;
-    const minY = height - 10;
+    // OP-XY exact ratios: outer 62x31mm, inner 55x25mm, envelope 46x20mm
+    const outerBorderX = (width - 550) / 2;   // 35px border to inner (550px)
+    const outerBorderY = (height - 250) / 2;  // 30px border to inner (250px)
+    const innerBorderX = (550 - 460) / 2;     // 45px border to envelope area (460px)
+    const innerBorderY = (250 - 200) / 2;     // 25px border to envelope area (200px)
+    
+    const envelopeLeft = outerBorderX + innerBorderX;
+    const envelopeTop = outerBorderY + innerBorderY;
+    const envelopeWidth = 460;
+    const envelopeHeight = 200;
+    
+    const maxY = envelopeTop;
+    const minY = envelopeTop + envelopeHeight;
     const sustainLevel = valueToPercent(envelope.sustain);
     const sustainY = minY - (sustainLevel / 100) * (minY - maxY);
     
     // Attack: constrained to left 28% of canvas, moves along top edge only
     const attackTimePercent = valueToPercent(envelope.attack);
-    const maxAttackX = padding + (width - padding * 2) * 0.28; // 28% of canvas width
-    const attackX = padding + (attackTimePercent / 100) * (maxAttackX - padding);
+    const maxAttackX = envelopeLeft + envelopeWidth * 0.28; // 28% of envelope width
+    const attackX = envelopeLeft + (attackTimePercent / 100) * (maxAttackX - envelopeLeft);
     
     // Decay: 26% max width, starting from attack position
-    // Allow decay to be 0 for instant drop to sustain level
     const decayTimePercent = valueToPercent(envelope.decay);
-    const maxDecayWidth = (width - padding * 2) * 0.26; // 26% of canvas width max
-    const decayX = decayTimePercent === 0 ? attackX : attackX + (decayTimePercent / 100) * maxDecayWidth;
+    const maxDecayWidth = envelopeWidth * 0.26; // 26% of envelope width max
+    const decayX = attackX + (decayTimePercent / 100) * maxDecayWidth;
     
     // Release: constrained to right 28% of canvas, controls both sustain level and release time
     const releaseTimePercent = valueToPercent(envelope.release);
-    const minReleaseX = (width - padding) - (width - padding * 2) * 0.28; // 28% from right edge
-    // Reverse the positioning: 100% = left side, 0% = right side
-    const releaseX = minReleaseX + ((100 - releaseTimePercent) / 100) * ((width - padding) - minReleaseX);
-    
-    // Sustain: extends from decay to release start
-    const sustainStartX = Math.max(decayX, attackX + (decayTimePercent === 0 ? 0 : 20)); // No minimum distance if decay is 0
-    const sustainEndX = releaseX;
+    const minReleaseX = (envelopeLeft + envelopeWidth) - envelopeWidth * 0.28; // 28% from right edge
+    const releaseX = minReleaseX + ((100 - releaseTimePercent) / 100) * ((envelopeLeft + envelopeWidth) - minReleaseX);
     
     return {
-      start: { x: padding, y: minY },
+      start: { x: envelopeLeft, y: minY },
       attack: { x: attackX, y: maxY },
-      decay: { x: decayX, y: sustainY },
-      sustainStart: { x: sustainStartX, y: sustainY },
-      sustainEnd: { x: sustainEndX, y: sustainY },
-      release: { x: releaseX, y: sustainY }, // Release handle at sustain level
-      releaseEnd: { x: width - padding, y: minY } // Release curve ends at bottom right edge
+      decay: { x: decayX, y: sustainY }, // Defines end of decay and start of sustain
+      release: { x: releaseX, y: sustainY }, // Defines end of sustain and start of release
+      releaseEnd: { x: envelopeLeft + envelopeWidth, y: minY } // Release curve ends at bottom right
     };
   }, [width, height]);
-
-  // Generate SVG path using fixed positions
-  const generateEnvelopePath = useCallback((envelope: ADSRValues, isActive: boolean) => {
-    const positions = getPhasePositions(envelope);
-    
-    // Start at bottom left
-    const pathPoints: Array<{x: number, y: number}> = [positions.start];
-    
-    // Attack phase - simulate curve that would go 21% higher, but cut off at attack peak
-    const attackHeight = positions.start.y - positions.attack.y;
-    const fullCurveHeight = attackHeight / 0.79; // What the full curve height would be (100% - 21% = 79%)
-    const virtualEndY = positions.start.y - fullCurveHeight; // Where full curve would end (above canvas)
-    
-    // Generate the full exponential curve to the virtual end point
-    const fullAttackCurve = generateExponentialCurveWithFactor(
-      positions.start.x, 
-      positions.attack.x, 
-      positions.start.y, 
-      virtualEndY, // This goes beyond the visible area
-      1.5 // Gentle exponential factor
-    );
-    
-    // Now map each point to only show the first 76% of the curve progression
-    const attackCurve = fullAttackCurve.map(point => {
-      // If this point would be above our attack handle, clamp it
-      const clampedY = Math.max(positions.attack.y, point.y);
-      return { x: point.x, y: clampedY };
-    });
-    
-    // Add all attack curve points except the first (which is the start point)
-    pathPoints.push(...attackCurve.slice(1));
-    
-    // Decay phase - exponential decay: starts quickly, eases into sustain (convex)
-    const decayTimePercent = valueToPercent(envelope.decay);
-    if (decayTimePercent === 0) {
-      // Instant drop - straight vertical line to sustain level
-      pathPoints.push({ x: positions.attack.x, y: positions.sustainStart.y });
-    } else {
-      // Normal exponential decay curve: fast start, slow finish
-      const decayCurve = generateExponentialCurve(
-        positions.attack.x, 
-        positions.decay.x, 
-        positions.attack.y, 
-        positions.sustainStart.y, // Ensure we end at sustain level
-        false // Convex curve: fast start, slow finish
-      );
-      pathPoints.push(...decayCurve.slice(1));
-    }
-    
-    // Sustain phase - linear (constant level) - start from where decay ended
-    pathPoints.push(positions.sustainEnd);
-    
-    // Release phase - exponential fade: faster at first, then tapering (convex)
-    const releaseCurve = generateExponentialCurve(
-      positions.sustainEnd.x, 
-      positions.releaseEnd.x, 
-      positions.sustainEnd.y, 
-      positions.releaseEnd.y, 
-      false // Convex curve: fast start, slow finish
-    );
-    pathPoints.push(...releaseCurve.slice(1));
-    
-    // Convert points to SVG path
-    let pathCommands = `M ${pathPoints[0].x} ${pathPoints[0].y}`;
-    for (let i = 1; i < pathPoints.length; i++) {
-      pathCommands += ` L ${pathPoints[i].x} ${pathPoints[i].y}`;
-    }
-    
-    return pathCommands;
-  }, [getPhasePositions]);
 
   // Get handle positions for interactive dragging
   const getHandlePositions = useCallback((envelope: ADSRValues) => {
@@ -239,20 +183,100 @@ export const ADSREnvelope: React.FC<ADSREnvelopeProps> = ({
     };
   }, [getPhasePositions]);
 
+  // Generate SVG path using fixed positions
+  const generateEnvelopePath = useCallback((envelope: ADSRValues) => {
+    // If envelope is all zeros, use some reasonable defaults for visualization
+    const workingEnvelope = (envelope.attack === 0 && envelope.decay === 0 && envelope.release === 0 && envelope.sustain === 0) 
+      ? { attack: 8000, decay: 10000, sustain: 20000, release: 12000 }
+      : envelope;
+      
+    const p = getPhasePositions(workingEnvelope);
+
+    // 1. Attack — sample exponential for the nice 'knee'
+    const attackHeight = p.start.y - p.attack.y;
+    const fullCurveHeight = attackHeight / 0.79;
+    const virtualEndY = p.start.y - fullCurveHeight;
+    const attackSamples = generateExponentialCurveWithFactor(
+      p.start.x,
+      p.attack.x,
+      p.start.y,
+      virtualEndY,
+      1.5,
+      25
+    ).map(pt => ({ x: pt.x, y: Math.max(p.attack.y, pt.y) }));
+
+    // Path starts
+    let d = `M ${p.start.x} ${p.start.y}`;
+    attackSamples.forEach((pt, idx) => {
+      if (idx > 0) d += ` L ${pt.x} ${pt.y}`;
+    });
+
+    // 2. Decay — ONE cubic Bézier that ends flat on sustain line
+    const dx = p.decay.x - p.attack.x;
+    if (dx > 0) {
+      // Match exponential slope at start (k≈4 gives classic response)
+      const kExp = 4;
+      const alpha = 0.25; // distance of first control point from start (0–1)
+      const beta  = 0.12; // distance of second control point from end (0–1)
+
+      const ctrl1x = p.attack.x + dx * alpha;
+      const slopeStart = (p.decay.y - p.attack.y) * kExp / dx; // dy/dx at start for exp(k)
+      const ctrl1y = Math.min(p.attack.y + slopeStart * (ctrl1x - p.attack.x), p.decay.y);
+
+      const ctrl2x = p.decay.x - dx * beta;
+      const ctrl2y = p.decay.y; // flat slope at end
+
+      const ctrl1 = { x: ctrl1x, y: ctrl1y };
+      const ctrl2 = { x: ctrl2x, y: ctrl2y };
+      d += ` C ${ctrl1.x} ${ctrl1.y}, ${ctrl2.x} ${ctrl2.y}, ${p.decay.x} ${p.decay.y}`;
+    } else {
+      // If no decay time, just go straight to decay position
+      d += ` L ${p.decay.x} ${p.decay.y}`;
+    }
+
+    // 3. Sustain — perfect horizontal line
+    d += ` L ${p.release.x} ${p.decay.y}`;
+
+    // 4. Release — single cubic Bézier, convex downward, ends with flat slope on baseline
+    const dxR = p.releaseEnd.x - p.release.x;
+    if (dxR > 0) {
+      const delta = 0.07;  // first control point very close to start for steep initial drop
+      const gamma = 0.25;  // second control point further back to keep curvature
+
+      const rCtrl1 = {
+        x: p.release.x + dxR * delta,
+        // drop 80 % of the vertical distance quickly to mimic exponential decay
+        y: p.release.y + (p.releaseEnd.y - p.release.y) * 0.8
+      };
+      const rCtrl2 = {
+        x: p.releaseEnd.x - dxR * gamma,
+        y: p.releaseEnd.y // flat at end
+      };
+      d += ` C ${rCtrl1.x} ${rCtrl1.y}, ${rCtrl2.x} ${rCtrl2.y}, ${p.releaseEnd.x} ${p.releaseEnd.y}`;
+    } else {
+      // If no release time, just go straight to end
+      d += ` L ${p.releaseEnd.x} ${p.releaseEnd.y}`;
+    }
+
+    return d;
+  }, [getPhasePositions]);
+
   // Handle mouse interactions
   const handleMouseDown = useCallback((event: React.MouseEvent<SVGElement>) => {
-    const svg = event.currentTarget;
-    const rect = svg.getBoundingClientRect();
-    
-    // Convert screen coordinates to SVG coordinates
-    const screenX = event.clientX - rect.left;
-    const screenY = event.clientY - rect.top;
-    
-    // Scale coordinates from screen space to SVG viewBox space
-    const scaleX = width / rect.width;
-    const scaleY = height / rect.height;
-    const x = screenX * scaleX;
-    const y = screenY * scaleY;
+    const svg = svgRef.current;
+    if (!svg) return;
+
+    // Create a point for the screen coordinates
+    const pt = svg.createSVGPoint();
+    pt.x = event.clientX;
+    pt.y = event.clientY;
+
+    // Get the transformation matrix from screen to SVG space and transform the point
+    const ctm = svg.getScreenCTM();
+    if (!ctm) return;
+    const svgP = pt.matrixTransform(ctm.inverse());
+    const x = svgP.x;
+    const y = svgP.y;
     
     const positions = getHandlePositions(currentEnvelope);
     const handleSize = 20; // Increased hit area for easier grabbing
@@ -268,26 +292,38 @@ export const ADSREnvelope: React.FC<ADSREnvelopeProps> = ({
         
         // Add global mouse event listeners to prevent losing drag when leaving canvas
         const handleGlobalMouseMove = (e: MouseEvent) => {
-          // Convert screen coordinates to SVG coordinates
-          const screenX = e.clientX - svgRect.left;
-          const screenY = e.clientY - svgRect.top;
-          
-          // Scale coordinates from screen space to SVG viewBox space
-          const scaleX = width / svgRect.width;
-          const scaleY = height / svgRect.height;
-          const globalX = screenX * scaleX;
-          const globalY = screenY * scaleY;
+          if (!svg) return;
+
+          // Same transformation for global mouse move
+          const pt = svg.createSVGPoint();
+          pt.x = e.clientX;
+          pt.y = e.clientY;
+          const ctm = svg.getScreenCTM();
+          if (!ctm) return;
+          const svgP = pt.matrixTransform(ctm.inverse());
+          const globalX = svgP.x;
+          const globalY = svgP.y;
           
           const newEnvelope = { ...currentEnvelope };
-          const padding = 3;
-          const maxY = 10;
-          const minY = height - 10;
+          // Use same positioning as getPhasePositions
+          const outerBorderX = (width - 550) / 2;
+          const outerBorderY = (height - 250) / 2;
+          const innerBorderX = (550 - 460) / 2;
+          const innerBorderY = (250 - 200) / 2;
+          
+          const envelopeLeft = outerBorderX + innerBorderX;
+          const envelopeTop = outerBorderY + innerBorderY;
+          const envelopeWidth = 460;
+          const envelopeHeight = 200;
+          
+          const maxY = envelopeTop;
+          const minY = envelopeTop + envelopeHeight;
           
           if (handleName === 'attack') {
             // Attack: constrained to move horizontally along top edge, max 28% of canvas width
-            const maxAttackX = padding + (width - padding * 2) * 0.28;
-            const constrainedX = Math.max(padding, Math.min(maxAttackX, globalX));
-            const attackPercent = ((constrainedX - padding) / (maxAttackX - padding)) * 100;
+            const maxAttackX = envelopeLeft + envelopeWidth * 0.28;
+            const constrainedX = Math.max(envelopeLeft, Math.min(maxAttackX, globalX));
+            const attackPercent = ((constrainedX - envelopeLeft) / (maxAttackX - envelopeLeft)) * 100;
             newEnvelope.attack = percentToValue(attackPercent);
             
                      } else if (handleName === 'decay') {
@@ -295,12 +331,12 @@ export const ADSREnvelope: React.FC<ADSREnvelopeProps> = ({
              const positions = getPhasePositions(currentEnvelope);
              
              // Horizontal movement for decay time - 26% max width from attack position
-             const maxDecayWidth = (width - padding * 2) * 0.26;
+             const maxDecayWidth = envelopeWidth * 0.26;
              const maxDecayX = positions.attack.x + maxDecayWidth;
              const constrainedX = Math.max(positions.attack.x, Math.min(maxDecayX, globalX));
              
              // Calculate decay percentage based on distance from attack
-             const decayPercent = constrainedX === positions.attack.x ? 0 : ((constrainedX - positions.attack.x) / maxDecayWidth) * 100;
+             const decayPercent = maxDecayWidth === 0 ? 0 : ((constrainedX - positions.attack.x) / maxDecayWidth) * 100;
              newEnvelope.decay = percentToValue(decayPercent);
             
             // Vertical movement for sustain level
@@ -310,8 +346,8 @@ export const ADSREnvelope: React.FC<ADSREnvelopeProps> = ({
                      } else if (handleName === 'release') {
              // Release: controls both sustain level (vertical) and release time (horizontal)
              // Horizontal movement for release time - constrained to right 28% of canvas
-             const minReleaseX = (width - padding) - (width - padding * 2) * 0.28;
-             const maxReleaseX = width - padding;
+             const minReleaseX = (envelopeLeft + envelopeWidth) - envelopeWidth * 0.28;
+             const maxReleaseX = envelopeLeft + envelopeWidth;
              const constrainedX = Math.max(minReleaseX, Math.min(maxReleaseX, globalX));
              // Reverse the percentage calculation: left = 100%, right = 0%
              const releasePercent = 100 - ((constrainedX - minReleaseX) / (maxReleaseX - minReleaseX)) * 100;
@@ -357,10 +393,10 @@ export const ADSREnvelope: React.FC<ADSREnvelopeProps> = ({
   }, []);
 
   // Render handles for the active envelope
-  const renderHandles = useCallback((envelope: ADSRValues) => {
+  const renderHandles = useCallback((envelope: ADSRValues, isActive: boolean = true) => {
     const positions = getHandlePositions(envelope);
-    const handleSize = 6;
-    const hitAreaSize = 15; // Larger invisible hit area
+    const handleSize = 6; // Small square handles
+    const hitAreaRadius = 20; // Larger invisible hit area
     
     return Object.entries(positions).map(([name, pos]) => (
       <g key={name}>
@@ -368,11 +404,11 @@ export const ADSREnvelope: React.FC<ADSREnvelopeProps> = ({
         <circle
           cx={Math.round(pos.x)}
           cy={Math.round(pos.y)}
-          r={hitAreaSize}
+          r={hitAreaRadius}
           fill="transparent"
           style={{ cursor: 'grab' }}
         />
-        {/* Visible handle - using circle to prevent stretching */}
+        {/* Visible handle - small rounded squares */}
         <rect
           x={Math.round(pos.x - handleSize)}
           y={Math.round(pos.y - handleSize)}
@@ -380,9 +416,9 @@ export const ADSREnvelope: React.FC<ADSREnvelopeProps> = ({
           height={handleSize * 2}
           rx="3"
           ry="3"
-          fill="#333333"
+          fill={isActive ? "#333333" : "#999999"}
           stroke="#ffffff"
-          strokeWidth="0.5"
+          strokeWidth="1"
           style={{ cursor: 'grab', pointerEvents: 'none' }}
           vectorEffect="non-scaling-stroke"
         />
@@ -418,10 +454,11 @@ export const ADSREnvelope: React.FC<ADSREnvelopeProps> = ({
       
       {/* SVG envelope display */}
       <svg 
+        ref={svgRef}
         width="100%" 
         height={height}
         viewBox={`0 0 ${width} ${height}`}
-        preserveAspectRatio="none"
+        preserveAspectRatio="xMidYMid meet"
         style={{ 
           border: '1px solid #ccc',
           borderRadius: '3px',
@@ -433,28 +470,139 @@ export const ADSREnvelope: React.FC<ADSREnvelopeProps> = ({
         onMouseUp={handleMouseUp}
         onMouseLeave={handleMouseUp}
       >
-        {/* Background */}
-        <rect width={width} height={height} fill="#ffffff" />
+        {/* Outer border with 6px rounded corners (62x31mm) */}
+        <rect 
+          width={width} 
+          height={height} 
+          fill="#f5f5f5" 
+          stroke="#ccc" 
+          strokeWidth="1" 
+          rx="6" 
+          ry="6" 
+        />
+        
+        {/* Inner border with square corners (55x25mm) */}
+        <rect 
+          x={(width - 550) / 2} 
+          y={(height - 250) / 2} 
+          width="550" 
+          height="250" 
+          fill="#ffffff" 
+          stroke="#ddd" 
+          strokeWidth="1" 
+        />
+        
+        {/* Envelope area background (46x20mm) - REMOVED */}
+        
+        {/* Bottom line for envelope area */}
+        <line 
+          x1={(width - 550) / 2 + (550 - 460) / 2} 
+          y1={(height - 250) / 2 + (250 - 200) / 2 + 200} 
+          x2={(width - 550) / 2 + (550 - 460) / 2 + 460} 
+          y2={(height - 250) / 2 + (250 - 200) / 2 + 200} 
+          stroke="#ddd" 
+          strokeWidth="1" 
+        />
+        
+        {/* Vertical guide lines from key points */}
+        {(() => {
+          const pos = getPhasePositions(currentEnvelope);
+          const envelopeTop = (height - 250) / 2 + (250 - 200) / 2;
+          const envelopeBottom = envelopeTop + 200;
+          
+          return (
+            <>
+              {/* Attack point vertical line - from marker down */}
+              <line 
+                x1={pos.attack.x} 
+                y1={pos.attack.y} 
+                x2={pos.attack.x} 
+                y2={envelopeBottom} 
+                stroke="#ddd" 
+                strokeWidth="1" 
+                opacity="0.5"
+              />
+              
+              {/* Decay/Sustain point vertical line - from marker down */}
+              <line 
+                x1={pos.decay.x} 
+                y1={pos.decay.y} 
+                x2={pos.decay.x} 
+                y2={envelopeBottom} 
+                stroke="#ddd" 
+                strokeWidth="1" 
+                opacity="0.5"
+              />
+              
+              {/* Release point vertical line - from marker down */}
+              <line 
+                x1={pos.release.x} 
+                y1={pos.release.y} 
+                x2={pos.release.x} 
+                y2={envelopeBottom} 
+                stroke="#ddd" 
+                strokeWidth="1" 
+                opacity="0.5"
+              />
+            </>
+          );
+        })()}
         
         {/* Inactive envelope (background) */}
         <path
-          d={generateEnvelopePath(inactiveEnvelope, false)}
+          d={generateEnvelopePath(inactiveEnvelope)}
           fill="none"
           stroke="#cccccc"
-          strokeWidth="3"
+          strokeWidth="4"
           opacity="0.5"
         />
         
         {/* Active envelope (foreground) */}
         <path
-          d={generateEnvelopePath(currentEnvelope, true)}
+          d={generateEnvelopePath(currentEnvelope)}
           fill="none"
           stroke="#333333"
-          strokeWidth="3"
+          strokeWidth="4"
         />
         
-        {/* Interactive handles for active envelope */}
-        {renderHandles(currentEnvelope)}
+        {/* Interactive handles for active envelope only */}
+        {renderHandles(currentEnvelope, true)}
+        
+        {/* Envelope type labels positioned like OP-XY */}
+        {(() => {
+          const ampPos = getHandlePositions(ampEnvelope);
+          const filterPos = getHandlePositions(filterEnvelope);
+          
+          return (
+            <>
+              {/* Amp label */}
+              <text
+                x={ampPos.release.x - 30}
+                y={ampPos.release.y - 8}
+                fontSize="21"
+                fontWeight="500"
+                fill={activeEnvelope === 'amp' ? "#333" : "#999"}
+                textAnchor="middle"
+                style={{ userSelect: 'none', pointerEvents: 'none' }}
+              >
+                amp
+              </text>
+              
+              {/* Filter label */}
+              <text
+                x={filterPos.release.x - 30}
+                y={filterPos.release.y - 8}
+                fontSize="21"
+                fontWeight="500"
+                fill={activeEnvelope === 'filter' ? "#333" : "#999"}
+                textAnchor="middle"
+                style={{ userSelect: 'none', pointerEvents: 'none' }}
+              >
+                filter
+              </text>
+            </>
+          );
+        })()}
       </svg>
       
       {/* Value display */}
