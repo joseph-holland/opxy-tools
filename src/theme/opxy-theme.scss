@@ -14,151 +14,68 @@ $opxy-border-gray: #f0f0f0;
 $opxy-bg-gray: #f8f9fa;
 
 // Custom theme tokens for OP-XY
-$opxy-theme: (
-  // Background colors
+// This map overrides Carbon's default tokens.
+$opxy-theme-map: (
+  // Core Tokens
   background: $opxy-white,
-  background-inverse: $opxy-dark-gray,
-  background-brand: $opxy-dark-gray,
-  background-hover: $opxy-bg-gray,
-  background-active: $opxy-light-gray,
-  background-selected: $opxy-medium-gray,
-  
-  // Text colors  
+  layer: $opxy-white,
   text-primary: $opxy-dark-gray,
   text-secondary: $opxy-light-gray,
+  interactive: $opxy-dark-gray,
+  
+  // ==========================================
+  // KEY FIX: Override Success and Focus colors
+  // This is what controls the toggle's green and blue
+  // ==========================================
+  support-success: $opxy-dark-gray,
+  focus: $opxy-dark-gray,
+
+  // General UI
+  background-hover: $opxy-bg-gray,
   text-placeholder: $opxy-light-gray,
   text-inverse: $opxy-white,
   text-on-color: $opxy-white,
-  text-on-color-disabled: $opxy-light-gray,
-  
-  // Interactive colors
-  interactive: $opxy-dark-gray,
-  interactive-hover: $opxy-medium-gray,
-  interactive-active: $opxy-black,
-  
-  // Border colors
   border-subtle: $opxy-border-gray,
   border-strong: $opxy-light-gray,
   border-inverse: $opxy-white,
   border-interactive: $opxy-dark-gray,
   
-  // Support colors (keeping minimal for monochrome)
-  support-error: $opxy-light-gray,
-  support-success: $opxy-dark-gray,
-  support-warning: $opxy-medium-gray,
-  support-info: $opxy-dark-gray,
-  
-  // Focus
-  focus: $opxy-dark-gray,
-  focus-inset: $opxy-white,
-  focus-inverse: $opxy-white,
-  
-  // Highlights
-  highlight: $opxy-bg-gray,
-  
-  // Overlays
-  overlay: rgba($opxy-black, 0.4),
-  
-  // Toggle
-  toggle-off: $opxy-light-gray,
-  
-  // Button colors  
+  // Buttons
   button-primary: $opxy-dark-gray,
   button-primary-hover: $opxy-medium-gray,
   button-primary-active: $opxy-black,
   button-secondary: $opxy-white,
   button-secondary-hover: $opxy-bg-gray,
   button-secondary-active: $opxy-border-gray,
-  button-tertiary: transparent,
-  button-tertiary-hover: $opxy-bg-gray,
-  button-tertiary-active: $opxy-border-gray,
-  button-danger-primary: $opxy-light-gray,
-  button-danger-secondary: $opxy-white,
-  button-danger-hover: $opxy-medium-gray,
-  button-danger-active: $opxy-dark-gray,
   
-  // Field colors
+  // Fields & Inputs
   field: $opxy-white,
   field-hover: $opxy-bg-gray,
-  field-disabled: $opxy-border-gray,
-  
-  // Layer colors for depth
-  layer: $opxy-white,
-  layer-hover: $opxy-bg-gray,
-  layer-active: $opxy-border-gray,
-  layer-selected: $opxy-light-gray,
-  layer-accent: $opxy-dark-gray,
-  
-  // Skeleton
-  skeleton-background: $opxy-border-gray,
-  skeleton-element: $opxy-light-gray
 );
 
-// Custom component overrides for OP-XY aesthetic
+// Apply the custom theme to the .opxy-theme class
 .opxy-theme {
-  // Global font family override to match legacy
+  @include theme($opxy-theme-map);
+
+  // Global font override to match legacy
   font-family: "Montserrat", "Arial", sans-serif;
-  
-  // Accent button style from legacy
-  .cds--btn--primary {
-    background-color: $opxy-dark-gray;
-    border-color: $opxy-dark-gray;
-    color: $opxy-white;
-    
-    &:hover {
-      background-color: $opxy-medium-gray;
-      border-color: $opxy-medium-gray;
-    }
-    
-    &:active {
-      background-color: $opxy-black;
-      border-color: $opxy-black;
-    }
-  }
-  
-  // Tab styling to match legacy
+
+  // Manual overrides for components that need adjustments beyond tokens
   .cds--tabs__nav-link {
-    color: $opxy-dark-gray;
-    border-bottom-color: transparent;
-    
-    &:hover {
-      border-bottom-color: $opxy-light-gray;
-    }
-    
     &[aria-selected="true"] {
       border-bottom-color: $opxy-dark-gray;
     }
   }
-  
-  // Modal styling for OP-XY aesthetic
-  .cds--modal-container {
-    background-color: $opxy-white;
-    border: 1px solid $opxy-dark-gray;
-  }
-  
-  // Input styling
-  .cds--text-input,
-  .cds--select-input {
-    background-color: $opxy-white;
-    border-color: $opxy-light-gray;
-    
-    &:focus {
-      border-color: $opxy-dark-gray;
-      outline-color: $opxy-dark-gray;
-    }
-  }
-  
-  // Slider styling to match legacy accent-color
-  .cds--slider__thumb {
-    background-color: $opxy-dark-gray;
-    border-color: $opxy-dark-gray;
-  }
-  
+
+  // Ensure sliders are monochrome, as they use complex gradients
   .cds--slider__track {
-    background-color: $opxy-border-gray;
+    background: #e5e7eb !important;
   }
-  
   .cds--slider__filled-track {
-    background-color: $opxy-dark-gray;
+    background: #374151 !important;
+  }
+  .cds--slider__thumb {
+    background: #374151 !important;
+    border-color: #374151 !important;
   }
 }

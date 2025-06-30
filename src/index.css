@@ -92,11 +92,99 @@ a:hover {
   border-color: #111827 !important;
 }
 
+/* Global Carbon Design System monochrome overrides */
+.cds--toggle-input__appearance {
+  background-color: #e5e7eb !important;
+}
+
+.cds--toggle-input__appearance:before {
+  background-color: #6b7280 !important;
+}
+
+.cds--toggle-input:checked + .cds--toggle-input__appearance {
+  background-color: #374151 !important;
+}
+
+.cds--toggle-input:checked + .cds--toggle-input__appearance:before {
+  background-color: #fff !important;
+}
+
+.cds--toggle__text--off,
+.cds--toggle__text--on {
+  color: #6b7280 !important;
+}
+
+/* Specific override for multisample loop enabled toggle */
+#multisample-loop-enabled .cds--toggle-input__appearance {
+  background-color: #e5e7eb !important;
+}
+
+#multisample-loop-enabled .cds--toggle-input__appearance:before {
+  background-color: #6b7280 !important;
+}
+
+#multisample-loop-enabled .cds--toggle-input:checked + .cds--toggle-input__appearance {
+  background-color: #374151 !important;
+}
+
+#multisample-loop-enabled .cds--toggle-input:checked + .cds--toggle-input__appearance:before {
+  background-color: #fff !important;
+}
+
+#multisample-loop-enabled .cds--toggle__text--off,
+#multisample-loop-enabled .cds--toggle__text--on {
+  color: #6b7280 !important;
+}
+
+/* Additional overrides just for the multisample loop enabled toggle */
+#multisample-loop-enabled + .cds--toggle-input__appearance {
+  /* Default (off) state track */
+  background: #e5e7eb !important;
+  background-color: #e5e7eb !important;
+  border-color: #e5e7eb !important;
+}
+
+#multisample-loop-enabled + .cds--toggle-input__appearance:before {
+  /* Default (off) state thumb */
+  background: #6b7280 !important;
+  background-color: #6b7280 !important;
+}
+
+#multisample-loop-enabled:checked + .cds--toggle-input__appearance {
+  /* ON state track */
+  background: #374151 !important;
+  background-color: #374151 !important;
+  border-color: #374151 !important;
+}
+
+#multisample-loop-enabled:checked + .cds--toggle-input__appearance:before {
+  /* ON state thumb */
+  background: #ffffff !important;
+  background-color: #ffffff !important;
+}
+
+#multisample-loop-enabled:focus-visible + .cds--toggle-input__appearance {
+  /* Custom monochrome focus ring instead of Carbon blue */
+  outline: 2px solid #374151 !important;
+  outline-offset: 2px !important;
+}
+
 /* Ensure proper spacing and layout */
 .container {
   max-width: 1200px;
   margin: 0 auto;
   padding: 0 1rem;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+/* Prevent horizontal overflow on all containers */
+* {
+  box-sizing: border-box;
+}
+
+body {
+  overflow-x: hidden;
 }
 
 /* Responsive grid for drum preset settings */
@@ -104,6 +192,14 @@ a:hover {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
   gap: 4rem;
+  width: 100%;
+}
+
+@media (max-width: 768px) {
+  .drum-preset-grid {
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+  }
 }
 
 @media (max-width: 640px) {
@@ -127,7 +223,53 @@ a:hover {
 
 /* Ensure sliders have adequate width according to UI best practices */
 .cds--slider {
-  min-width: 320px !important;
+  min-width: 240px !important;
+  max-width: 100% !important;
+}
+
+/* Mobile responsive slider adjustments */
+@media (max-width: 768px) {
+  .cds--slider {
+    min-width: 180px !important;
+    max-width: 100% !important;
+  }
+  
+  .cds--toggle {
+    font-size: 0.8rem !important;
+  }
+
+  /* More subtle centering for form containers only */
+  div[style*="maxWidth: 150px"] {
+    margin: 0 auto !important;
+  }
+
+  /* Center only the slider containers when they're in grid layouts */
+  div[style*="display: grid"] > div {
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: center !important;
+  }
+}
+
+@media (max-width: 480px) {
+  .cds--slider {
+    min-width: 140px !important;
+    max-width: 100% !important;
+  }
+  
+  .cds--toggle {
+    font-size: 0.75rem !important;
+  }
+  
+  .cds--toggle__text--off,
+  .cds--toggle__text--on {
+    font-size: 0.7rem !important;
+  }
+
+  /* Keep the subtle centering for very small screens */
+  div[style*="maxWidth: 150px"] {
+    margin: 0 auto !important;
+  }
 }
 
 /* Value labels for sliders */
@@ -143,3 +285,41 @@ a:hover {
   max-width: 80px !important;
   text-align: center !important;
 }
+
+/* Debug utilities for responsive development - remove in production */
+/* Uncomment these classes during development to debug mobile layouts */
+/*
+.debug-mobile {
+  border: 2px solid red !important;
+  box-sizing: border-box !important;
+}
+
+.debug-mobile::before {
+  content: attr(class);
+  position: absolute;
+  top: -20px;
+  left: 0;
+  background: red;
+  color: white;
+  font-size: 10px;
+  padding: 2px 4px;
+  z-index: 1000;
+}
+
+.debug-overflow {
+  outline: 2px dashed orange !important;
+  background: rgba(255, 165, 0, 0.1) !important;
+}
+
+@media (max-width: 768px) {
+  .debug-mobile-tablet {
+    border: 2px solid blue !important;
+  }
+}
+
+@media (max-width: 480px) {
+  .debug-mobile-phone {
+    border: 2px solid green !important;
+  }
+}
+*/

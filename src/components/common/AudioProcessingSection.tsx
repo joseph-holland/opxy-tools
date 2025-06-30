@@ -167,8 +167,11 @@ export function AudioProcessingSection({
                 {/* Toggles Row */}
                 <div style={{
                   display: 'flex',
-                  gap: '2rem',
-                  justifyContent: 'space-around'
+                  gap: '1rem',
+                  justifyContent: 'space-around',
+                  width: '100%',
+                  maxWidth: '100%',
+                  overflow: 'hidden'
                 }}>
                   {/* Cut at Loop End - only for multisample tool */}
                   {type === 'multisample' && (
@@ -177,13 +180,19 @@ export function AudioProcessingSection({
                       flexDirection: 'column',
                       gap: '0.5rem',
                       flex: '1',
-                      alignItems: 'center'
+                      alignItems: 'center',
+                      minWidth: 0,
+                      maxWidth: '100%'
                     }}>
                       <div style={{
-                        fontSize: '0.9rem',
+                        fontSize: '0.8rem',
                         fontWeight: '500',
                         color: '#222',
-                        textAlign: 'center'
+                        textAlign: 'center',
+                        lineHeight: '1.2',
+                        hyphens: 'auto',
+                        wordBreak: 'break-word',
+                        maxWidth: '100%'
                       }}>
                         cut at loop end
                       </div>
@@ -222,13 +231,18 @@ export function AudioProcessingSection({
                     flexDirection: 'column',
                     gap: '0.5rem',
                     flex: '1',
-                    alignItems: 'center'
+                    alignItems: 'center',
+                    minWidth: 0,
+                    maxWidth: '100%'
                   }}>
                     <div style={{
-                      fontSize: '0.9rem',
+                      fontSize: '0.8rem',
                       fontWeight: '500',
                       color: '#222',
-                      textAlign: 'center'
+                      textAlign: 'center',
+                      lineHeight: '1.2',
+                      wordBreak: 'break-word',
+                      maxWidth: '100%'
                     }}>
                       normalize
                     </div>
@@ -263,10 +277,12 @@ export function AudioProcessingSection({
 
                 {/* Normalization Level Slider - below toggles */}
                 <div style={{
-                  width: '100%'
+                  width: '100%',
+                  maxWidth: '100%',
+                  overflow: 'hidden'
                 }}>
                   <div style={{
-                    fontSize: '0.9rem',
+                    fontSize: '0.8rem',
                     fontWeight: '500',
                     color: '#222',
                     marginBottom: '0.5rem',
@@ -274,7 +290,7 @@ export function AudioProcessingSection({
                   }}>
                     normalization level: {normalizeLevel.toFixed(1)} db
                   </div>
-                  <div style={{ width: '100%' }}>
+                  <div style={{ width: '100%', maxWidth: '100%', overflow: 'hidden' }}>
                     <Slider
                       id="normalize-level"
                       min={-6.0}

@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { useAppContext } from '../../context/AppContext';
 import { Modal, Slider, Select, SelectItem, Toggle } from '@carbon/react';
+import { ADSREnvelope } from '../common/ADSREnvelope';
 
 interface MultisampleAdvancedSettingsProps {
   isOpen: boolean;
@@ -19,16 +20,16 @@ interface MultisampleAdvancedSettings {
   portamentoAmount: number; // 0-100%
   tuningRoot: number; // 0-11 (C to B)
   ampEnvelope: {
-    attack: number; // 0-100%
-    decay: number; // 0-100%
-    sustain: number; // 0-100%
-    release: number; // 0-100%
+    attack: number; // 0-32767
+    decay: number; // 0-32767
+    sustain: number; // 0-32767
+    release: number; // 0-32767
   };
   filterEnvelope: {
-    attack: number; // 0-100%
-    decay: number; // 0-100%
-    sustain: number; // 0-100%
-    release: number; // 0-100%
+    attack: number; // 0-32767
+    decay: number; // 0-32767
+    sustain: number; // 0-32767
+    release: number; // 0-32767
   };
 }
 
@@ -56,13 +57,13 @@ const defaultSettings: MultisampleAdvancedSettings = {
   ampEnvelope: {
     attack: 0,
     decay: 0,
-    sustain: 100,
+    sustain: 32767, // 100%
     release: 0,
   },
   filterEnvelope: {
     attack: 0,
     decay: 0,
-    sustain: 100,
+    sustain: 32767, // 100%
     release: 0,
   },
 };
@@ -92,16 +93,16 @@ export function MultisampleAdvancedSettings({ isOpen, onClose }: MultisampleAdva
         },
         envelope: {
           amp: {
-            attack: percentToInternal(settings.ampEnvelope.attack),
-            decay: percentToInternal(settings.ampEnvelope.decay),
-            sustain: percentToInternal(settings.ampEnvelope.sustain),
-            release: percentToInternal(settings.ampEnvelope.release),
+            attack: settings.ampEnvelope.attack,
+            decay: settings.ampEnvelope.decay,
+            sustain: settings.ampEnvelope.sustain,
+            release: settings.ampEnvelope.release,
           },
           filter: {
-            attack: percentToInternal(settings.filterEnvelope.attack),
-            decay: percentToInternal(settings.filterEnvelope.decay),
-            sustain: percentToInternal(settings.filterEnvelope.sustain),
-            release: percentToInternal(settings.filterEnvelope.release),
+            attack: settings.filterEnvelope.attack,
+            decay: settings.filterEnvelope.decay,
+            sustain: settings.filterEnvelope.sustain,
+            release: settings.filterEnvelope.release,
           },
         },
         regions: [] // Will be populated during patch generation
@@ -133,18 +134,12 @@ export function MultisampleAdvancedSettings({ isOpen, onClose }: MultisampleAdva
     setSettings(prev => ({ ...prev, [key]: value }));
   };
 
-  const updateEnvelopeSetting = (
-    envelope: 'ampEnvelope' | 'filterEnvelope',
-    param: keyof MultisampleAdvancedSettings['ampEnvelope'],
-    value: number
-  ) => {
-    setSettings(prev => ({
-      ...prev,
-      [envelope]: {
-        ...prev[envelope],
-        [param]: value
-      }
-    }));
+  const updateAmpEnvelope = (envelope: MultisampleAdvancedSettings['ampEnvelope']) => {
+    setSettings(prev => ({ ...prev, ampEnvelope: envelope }));
+  };
+
+  const updateFilterEnvelope = (envelope: MultisampleAdvancedSettings['filterEnvelope']) => {
+    setSettings(prev => ({ ...prev, filterEnvelope: envelope }));
   };
 
   if (!isOpen) return null;
@@ -418,194 +413,16 @@ export function MultisampleAdvancedSettings({ isOpen, onClose }: MultisampleAdva
             </div>
           </section>
 
-          {/* Amplitude Envelope */}
+          {/* ADSR Envelopes */}
           <section>
-            <h4 style={{ 
-              marginBottom: '1rem', 
-              color: '#222',
-              fontWeight: '500',
-              borderBottom: '1px solid #e0e0e0',
-              paddingBottom: '0.5rem'
-            }}>
-              Amplitude Envelope
-            </h4>
-            
-            <div style={{ display: 'grid', gap: '1rem' }}>
-              <div>
-                <div style={{
-                  fontSize: '0.9rem',
-                  fontWeight: '500',
-                  color: '#222',
-                  marginBottom: '0.5rem'
-                }}>
-                  attack: {settings.ampEnvelope.attack}%
-                </div>
-                <Slider
-                  id="advanced-amp-attack"
-                  min={0}
-                  max={100}
-                  step={1}
-                  value={settings.ampEnvelope.attack}
-                  onChange={({ value }) => updateEnvelopeSetting('ampEnvelope', 'attack', value)}
-                  hideTextInput
-                />
-              </div>
-
-              <div>
-                <div style={{
-                  fontSize: '0.9rem',
-                  fontWeight: '500',
-                  color: '#222',
-                  marginBottom: '0.5rem'
-                }}>
-                  decay: {settings.ampEnvelope.decay}%
-                </div>
-                <Slider
-                  id="advanced-amp-decay"
-                  min={0}
-                  max={100}
-                  step={1}
-                  value={settings.ampEnvelope.decay}
-                  onChange={({ value }) => updateEnvelopeSetting('ampEnvelope', 'decay', value)}
-                  hideTextInput
-                />
-              </div>
-
-              <div>
-                <div style={{
-                  fontSize: '0.9rem',
-                  fontWeight: '500',
-                  color: '#222',
-                  marginBottom: '0.5rem'
-                }}>
-                  sustain: {settings.ampEnvelope.sustain}%
-                </div>
-                <Slider
-                  id="advanced-amp-sustain"
-                  min={0}
-                  max={100}
-                  step={1}
-                  value={settings.ampEnvelope.sustain}
-                  onChange={({ value }) => updateEnvelopeSetting('ampEnvelope', 'sustain', value)}
-                  hideTextInput
-                />
-              </div>
-
-              <div>
-                <div style={{
-                  fontSize: '0.9rem',
-                  fontWeight: '500',
-                  color: '#222',
-                  marginBottom: '0.5rem'
-                }}>
-                  release: {settings.ampEnvelope.release}%
-                </div>
-                <Slider
-                  id="advanced-amp-release"
-                  min={0}
-                  max={100}
-                  step={1}
-                  value={settings.ampEnvelope.release}
-                  onChange={({ value }) => updateEnvelopeSetting('ampEnvelope', 'release', value)}
-                  hideTextInput
-                />
-              </div>
-            </div>
-          </section>
-
-          {/* Filter Envelope */}
-          <section>
-            <h4 style={{ 
-              marginBottom: '1rem', 
-              color: '#222',
-              fontWeight: '500',
-              borderBottom: '1px solid #e0e0e0',
-              paddingBottom: '0.5rem'
-            }}>
-              Filter Envelope
-            </h4>
-            
-            <div style={{ display: 'grid', gap: '1rem' }}>
-              <div>
-                <div style={{
-                  fontSize: '0.9rem',
-                  fontWeight: '500',
-                  color: '#222',
-                  marginBottom: '0.5rem'
-                }}>
-                  attack: {settings.filterEnvelope.attack}%
-                </div>
-                <Slider
-                  id="advanced-filter-attack"
-                  min={0}
-                  max={100}
-                  step={1}
-                  value={settings.filterEnvelope.attack}
-                  onChange={({ value }) => updateEnvelopeSetting('filterEnvelope', 'attack', value)}
-                  hideTextInput
-                />
-              </div>
-
-              <div>
-                <div style={{
-                  fontSize: '0.9rem',
-                  fontWeight: '500',
-                  color: '#222',
-                  marginBottom: '0.5rem'
-                }}>
-                  decay: {settings.filterEnvelope.decay}%
-                </div>
-                <Slider
-                  id="advanced-filter-decay"
-                  min={0}
-                  max={100}
-                  step={1}
-                  value={settings.filterEnvelope.decay}
-                  onChange={({ value }) => updateEnvelopeSetting('filterEnvelope', 'decay', value)}
-                  hideTextInput
-                />
-              </div>
-
-              <div>
-                <div style={{
-                  fontSize: '0.9rem',
-                  fontWeight: '500',
-                  color: '#222',
-                  marginBottom: '0.5rem'
-                }}>
-                  sustain: {settings.filterEnvelope.sustain}%
-                </div>
-                <Slider
-                  id="advanced-filter-sustain"
-                  min={0}
-                  max={100}
-                  step={1}
-                  value={settings.filterEnvelope.sustain}
-                  onChange={({ value }) => updateEnvelopeSetting('filterEnvelope', 'sustain', value)}
-                  hideTextInput
-                />
-              </div>
-
-              <div>
-                <div style={{
-                  fontSize: '0.9rem',
-                  fontWeight: '500',
-                  color: '#222',
-                  marginBottom: '0.5rem'
-                }}>
-                  release: {settings.filterEnvelope.release}%
-                </div>
-                <Slider
-                  id="advanced-filter-release"
-                  min={0}
-                  max={100}
-                  step={1}
-                  value={settings.filterEnvelope.release}
-                  onChange={({ value }) => updateEnvelopeSetting('filterEnvelope', 'release', value)}
-                  hideTextInput
-                />
-              </div>
-            </div>
+            <ADSREnvelope
+              ampEnvelope={settings.ampEnvelope}
+              filterEnvelope={settings.filterEnvelope}
+              onAmpEnvelopeChange={updateAmpEnvelope}
+              onFilterEnvelopeChange={updateFilterEnvelope}
+              width={650}
+              height={280}
+            />
           </section>
         </div>
       </Modal>
@@ -617,15 +434,7 @@ export function MultisampleAdvancedSettings({ isOpen, onClose }: MultisampleAdva
         #advanced-volume .cds--slider__track,
         #advanced-width .cds--slider__track,
         #advanced-highpass .cds--slider__track,
-        #advanced-portamento-amount .cds--slider__track,
-        #advanced-amp-attack .cds--slider__track,
-        #advanced-amp-decay .cds--slider__track,
-        #advanced-amp-sustain .cds--slider__track,
-        #advanced-amp-release .cds--slider__track,
-        #advanced-filter-attack .cds--slider__track,
-        #advanced-filter-decay .cds--slider__track,
-        #advanced-filter-sustain .cds--slider__track,
-        #advanced-filter-release .cds--slider__track {
+        #advanced-portamento-amount .cds--slider__track {
           background: linear-gradient(to right, #e5e7eb 0%, #6b7280 100%) !important;
         }
         #advanced-transpose .cds--slider__filled-track,
@@ -633,15 +442,7 @@ export function MultisampleAdvancedSettings({ isOpen, onClose }: MultisampleAdva
         #advanced-volume .cds--slider__filled-track,
         #advanced-width .cds--slider__filled-track,
         #advanced-highpass .cds--slider__filled-track,
-        #advanced-portamento-amount .cds--slider__filled-track,
-        #advanced-amp-attack .cds--slider__filled-track,
-        #advanced-amp-decay .cds--slider__filled-track,
-        #advanced-amp-sustain .cds--slider__filled-track,
-        #advanced-amp-release .cds--slider__filled-track,
-        #advanced-filter-attack .cds--slider__filled-track,
-        #advanced-filter-decay .cds--slider__filled-track,
-        #advanced-filter-sustain .cds--slider__filled-track,
-        #advanced-filter-release .cds--slider__filled-track {
+        #advanced-portamento-amount .cds--slider__filled-track {
           background: #374151 !important;
         }
         #advanced-transpose .cds--slider__thumb,
@@ -649,15 +450,7 @@ export function MultisampleAdvancedSettings({ isOpen, onClose }: MultisampleAdva
         #advanced-volume .cds--slider__thumb,
         #advanced-width .cds--slider__thumb,
         #advanced-highpass .cds--slider__thumb,
-        #advanced-portamento-amount .cds--slider__thumb,
-        #advanced-amp-attack .cds--slider__thumb,
-        #advanced-amp-decay .cds--slider__thumb,
-        #advanced-amp-sustain .cds--slider__thumb,
-        #advanced-amp-release .cds--slider__thumb,
-        #advanced-filter-attack .cds--slider__thumb,
-        #advanced-filter-decay .cds--slider__thumb,
-        #advanced-filter-sustain .cds--slider__thumb,
-        #advanced-filter-release .cds--slider__thumb {
+        #advanced-portamento-amount .cds--slider__thumb {
           background: #374151 !important;
           border: 2px solid #374151 !important;
         }
@@ -666,15 +459,7 @@ export function MultisampleAdvancedSettings({ isOpen, onClose }: MultisampleAdva
         #advanced-volume .cds--slider__thumb:hover,
         #advanced-width .cds--slider__thumb:hover,
         #advanced-highpass .cds--slider__thumb:hover,
-        #advanced-portamento-amount .cds--slider__thumb:hover,
-        #advanced-amp-attack .cds--slider__thumb:hover,
-        #advanced-amp-decay .cds--slider__thumb:hover,
-        #advanced-amp-sustain .cds--slider__thumb:hover,
-        #advanced-amp-release .cds--slider__thumb:hover,
-        #advanced-filter-attack .cds--slider__thumb:hover,
-        #advanced-filter-decay .cds--slider__thumb:hover,
-        #advanced-filter-sustain .cds--slider__thumb:hover,
-        #advanced-filter-release .cds--slider__thumb:hover {
+        #advanced-portamento-amount .cds--slider__thumb:hover {
           background: #222 !important;
           border-color: #222 !important;
         }
