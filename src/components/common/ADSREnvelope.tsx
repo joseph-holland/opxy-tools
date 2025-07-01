@@ -120,8 +120,8 @@ export const ADSREnvelope: React.FC<ADSREnvelopeProps> = ({
   filterEnvelope,
   onAmpEnvelopeChange,
   onFilterEnvelopeChange,
-  width = 620,  // 62mm scaled 10x
-  height = 310  // 31mm scaled 10x
+  width = 480,  // More compact size around envelope area
+  height = 240   // More compact size around envelope area
 }) => {
   const svgRef = React.useRef<SVGSVGElement>(null);
   const [activeEnvelope, setActiveEnvelope] = useState<'amp' | 'filter'>('amp');
@@ -164,16 +164,20 @@ export const ADSREnvelope: React.FC<ADSREnvelopeProps> = ({
 
   // Calculate fixed positions based on OP-XY style constraints
   const getPhasePositions = useCallback((envelope: ADSRValues) => {
-    // OP-XY exact ratios: outer 62x31mm, inner 55x25mm, envelope 46x20mm
-    const outerBorderX = (width - 550) / 2;   // 35px border to inner (550px)
-    const outerBorderY = (height - 250) / 2;  // 30px border to inner (250px)
-    const innerBorderX = (550 - 460) / 2;     // 45px border to envelope area (460px)
-    const innerBorderY = (250 - 200) / 2;     // 25px border to envelope area (200px)
+    // OP-XY exact ratios: 62×31mm outer, 55×25mm inner, 46×20mm envelope
+    // Scale factor: 7.74x (480px / 62mm = 240px / 31mm)
+    const innerWidth = Math.round(55 * 7.74);   // 426px
+    const innerHeight = Math.round(25 * 7.74);  // 194px
+    const envelopeWidth = Math.round(46 * 7.74); // 356px
+    const envelopeHeight = Math.round(20 * 7.74); // 155px
+    
+    const outerBorderX = (width - innerWidth) / 2;
+    const outerBorderY = (height - innerHeight) / 2;
+    const innerBorderX = (innerWidth - envelopeWidth) / 2;
+    const innerBorderY = (innerHeight - envelopeHeight) / 2;
     
     const envelopeLeft = outerBorderX + innerBorderX;
     const envelopeTop = outerBorderY + innerBorderY;
-    const envelopeWidth = 460;
-    const envelopeHeight = 200;
     
     const maxY = envelopeTop;
     const minY = envelopeTop + envelopeHeight;
@@ -467,7 +471,7 @@ export const ADSREnvelope: React.FC<ADSREnvelopeProps> = ({
       borderRadius: '4px',
       padding: '1rem',
       backgroundColor: '#fafafa',
-      width: '50%'
+      width: 'fit-content'
     }}>
       {/* Header with envelope selector */}
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
@@ -513,7 +517,7 @@ export const ADSREnvelope: React.FC<ADSREnvelopeProps> = ({
         preserveAspectRatio="xMidYMid meet"
         style={{ 
           border: '1px solid #ccc',
-          borderRadius: '3px',
+          borderRadius: '6px',
           backgroundColor: '#ffffff',
           cursor: isDragging ? 'grabbing' : 'crosshair'
         }}
@@ -522,7 +526,7 @@ export const ADSREnvelope: React.FC<ADSREnvelopeProps> = ({
         onMouseUp={handleMouseUp}
         onMouseLeave={handleMouseUp}
       >
-        {/* Outer border with 6px rounded corners (62x31mm) */}
+        {/* Outer border with 6px rounded corners - OP-XY exact 62×31mm */}
         <rect 
           width={width} 
           height={height} 
@@ -533,12 +537,12 @@ export const ADSREnvelope: React.FC<ADSREnvelopeProps> = ({
           ry="6" 
         />
         
-        {/* Inner border with square corners (55x25mm) */}
+        {/* Inner border with square corners - OP-XY exact 55×25mm */}
         <rect 
-          x={(width - 550) / 2} 
-          y={(height - 250) / 2} 
-          width="550" 
-          height="250" 
+          x={(width - Math.round(55 * 7.74)) / 2} 
+          y={(height - Math.round(25 * 7.74)) / 2} 
+          width={Math.round(55 * 7.74)} 
+          height={Math.round(25 * 7.74)} 
           fill="#ffffff" 
           stroke="#ddd" 
           strokeWidth="1" 
@@ -548,10 +552,10 @@ export const ADSREnvelope: React.FC<ADSREnvelopeProps> = ({
         
         {/* Bottom line for envelope area */}
         <line 
-          x1={(width - 550) / 2 + (550 - 460) / 2} 
-          y1={(height - 250) / 2 + (250 - 200) / 2 + 200} 
-          x2={(width - 550) / 2 + (550 - 460) / 2 + 460} 
-          y2={(height - 250) / 2 + (250 - 200) / 2 + 200} 
+          x1={(width - Math.round(55 * 7.74)) / 2 + (Math.round(55 * 7.74) - Math.round(46 * 7.74)) / 2} 
+          y1={(height - Math.round(25 * 7.74)) / 2 + (Math.round(25 * 7.74) - Math.round(20 * 7.74)) / 2 + Math.round(20 * 7.74)} 
+          x2={(width - Math.round(55 * 7.74)) / 2 + (Math.round(55 * 7.74) - Math.round(46 * 7.74)) / 2 + Math.round(46 * 7.74)} 
+          y2={(height - Math.round(25 * 7.74)) / 2 + (Math.round(25 * 7.74) - Math.round(20 * 7.74)) / 2 + Math.round(20 * 7.74)} 
           stroke="#ddd" 
           strokeWidth="4" 
         />
@@ -559,8 +563,8 @@ export const ADSREnvelope: React.FC<ADSREnvelopeProps> = ({
         {/* Vertical guide lines from key points */}
         {(() => {
           const pos = getPhasePositions(currentEnvelope);
-          const envelopeTop = (height - 250) / 2 + (250 - 200) / 2;
-          const envelopeBottom = envelopeTop + 200;
+          const envelopeTop = (height - Math.round(25 * 7.74)) / 2 + (Math.round(25 * 7.74) - Math.round(20 * 7.74)) / 2;
+          const envelopeBottom = envelopeTop + Math.round(20 * 7.74);
           
           return (
             <>
@@ -623,7 +627,7 @@ export const ADSREnvelope: React.FC<ADSREnvelopeProps> = ({
         {/* Fixed decorative squares at envelope start and end */}
         {(() => {
           const pos = getPhasePositions(currentEnvelope);
-          const envelopeBottom = (height - 250) / 2 + (250 - 200) / 2 + 200;
+          const envelopeBottom = (height - Math.round(25 * 7.74)) / 2 + (Math.round(25 * 7.74) - Math.round(20 * 7.74)) / 2 + Math.round(20 * 7.74);
           
           return (
             <>
@@ -661,9 +665,9 @@ export const ADSREnvelope: React.FC<ADSREnvelopeProps> = ({
             <>
               {/* Amp label */}
               <text
-                x={ampPos.release.x - 25}
-                y={ampPos.release.y - 8}
-                fontSize="16"
+                x={ampPos.release.x - 19}
+                y={ampPos.release.y - 6}
+                fontSize="12"
                 fontWeight="500"
                 fill={activeEnvelope === 'amp' ? "#333" : "#999"}
                 textAnchor="middle"
@@ -674,9 +678,9 @@ export const ADSREnvelope: React.FC<ADSREnvelopeProps> = ({
               
               {/* Filter label */}
               <text
-                x={filterPos.release.x - 25}
-                y={filterPos.release.y - 8}
-                fontSize="16"
+                x={filterPos.release.x - 19}
+                y={filterPos.release.y - 6}
+                fontSize="12"
                 fontWeight="500"
                 fill={activeEnvelope === 'filter' ? "#333" : "#999"}
                 textAnchor="middle"
