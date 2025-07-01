@@ -142,12 +142,7 @@ export function VirtualMidiKeyboard({
 
   // Center the keyboard on the active octave when it changes or on mount
   useEffect(() => {
-    // Small delay to ensure the DOM is ready
-    const timer = setTimeout(() => {
-      centerActiveOctave();
-    }, 100);
-    
-    return () => clearTimeout(timer);
+    centerActiveOctave();
   }, [activeOctave, centerActiveOctave]);
 
   useEffect(() => {
@@ -420,9 +415,33 @@ export function VirtualMidiKeyboard({
       />
       <div
         ref={containerRef}
-        className={`virtual-midi-keyboard ${className} ${isPinned ? 'pinned' : ''}`}
+        className={className}
         style={combinedStyles}
       >
+        {/* Left fade overlay */}
+        <div style={{
+          position: 'absolute',
+          left: 0,
+          top: '60px', // Start below the header section
+          bottom: 0,
+          width: '30px',
+          background: 'linear-gradient(to right, rgba(255, 255, 255, 1), rgba(255, 255, 255, 0))',
+          zIndex: 10,
+          pointerEvents: 'none'
+        }} />
+
+        {/* Right fade overlay */}
+        <div style={{
+          position: 'absolute',
+          right: 0,
+          top: '60px', // Start below the header section
+          bottom: 0,
+          width: '30px',
+          background: 'linear-gradient(to left, rgba(255, 255, 255, 1), rgba(255, 255, 255, 0))',
+          zIndex: 10,
+          pointerEvents: 'none'
+        }} />
+
         {/* Header */}
         <div style={{
           display: 'flex',
@@ -432,16 +451,16 @@ export function VirtualMidiKeyboard({
           borderBottom: '1px solid #dee2e6',
           backgroundColor: '#fff'
         }}>
-          <h3 style={{ 
-            margin: '0',
+          <h3 style={{
+            margin: 0,
             color: '#222',
             fontSize: '1.25rem',
-            fontWeight: '300',
+            fontWeight: 300,
             display: 'flex',
             alignItems: 'center',
             gap: '0.5rem'
           }}>
-            load and demo samples
+             load and play samples
           </h3>
           <div style={{
             display: 'flex',
@@ -454,41 +473,49 @@ export function VirtualMidiKeyboard({
               display: 'flex', 
               alignItems: 'center', 
               gap: '0.5rem',
-              fontWeight: '500'
+              fontWeight: 500
             }}>
               <i className="fas fa-check-circle" style={{ color: '#666' }}></i>
               {loadedSamplesCount} / 24 loaded
             </div>
-            <button
-              onClick={togglePin}
+            <button 
+              onClick={togglePin} 
               className="pin-button"
               style={{
                 background: 'none',
                 border: 'none',
                 cursor: 'pointer',
-                padding: '4px',
-                borderRadius: '4px',
+                padding: 4,
+                borderRadius: 4,
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'center',
-                transition: 'all 0.2s ease'
+                transition: 'all 0.2s ease',
+                color: isPinned ? '#007aff' : '#666'
               }}
               onMouseEnter={(e) => {
-                e.currentTarget.style.backgroundColor = '#f0f0f0';
+                if (!isPinned) {
+                  e.currentTarget.style.backgroundColor = '#f0f0f0';
+                }
               }}
               onMouseLeave={(e) => {
-                e.currentTarget.style.backgroundColor = 'transparent';
+                if (!isPinned) {
+                  e.currentTarget.style.backgroundColor = 'transparent';
+                }
               }}
               title={isPinned ? 'Unpin keyboard' : 'Pin keyboard to top'}
             >
-              <i className="fas fa-thumbtack" style={{ fontSize: '14px' }}></i>
+              <i className="fas fa-thumbtack" style={{ 
+                fontSize: 14,
+                transform: isPinned ? 'rotate(45deg)' : 'none'
+              }}></i>
             </button>
           </div>
         </div>
 
-        {/* Keyboard Container */}
         <div 
           ref={keyboardScrollRef}
+          className="hide-scrollbar"
           style={{
             backgroundColor: '#fff',
             border: 'none',
@@ -517,8 +544,9 @@ export function VirtualMidiKeyboard({
               height: '24px',
               backgroundColor: 'rgba(102, 102, 102, 0.8)', // #666 with 0.8 opacity
               borderRadius: '3px',
-              zIndex: 5, // Ensure it's on top of keys
-              pointerEvents: 'none' // Make it non-interactive
+              zIndex: 15, // Ensure it's on top of keys and fades
+              pointerEvents: 'none', // Make it non-interactive
+              transition: 'left 0.3s ease-in-out, width 0.3s ease-in-out' // Smooth transition for position and size
             }}>
               {/* Position letters exactly centered on their corresponding keys */}
               

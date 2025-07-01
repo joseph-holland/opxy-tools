@@ -591,13 +591,14 @@ export function DrumKeyboard({ onFileUpload }: DrumKeyboardProps = {}) {
 
         {isMobile ? (
           <>
-            <strong>touch interface:</strong> tap keys to play loaded samples<br />
-            <strong>load samples:</strong> tap empty keys to browse and select audio files
+            <strong>load:</strong> tap empty keys to browse and select files<br />
+            <strong>play:</strong> tap keys to play loaded samples
           </>
         ) : (
           <>
-            use keyboard keys (<strong>A-J, W, E, R, Y, U</strong>) to trigger samples and <strong>Z</strong> / <strong>X</strong> to switch octaves<br />
-            <strong>load samples:</strong> click empty keys to browse files or drag and drop audio files directly onto any key
+            <strong>load:</strong> click empty keys to browse files or drag and drop audio files directly onto any key<br />
+            <strong>play:</strong> use keyboard keys (<strong>A-J, W, E, R, Y, U</strong>) to trigger samples and <strong>Z</strong> / <strong>X</strong> to switch octaves<br />
+            <strong>pin:</strong> use the pin icon to keep the keyboard at the top of the screen
           </>
         )}
       </div>
