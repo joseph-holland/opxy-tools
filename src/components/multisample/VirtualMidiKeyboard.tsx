@@ -495,38 +495,44 @@ export function VirtualMidiKeyboard({
             borderRadius: '0',
             padding: '1rem',
             overflowX: 'auto',
-            overflowY: 'hidden'
+            overflowY: 'hidden',
+            position: 'relative'
           }}>
           
-          {/* Compact Indicator Strip Above Keyboard */}
           <div style={{
-            position: 'relative',
-            height: '18px', // Increased height to accommodate raised black key letters
-            marginBottom: '0.5rem'
+            display: 'flex',
+            alignItems: 'flex-start',
+            minWidth: '1400px', // Ensure enough space for all keys
+            height: '120px',
+            position: 'relative'
           }}>
-            {/* Indicator strip positioned over active octave */}
+            {renderKeys()}
+
+            {/* Compact Indicator Strip Over Keyboard */}
             <div style={{
               position: 'absolute',
               left: `${(activeOctave + 1) * 168}px`, // Each octave is 7 keys * 24px = 168px
-              width: '168px', // One octave width
-              height: '18px', // Increased height to accommodate raised letters
-              backgroundColor: '#666',
-              borderRadius: '2px',
-              display: 'flex',
-              alignItems: 'center',
-              zIndex: 3
+              top: '10px', // Position near the top of the keys
+              width: activeOctave === 9 ? '120px' : '168px', // Shorter for top octave
+              height: '24px',
+              backgroundColor: 'rgba(102, 102, 102, 0.8)', // #666 with 0.8 opacity
+              borderRadius: '3px',
+              zIndex: 5, // Ensure it's on top of keys
+              pointerEvents: 'none' // Make it non-interactive
             }}>
               {/* Position letters exactly centered on their corresponding keys */}
               
               {/* C key - A (white key 0-24px, center at 12px) */}
               <div style={{
                 position: 'absolute',
-                left: '12px',
-                top: '50%',
-                transform: 'translateY(-50%)',
+                left: '9px',
+                top: '65%', // Adjusted to be in lower part of rect
+                transform: 'translate(-50%, -50%)',
                 fontSize: '9px',
                 fontWeight: '600',
                 color: pressedKeys.has('a') ? '#ffd700' : '#fff',
+                letterSpacing: '0.5px',
+                lineHeight: '1',
                 textShadow: pressedKeys.has('a') ? '0 0 2px rgba(255, 215, 0, 0.8)' : 'none',
                 transition: 'all 0.1s ease'
               }}>
@@ -537,11 +543,13 @@ export function VirtualMidiKeyboard({
               <div style={{
                 position: 'absolute',
                 left: '24px',
-                top: '25%', // Raise black key indicators above white key indicators
-                transform: 'translateY(-50%)',
+                top: '35%', // Adjusted to be in upper part of rect
+                transform: 'translate(-50%, -50%)',
                 fontSize: '9px',
                 fontWeight: '600',
                 color: pressedKeys.has('w') ? '#ffd700' : '#fff',
+                letterSpacing: '0.5px',
+                lineHeight: '1',
                 textShadow: pressedKeys.has('w') ? '0 0 2px rgba(255, 215, 0, 0.8)' : 'none',
                 transition: 'all 0.1s ease'
               }}>
@@ -552,11 +560,13 @@ export function VirtualMidiKeyboard({
               <div style={{
                 position: 'absolute',
                 left: '36px',
-                top: '50%',
-                transform: 'translateY(-50%)',
+                top: '65%', // Adjusted to be in lower part of rect
+                transform: 'translate(-50%, -50%)',
                 fontSize: '9px',
                 fontWeight: '600',
                 color: pressedKeys.has('s') ? '#ffd700' : '#fff',
+                letterSpacing: '0.5px',
+                lineHeight: '1',
                 textShadow: pressedKeys.has('s') ? '0 0 2px rgba(255, 215, 0, 0.8)' : 'none',
                 transition: 'all 0.1s ease'
               }}>
@@ -567,11 +577,13 @@ export function VirtualMidiKeyboard({
               <div style={{
                 position: 'absolute',
                 left: '48px',
-                top: '25%', // Raise black key indicators above white key indicators
-                transform: 'translateY(-50%)',
+                top: '35%', // Adjusted to be in upper part of rect
+                transform: 'translate(-50%, -50%)',
                 fontSize: '9px',
                 fontWeight: '600',
                 color: pressedKeys.has('e') ? '#ffd700' : '#fff',
+                letterSpacing: '0.5px',
+                lineHeight: '1',
                 textShadow: pressedKeys.has('e') ? '0 0 2px rgba(255, 215, 0, 0.8)' : 'none',
                 transition: 'all 0.1s ease'
               }}>
@@ -581,12 +593,14 @@ export function VirtualMidiKeyboard({
               {/* E key - D (white key 48-72px, center at 60px) */}
               <div style={{
                 position: 'absolute',
-                left: '60px',
-                top: '50%',
-                transform: 'translateY(-50%)',
+                left: '63px',
+                top: '65%', // Adjusted to be in lower part of rect
+                transform: 'translate(-50%, -50%)',
                 fontSize: '9px',
                 fontWeight: '600',
                 color: pressedKeys.has('d') ? '#ffd700' : '#fff',
+                letterSpacing: '0.5px',
+                lineHeight: '1',
                 textShadow: pressedKeys.has('d') ? '0 0 2px rgba(255, 215, 0, 0.8)' : 'none',
                 transition: 'all 0.1s ease'
               }}>
@@ -596,12 +610,14 @@ export function VirtualMidiKeyboard({
               {/* F key - F (white key 72-96px, center at 84px) */}
               <div style={{
                 position: 'absolute',
-                left: '84px',
-                top: '50%',
-                transform: 'translateY(-50%)',
+                left: '81px',
+                top: '65%', // Adjusted to be in lower part of rect
+                transform: 'translate(-50%, -50%)',
                 fontSize: '9px',
                 fontWeight: '600',
                 color: pressedKeys.has('f') ? '#ffd700' : '#fff',
+                letterSpacing: '0.5px',
+                lineHeight: '1',
                 textShadow: pressedKeys.has('f') ? '0 0 2px rgba(255, 215, 0, 0.8)' : 'none',
                 transition: 'all 0.1s ease'
               }}>
@@ -612,11 +628,13 @@ export function VirtualMidiKeyboard({
               <div style={{
                 position: 'absolute',
                 left: '96px',
-                top: '25%', // Raise black key indicators above white key indicators
-                transform: 'translateY(-50%)',
+                top: '35%', // Adjusted to be in upper part of rect
+                transform: 'translate(-50%, -50%)',
                 fontSize: '9px',
                 fontWeight: '600',
                 color: pressedKeys.has('t') ? '#ffd700' : '#fff',
+                letterSpacing: '0.5px',
+                lineHeight: '1',
                 textShadow: pressedKeys.has('t') ? '0 0 2px rgba(255, 215, 0, 0.8)' : 'none',
                 transition: 'all 0.1s ease'
               }}>
@@ -626,87 +644,92 @@ export function VirtualMidiKeyboard({
               {/* G key - G (white key 96-120px, center at 108px) */}
               <div style={{
                 position: 'absolute',
-                left: '108px',
-                top: '50%',
-                transform: 'translateY(-50%)',
+                left: activeOctave === 9 ? '111px' : '108px',
+                top: '65%', // Adjusted to be in lower part of rect
+                transform: 'translate(-50%, -50%)',
                 fontSize: '9px',
                 fontWeight: '600',
                 color: pressedKeys.has('g') ? '#ffd700' : '#fff',
+                letterSpacing: '0.5px',
+                lineHeight: '1',
                 textShadow: pressedKeys.has('g') ? '0 0 2px rgba(255, 215, 0, 0.8)' : 'none',
                 transition: 'all 0.1s ease'
               }}>
                 G
               </div>
               
-              {/* G# key - Y (black key at 113px, width 14px, center at 113+7=120px) */}
-              <div style={{
-                position: 'absolute',
-                left: '120px',
-                top: '25%', // Raise black key indicators above white key indicators
-                transform: 'translateY(-50%)',
-                fontSize: '9px',
-                fontWeight: '600',
-                color: pressedKeys.has('y') ? '#ffd700' : '#fff',
-                textShadow: pressedKeys.has('y') ? '0 0 2px rgba(255, 215, 0, 0.8)' : 'none',
-                transition: 'all 0.1s ease'
-              }}>
-                Y
-              </div>
-              
-              {/* A key - H (white key 120-144px, center at 132px) */}
-              <div style={{
-                position: 'absolute',
-                left: '132px',
-                top: '50%',
-                transform: 'translateY(-50%)',
-                fontSize: '9px',
-                fontWeight: '600',
-                color: pressedKeys.has('h') ? '#ffd700' : '#fff',
-                textShadow: pressedKeys.has('h') ? '0 0 2px rgba(255, 215, 0, 0.8)' : 'none',
-                transition: 'all 0.1s ease'
-              }}>
-                H
-              </div>
-              
-              {/* A# key - U (black key at 137px, width 14px, center at 137+7=144px) */}
-              <div style={{
-                position: 'absolute',
-                left: '144px',
-                top: '25%', // Raise black key indicators above white key indicators
-                transform: 'translateY(-50%)',
-                fontSize: '9px',
-                fontWeight: '600',
-                color: pressedKeys.has('u') ? '#ffd700' : '#fff',
-                textShadow: pressedKeys.has('u') ? '0 0 2px rgba(255, 215, 0, 0.8)' : 'none',
-                transition: 'all 0.1s ease'
-              }}>
-                U
-              </div>
-              
-              {/* B key - J (white key 144-168px, center at 156px) */}
-              <div style={{
-                position: 'absolute',
-                left: '156px',
-                top: '50%',
-                transform: 'translateY(-50%)',
-                fontSize: '9px',
-                fontWeight: '600',
-                color: pressedKeys.has('j') ? '#ffd700' : '#fff',
-                textShadow: pressedKeys.has('j') ? '0 0 2px rgba(255, 215, 0, 0.8)' : 'none',
-                transition: 'all 0.1s ease'
-              }}>
-                J
-              </div>
+              {activeOctave !== 9 && (
+                <>
+                  {/* G# key - Y (black key at 113px, width 14px, center at 113+7=120px) */}
+                  <div style={{
+                    position: 'absolute',
+                    left: '120px',
+                    top: '35%', // Adjusted to be in upper part of rect
+                    transform: 'translate(-50%, -50%)',
+                    fontSize: '9px',
+                    fontWeight: '600',
+                    color: pressedKeys.has('y') ? '#ffd700' : '#fff',
+                    letterSpacing: '0.5px',
+                    lineHeight: '1',
+                    textShadow: pressedKeys.has('y') ? '0 0 2px rgba(255, 215, 0, 0.8)' : 'none',
+                    transition: 'all 0.1s ease'
+                  }}>
+                    Y
+                  </div>
+                  
+                  {/* A key - H (white key 120-144px, center at 132px) */}
+                  <div style={{
+                    position: 'absolute',
+                    left: '132px',
+                    top: '65%', // Adjusted to be in lower part of rect
+                    transform: 'translate(-50%, -50%)',
+                    fontSize: '9px',
+                    fontWeight: '600',
+                    color: pressedKeys.has('h') ? '#ffd700' : '#fff',
+                    letterSpacing: '0.5px',
+                    lineHeight: '1',
+                    textShadow: pressedKeys.has('h') ? '0 0 2px rgba(255, 215, 0, 0.8)' : 'none',
+                    transition: 'all 0.1s ease'
+                  }}>
+                    H
+                  </div>
+                  
+                  {/* A# key - U (black key at 137px, width 14px, center at 137+7=144px) */}
+                  <div style={{
+                    position: 'absolute',
+                    left: '144px',
+                    top: '35%', // Adjusted to be in upper part of rect
+                    transform: 'translate(-50%, -50%)',
+                    fontSize: '9px',
+                    fontWeight: '600',
+                    color: pressedKeys.has('u') ? '#ffd700' : '#fff',
+                    letterSpacing: '0.5px',
+                    lineHeight: '1',
+                    textShadow: pressedKeys.has('u') ? '0 0 2px rgba(255, 215, 0, 0.8)' : 'none',
+                    transition: 'all 0.1s ease'
+                  }}>
+                    U
+                  </div>
+                  
+                  {/* B key - J (white key 144-168px, center at 159px) */}
+                  <div style={{
+                    position: 'absolute',
+                    left: '159px',
+                    top: '65%', // Adjusted to be in lower part of rect
+                    transform: 'translate(-50%, -50%)',
+                    fontSize: '9px',
+                    fontWeight: '600',
+                    color: pressedKeys.has('j') ? '#ffd700' : '#fff',
+                    letterSpacing: '0.5px',
+                    lineHeight: '1',
+                    textShadow: pressedKeys.has('j') ? '0 0 2px rgba(255, 215, 0, 0.8)' : 'none',
+                    transition: 'all 0.1s ease'
+                  }}>
+                    J
+                  </div>
+                </>
+              )}
             </div>
-          </div>
-          
-          <div style={{
-            display: 'flex',
-            alignItems: 'flex-start',
-            minWidth: '1400px', // Ensure enough space for all keys
-            height: '120px'
-          }}>
-            {renderKeys()}
           </div>
         </div>
       </div>
