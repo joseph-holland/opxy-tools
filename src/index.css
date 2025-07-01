@@ -10,8 +10,8 @@
   font-weight: 400;
   
   color-scheme: light;
-  color: #222;
-  background-color: #fff;
+  color: var(--color-text-primary);
+  background-color: var(--color-bg-primary);
   
   font-synthesis: none;
   text-rendering: optimizeLegibility;
@@ -27,8 +27,8 @@ body {
   margin: 0;
   padding: 0;
   min-height: 100vh;
-  background: #ececec;
-  color: #222;
+  background: var(--color-bg-body);
+  color: var(--color-text-primary);
   font-size: 0.98rem;
   letter-spacing: 0.01em;
   line-height: 1.7;
@@ -41,17 +41,17 @@ body {
 
 /* Preserve legacy link styling */
 a {
-  color: #666;
+  color: var(--color-text-secondary);
   text-decoration: none;
 }
 
 a:hover {
-  color: #222;
+  color: var(--color-text-primary);
 }
 
 /* Override Carbon defaults for OP-XY aesthetic */
 .cds--content {
-  background: #ececec;
+  background: var(--color-bg-body);
 }
 
 /* Make Carbon Design label text larger to match preset size text */
@@ -62,111 +62,101 @@ a:hover {
   font-weight: 500 !important;
 }
 
-/* Override Carbon Design slider colors to be monochrome */
+/* Override Carbon Design slider colors */
 .cds--slider__track {
-  background-color: #e5e7eb !important;
+  background-color: var(--color-bg-slider-track) !important;
 }
 
 .cds--slider__filled-track {
-  background-color: #6b7280 !important;
+  background-color: var(--color-interactive-secondary) !important;
 }
 
 .cds--slider__thumb {
-  background-color: #374151 !important;
-  border: 2px solid #374151 !important;
+  background-color: var(--color-interactive-dark) !important;
+  border: 2px solid var(--color-interactive-dark) !important;
 }
 
 .cds--slider__thumb:hover {
-  background-color: #111827 !important;
-  border-color: #111827 !important;
+  background-color: var(--color-interactive-focus) !important;
+  border-color: var(--color-interactive-focus) !important;
 }
 
 .cds--slider__thumb:focus {
-  background-color: #111827 !important;
-  border-color: #111827 !important;
-  box-shadow: 0 0 0 2px #d1d5db !important;
+  background-color: var(--color-interactive-focus) !important;
+  border-color: var(--color-interactive-focus) !important;
+  box-shadow: 0 0 0 2px var(--color-interactive-focus-ring) !important;
 }
 
 .cds--slider__thumb:active {
-  background-color: #111827 !important;
-  border-color: #111827 !important;
+  background-color: var(--color-interactive-focus) !important;
+  border-color: var(--color-interactive-focus) !important;
 }
 
 /* Global Carbon Design System monochrome overrides */
 .cds--toggle-input__appearance {
-  background-color: #e5e7eb !important;
+  background-color: var(--color-bg-slider-track) !important;
 }
 
 .cds--toggle-input__appearance:before {
-  background-color: #6b7280 !important;
+  background-color: var(--color-interactive-secondary) !important;
 }
 
 .cds--toggle-input:checked + .cds--toggle-input__appearance {
-  background-color: #374151 !important;
+  background-color: var(--color-interactive-dark) !important;
 }
 
 .cds--toggle-input:checked + .cds--toggle-input__appearance:before {
-  background-color: #fff !important;
+  background-color: var(--color-white) !important;
 }
 
 .cds--toggle__text--off,
 .cds--toggle__text--on {
-  color: #6b7280 !important;
+  color: var(--color-interactive-secondary) !important;
 }
 
 /* Specific override for multisample loop enabled toggle */
 #multisample-loop-enabled .cds--toggle-input__appearance {
-  background-color: #e5e7eb !important;
+  background-color: var(--color-bg-slider-track) !important;
 }
 
 #multisample-loop-enabled .cds--toggle-input__appearance:before {
-  background-color: #6b7280 !important;
+  background-color: var(--color-interactive-secondary) !important;
 }
 
 #multisample-loop-enabled .cds--toggle-input:checked + .cds--toggle-input__appearance {
-  background-color: #374151 !important;
+  background-color: var(--color-interactive-dark) !important;
 }
 
 #multisample-loop-enabled .cds--toggle-input:checked + .cds--toggle-input__appearance:before {
-  background-color: #fff !important;
+  background-color: var(--color-white) !important;
 }
 
 #multisample-loop-enabled .cds--toggle__text--off,
 #multisample-loop-enabled .cds--toggle__text--on {
-  color: #6b7280 !important;
+  color: var(--color-interactive-secondary) !important;
 }
 
 /* Additional overrides just for the multisample loop enabled toggle */
 #multisample-loop-enabled + .cds--toggle-input__appearance {
-  /* Default (off) state track */
-  background: #e5e7eb !important;
-  background-color: #e5e7eb !important;
-  border-color: #e5e7eb !important;
+  background-color: var(--color-bg-slider-track) !important;
+  border-color: var(--color-bg-slider-track) !important;
 }
 
 #multisample-loop-enabled + .cds--toggle-input__appearance:before {
-  /* Default (off) state thumb */
-  background: #6b7280 !important;
-  background-color: #6b7280 !important;
+  background-color: var(--color-interactive-secondary) !important;
 }
 
 #multisample-loop-enabled:checked + .cds--toggle-input__appearance {
-  /* ON state track */
-  background: #374151 !important;
-  background-color: #374151 !important;
-  border-color: #374151 !important;
+  background-color: var(--color-interactive-dark) !important;
+  border-color: var(--color-interactive-dark) !important;
 }
 
 #multisample-loop-enabled:checked + .cds--toggle-input__appearance:before {
-  /* ON state thumb */
-  background: #ffffff !important;
-  background-color: #ffffff !important;
+  background-color: var(--color-white) !important;
 }
 
 #multisample-loop-enabled:focus-visible + .cds--toggle-input__appearance {
-  /* Custom monochrome focus ring instead of Carbon blue */
-  outline: 2px solid #374151 !important;
-  outline-offset: 2px !important;
+  outline: 2px solid var(--color-interactive-dark) !important;
 }
 
 /* Ensure proper spacing and layout */
@@ -275,7 +265,7 @@ body {
 /* Value labels for sliders */
 .cds--slider__range-label {
   font-size: 0.75rem !important;
-  color: #6b7280 !important;
+  color: var(--color-interactive-secondary) !important;
   min-width: 2rem !important;
   text-align: center !important;
 }

@@ -102,10 +102,10 @@ export const DrumKeyboardContainer: React.FC<DrumKeyboardContainerProps> = ({ on
   }, []);
 
   const combinedStyles: React.CSSProperties = {
-    border: '1px solid #f0f0f0',
+    border: '1px solid var(--color-border-subtle)',
     borderRadius: '15px',
-    backgroundColor: '#fff',
-    boxShadow: '0 2px 8px rgba(0, 0, 0, 0.1)',
+    backgroundColor: 'var(--color-bg-primary)',
+    boxShadow: '0 2px 8px var(--color-shadow-primary)',
     overflow: 'hidden',
     position: isStuck ? 'fixed' : 'relative',
     top: isStuck ? '10px' : undefined,
@@ -134,8 +134,8 @@ export const DrumKeyboardContainer: React.FC<DrumKeyboardContainerProps> = ({ on
             justifyContent: 'space-between',
             alignItems: 'center',
             padding: '1rem 1rem 0.5rem 1rem',
-            borderBottom: '1px solid #dee2e6',
-            backgroundColor: '#fff',
+            borderBottom: '1px solid var(--color-border-medium)',
+            backgroundColor: 'var(--color-bg-primary)',
           }}
         >
           <div style={{ display: 'flex', alignItems: 'baseline', gap: '0.5rem' }}>
@@ -166,7 +166,7 @@ export const DrumKeyboardContainer: React.FC<DrumKeyboardContainerProps> = ({ on
                   className="fas fa-question-circle" 
                   style={{ 
                     fontSize: iconSize, 
-                    color: '#666',
+                    color: 'var(--color-text-secondary)',
                     cursor: 'help'
                   }}
                 />
@@ -179,7 +179,7 @@ export const DrumKeyboardContainer: React.FC<DrumKeyboardContainerProps> = ({ on
               alignItems: 'center',
               gap: '1rem',
               fontSize: '0.875rem',
-              color: '#666',
+              color: 'var(--color-text-secondary)',
             }}
           >
             <div
@@ -190,7 +190,7 @@ export const DrumKeyboardContainer: React.FC<DrumKeyboardContainerProps> = ({ on
                 fontWeight: 500,
               }}
             >
-              <i className="fas fa-check-circle" style={{ color: '#666', fontSize: iconSize }}></i>
+              <i className="fas fa-check-circle" style={{ color: 'var(--color-text-secondary)', fontSize: iconSize }}></i>
               {loadedSamplesCount} / 24 loaded
             </div>
             <button

@@ -98,3 +98,24 @@ $opxy-theme-map: (
     }
   }
 }
+
+:root {
+  --color-bg-primary: #ffffff;
+  --color-bg-secondary: #f8f9fa;
+  --color-bg-body: #ececec;
+  --color-text-primary: #222222;
+  --color-text-secondary: #666666;
+  --color-border-subtle: #f0f0f0;
+  --color-border-medium: #dee2e6;
+  --color-shadow-primary: rgba(0, 0, 0, 0.1);
+  --color-interactive-secondary: #6b7280;
+  --color-interactive-dark: #374151;
+  --color-interactive-focus: #111827;
+  --color-interactive-focus-ring: #d1d5db;
+  --color-bg-slider-track: #e5e7eb;
+  --color-white: #ffffff;
+  --color-bg-panel: #fafafa;
+  --color-border-light: #dddddd;
+  --color-progress-track: #e0e0e0;
+  --color-text-info: #999999;
+}

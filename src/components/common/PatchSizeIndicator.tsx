@@ -89,13 +89,13 @@ export function PatchSizeIndicator({ type, className = '' }: PatchSizeIndicatorP
         <span style={{ 
           fontSize: '0.9rem', 
           fontWeight: '500',
-          color: '#222'
+          color: 'var(--color-text-primary)'
         }}>
           preset size
         </span>
         <span style={{ 
           fontSize: '0.9rem',
-          color: '#666'
+          color: 'var(--color-text-secondary)'
         }}>
           {isCalculating ? (
             <InlineLoading description="Calculating..." />
@@ -114,7 +114,7 @@ export function PatchSizeIndicator({ type, className = '' }: PatchSizeIndicatorP
         <div style={{
           width: '100%',
           height: '8px',
-          backgroundColor: '#e0e0e0',
+          backgroundColor: 'var(--color-progress-track)',
           borderRadius: '4px',
           position: 'relative',
           overflow: 'hidden'
@@ -123,7 +123,7 @@ export function PatchSizeIndicator({ type, className = '' }: PatchSizeIndicatorP
           <div style={{
             width: `${Math.min(100, percentage)}%`,
             height: '100%',
-            backgroundColor: '#666',
+            backgroundColor: 'var(--color-text-secondary)',
             borderRadius: '4px',
             transition: 'width 0.3s ease'
           }} />
@@ -135,7 +135,7 @@ export function PatchSizeIndicator({ type, className = '' }: PatchSizeIndicatorP
             top: 0,
             width: '2px',
             height: '100%',
-            backgroundColor: '#999',
+            backgroundColor: 'var(--color-text-secondary)',
             zIndex: 1
           }} />
         </div>
@@ -146,7 +146,7 @@ export function PatchSizeIndicator({ type, className = '' }: PatchSizeIndicatorP
           justifyContent: 'space-between',
           marginTop: '0.25rem',
           fontSize: '0.7rem',
-          color: '#999'
+          color: 'var(--color-text-info)'
         }}>
           <span>0 mb</span>
           <span style={{ display: 'flex', alignItems: 'center', gap: '0.25rem' }}>
@@ -154,7 +154,7 @@ export function PatchSizeIndicator({ type, className = '' }: PatchSizeIndicatorP
               className="fas fa-info-circle" 
               style={{ 
                 fontSize: '0.6rem', 
-                color: '#999',
+                color: 'var(--color-text-info)',
                 cursor: 'help'
               }}
               title="the OP-XY has 64mb allocated to samples across all presets. the 8mb limit per preset is recommended to prevent memory issues and note dropping. 16-bit samples load faster than 24-bit and help stay within memory constraints."
@@ -167,7 +167,7 @@ export function PatchSizeIndicator({ type, className = '' }: PatchSizeIndicatorP
       {warning && (
         <div style={{
           fontSize: '0.8rem',
-          color: '#666',
+          color: 'var(--color-text-secondary)',
           fontStyle: 'italic',
           marginTop: '0.25rem'
         }}>
@@ -179,7 +179,7 @@ export function PatchSizeIndicator({ type, className = '' }: PatchSizeIndicatorP
       {(settings.sampleRate !== 0 || settings.bitDepth !== 0 || settings.channels !== 0) && (
         <div style={{
           fontSize: '0.8rem',
-          color: '#666',
+          color: 'var(--color-text-secondary)',
           marginTop: '0.25rem'
         }}>
           {audioBuffers.length} sample{audioBuffers.length !== 1 ? 's' : ''}
@@ -199,12 +199,12 @@ export function PatchSizeIndicator({ type, className = '' }: PatchSizeIndicatorP
       {percentage >= 85 && (
         <div style={{
           fontSize: '0.8rem',
-          color: '#666',
+          color: 'var(--color-text-secondary)',
           marginTop: '0.5rem',
           padding: '0.5rem',
-          backgroundColor: '#f8f9fa',
+          backgroundColor: 'var(--color-bg-secondary)',
           borderRadius: '3px',
-          border: '1px solid #e0e0e0'
+          border: '1px solid var(--color-progress-track)'
         }}>
           <strong>optimization tips:</strong>
           <ul style={{ margin: '0.25rem 0 0 1rem', padding: 0 }}>

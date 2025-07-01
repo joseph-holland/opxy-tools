@@ -72,8 +72,8 @@ export const FourKnobControl: React.FC<FourKnobControlProps> = ({
             width: '50px',
             height: '50px',
             borderRadius: '50%',
-            border: '1px solid #000',
-            backgroundColor: '#fff',
+            border: '1px solid var(--color-text-primary)',
+            backgroundColor: 'var(--color-bg-primary)',
             cursor: isBeingDragged ? 'grabbing' : 'grab',
             position: 'relative',
             display: 'flex',
@@ -91,7 +91,7 @@ export const FourKnobControl: React.FC<FourKnobControlProps> = ({
               width: '28px',
               height: '28px',
               borderRadius: '50%',
-              border: '1px solid #000',
+              border: '1px solid var(--color-text-primary)',
               backgroundColor: 'transparent',
               position: 'absolute',
               display: 'flex',
@@ -114,10 +114,10 @@ export const FourKnobControl: React.FC<FourKnobControlProps> = ({
 
         </div>
         
-        <span style={{ fontSize: '0.75rem', color: '#666', userSelect: 'none' }}>
+        <span style={{ fontSize: '0.75rem', color: 'var(--color-text-secondary)', userSelect: 'none' }}>
           {knob.label}
         </span>
-        <span style={{ fontSize: '0.7rem', color: '#999', userSelect: 'none' }}>
+        <span style={{ fontSize: '0.7rem', color: 'var(--color-text-subtle)', userSelect: 'none' }}>
           {Math.round(knob.value)}%
         </span>
       </div>
@@ -132,9 +132,9 @@ export const FourKnobControl: React.FC<FourKnobControlProps> = ({
         flexDirection: 'column', 
         gap: '1rem',
         padding: '1rem',
-        border: '1px solid #ddd',
+        border: '1px solid var(--color-border-light)',
         borderRadius: '4px',
-        backgroundColor: '#fafafa'
+        backgroundColor: 'var(--color-bg-panel)'
       }}
     >
       {title && (
