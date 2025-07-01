@@ -75,7 +75,7 @@ export const DrumKeyboardContainer: React.FC<DrumKeyboardContainerProps> = ({ on
       {/* Placeholder to avoid layout shift */}
       <div
         ref={placeholderRef}
-        style={{ display: isStuck ? 'block' : 'none', height: `${placeholderHeight}px` }}
+        style={{ display: isStuck ? 'block' : 'none', height: `${placeholderHeight}px`, background: '#fff' }}
       />
 
       {/* Actual Keyboard Container */}

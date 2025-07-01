@@ -561,7 +561,7 @@ export const ADSREnvelope: React.FC<ADSREnvelopeProps> = ({
         style={{ 
           border: '1px solid #ccc',
           borderRadius: '6px',
-          backgroundColor: '#f5f5f5',
+          backgroundColor: '#ffffff',
           cursor: isDragging ? 'grabbing' : 'crosshair'
         }}
         onMouseDown={handlePointerDown}

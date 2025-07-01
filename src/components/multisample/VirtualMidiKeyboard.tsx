@@ -276,6 +276,7 @@ export function VirtualMidiKeyboard({
         style={{
           display: isStuck ? 'block' : 'none',
           height: `${placeholderHeight}px`,
+          background: '#fff'
         }}
       />
       <div
@@ -348,7 +349,7 @@ export function VirtualMidiKeyboard({
 
         {/* Keyboard Container */}
         <div style={{
-          backgroundColor: '#f9fafb',
+          backgroundColor: '#fff',
           border: 'none',
           borderRadius: '0',
           padding: '1rem',
