@@ -61,8 +61,8 @@ export function AudioProcessingSection({
 
   return (
     <div style={{
-      background: '#fff',
-      borderTop: '1px solid #e0e0e0',
+      background: 'var(--color-bg-primary)',
+      borderTop: '1px solid var(--color-progress-track)',
       padding: '1.5rem 2rem'
     }}>
       {/* Header */}
@@ -76,7 +76,7 @@ export function AudioProcessingSection({
       }}>
         <h3 style={{ 
           margin: '0',
-          color: '#222',
+          color: 'var(--color-text-primary)',
           fontSize: '1.25rem',
           fontWeight: '300',
           display: 'flex',
@@ -92,10 +92,10 @@ export function AudioProcessingSection({
             disabled={!hasAudioSettingsChanged}
             style={{
               padding: '0.625rem 1.25rem',
-              border: '1px solid #d1d5db',
+              border: '1px solid var(--color-interactive-focus-ring)',
               borderRadius: '3px',
-              backgroundColor: '#fff',
-              color: hasAudioSettingsChanged ? '#6b7280' : '#9ca3af',
+              backgroundColor: 'var(--color-bg-primary)',
+              color: hasAudioSettingsChanged ? 'var(--color-interactive-secondary)' : 'var(--color-border-medium)',
               fontSize: '0.9rem',
               fontWeight: '500',
               cursor: hasAudioSettingsChanged ? 'pointer' : 'not-allowed',
@@ -110,16 +110,16 @@ export function AudioProcessingSection({
             }}
             onMouseEnter={(e) => {
               if (hasAudioSettingsChanged) {
-                e.currentTarget.style.backgroundColor = '#f9fafb';
-                e.currentTarget.style.borderColor = '#9ca3af';
-                e.currentTarget.style.color = '#374151';
+                e.currentTarget.style.backgroundColor = 'var(--color-bg-secondary)';
+                e.currentTarget.style.borderColor = 'var(--color-border-medium)';
+                e.currentTarget.style.color = 'var(--color-interactive-dark)';
               }
             }}
             onMouseLeave={(e) => {
               if (hasAudioSettingsChanged) {
-                e.currentTarget.style.backgroundColor = '#fff';
-                e.currentTarget.style.borderColor = '#d1d5db';
-                e.currentTarget.style.color = '#6b7280';
+                e.currentTarget.style.backgroundColor = 'var(--color-bg-primary)';
+                e.currentTarget.style.borderColor = 'var(--color-interactive-focus-ring)';
+                e.currentTarget.style.color = 'var(--color-interactive-secondary)';
               }
             }}
           >
@@ -187,7 +187,7 @@ export function AudioProcessingSection({
                       <div style={{
                         fontSize: '0.8rem',
                         fontWeight: '500',
-                        color: '#222',
+                        color: 'var(--color-text-primary)',
                         textAlign: 'center',
                         lineHeight: '1.2',
                         hyphens: 'auto',
@@ -206,20 +206,20 @@ export function AudioProcessingSection({
                       />
                       <style>{`
                         #cut-loop-toggle .cds--toggle-input__appearance {
-                          background-color: #e5e7eb !important;
+                          background-color: var(--color-bg-slider-track) !important;
                         }
                         #cut-loop-toggle .cds--toggle-input__appearance:before {
-                          background-color: #6b7280 !important;
+                          background-color: var(--color-interactive-secondary) !important;
                         }
                         #cut-loop-toggle .cds--toggle-input:checked + .cds--toggle-input__appearance {
-                          background-color: #374151 !important;
+                          background-color: var(--color-interactive-dark) !important;
                         }
                         #cut-loop-toggle .cds--toggle-input:checked + .cds--toggle-input__appearance:before {
-                          background-color: #fff !important;
+                          background-color: var(--color-bg-primary) !important;
                         }
                         #cut-loop-toggle .cds--toggle__text--off,
                         #cut-loop-toggle .cds--toggle__text--on {
-                          color: #6b7280 !important;
+                          color: var(--color-interactive-secondary) !important;
                         }
                       `}</style>
                     </div>
@@ -238,7 +238,7 @@ export function AudioProcessingSection({
                     <div style={{
                       fontSize: '0.8rem',
                       fontWeight: '500',
-                      color: '#222',
+                      color: 'var(--color-text-primary)',
                       textAlign: 'center',
                       lineHeight: '1.2',
                       wordBreak: 'break-word',
@@ -256,20 +256,20 @@ export function AudioProcessingSection({
                     />
                     <style>{`
                       #normalize-toggle .cds--toggle-input__appearance {
-                        background-color: #e5e7eb !important;
+                        background-color: var(--color-bg-slider-track) !important;
                       }
                       #normalize-toggle .cds--toggle-input__appearance:before {
-                        background-color: #6b7280 !important;
+                        background-color: var(--color-interactive-secondary) !important;
                       }
                       #normalize-toggle .cds--toggle-input:checked + .cds--toggle-input__appearance {
-                        background-color: #374151 !important;
+                        background-color: var(--color-interactive-dark) !important;
                       }
                       #normalize-toggle .cds--toggle-input:checked + .cds--toggle-input__appearance:before {
-                        background-color: #fff !important;
+                        background-color: var(--color-bg-primary) !important;
                       }
                       #normalize-toggle .cds--toggle__text--off,
                       #normalize-toggle .cds--toggle__text--on {
-                        color: #6b7280 !important;
+                        color: var(--color-interactive-secondary) !important;
                       }
                     `}</style>
                   </div>
@@ -284,7 +284,7 @@ export function AudioProcessingSection({
                   <div style={{
                     fontSize: '0.8rem',
                     fontWeight: '500',
-                    color: '#222',
+                    color: 'var(--color-text-primary)',
                     marginBottom: '0.5rem',
                     textAlign: 'center'
                   }}>
@@ -303,18 +303,18 @@ export function AudioProcessingSection({
                   </div>
                   <style>{`
                     #normalize-level .cds--slider__track {
-                      background: linear-gradient(to right, #e5e7eb 0%, #6b7280 100%) !important;
+                      background: linear-gradient(to right, var(--color-bg-slider-track) 0%, var(--color-interactive-secondary) 100%) !important;
                     }
                     #normalize-level .cds--slider__filled-track {
-                      background: #374151 !important;
+                      background: var(--color-interactive-dark) !important;
                     }
                     #normalize-level .cds--slider__thumb {
-                      background: #374151 !important;
-                      border: 2px solid #374151 !important;
+                      background: var(--color-interactive-dark) !important;
+                      border: 2px solid var(--color-interactive-dark) !important;
                     }
                     #normalize-level .cds--slider__thumb:hover {
-                      background: #222 !important;
-                      border-color: #222 !important;
+                      background: var(--color-text-primary) !important;
+                      border-color: var(--color-text-primary) !important;
                     }
                   `}</style>
                 </div>
@@ -332,7 +332,7 @@ export function AudioProcessingSection({
                     <div style={{
                       fontSize: '0.9rem',
                       fontWeight: '500',
-                      color: '#222'
+                      color: 'var(--color-text-primary)'
                     }}>
                       loop end cut
                     </div>
@@ -346,20 +346,20 @@ export function AudioProcessingSection({
                     />
                     <style>{`
                       #cut-loop-toggle .cds--toggle-input__appearance {
-                        background-color: #e5e7eb !important;
+                        background-color: var(--color-bg-slider-track) !important;
                       }
                       #cut-loop-toggle .cds--toggle-input__appearance:before {
-                        background-color: #6b7280 !important;
+                        background-color: var(--color-interactive-secondary) !important;
                       }
                       #cut-loop-toggle .cds--toggle-input:checked + .cds--toggle-input__appearance {
-                        background-color: #374151 !important;
+                        background-color: var(--color-interactive-dark) !important;
                       }
                       #cut-loop-toggle .cds--toggle-input:checked + .cds--toggle-input__appearance:before {
-                        background-color: #fff !important;
+                        background-color: var(--color-bg-primary) !important;
                       }
                       #cut-loop-toggle .cds--toggle__text--off,
                       #cut-loop-toggle .cds--toggle__text--on {
-                        color: #6b7280 !important;
+                        color: var(--color-interactive-secondary) !important;
                       }
                     `}</style>
                   </div>
@@ -374,7 +374,7 @@ export function AudioProcessingSection({
                   <div style={{
                     fontSize: '0.9rem',
                     fontWeight: '500',
-                    color: '#222'
+                    color: 'var(--color-text-primary)'
                   }}>
                     normalize
                   </div>
@@ -388,20 +388,20 @@ export function AudioProcessingSection({
                   />
                   <style>{`
                     #normalize-toggle .cds--toggle-input__appearance {
-                      background-color: #e5e7eb !important;
+                      background-color: var(--color-bg-slider-track) !important;
                     }
                     #normalize-toggle .cds--toggle-input__appearance:before {
-                      background-color: #6b7280 !important;
+                      background-color: var(--color-interactive-secondary) !important;
                     }
                     #normalize-toggle .cds--toggle-input:checked + .cds--toggle-input__appearance {
-                      background-color: #374151 !important;
+                      background-color: var(--color-interactive-dark) !important;
                     }
                     #normalize-toggle .cds--toggle-input:checked + .cds--toggle-input__appearance:before {
-                      background-color: #fff !important;
+                      background-color: var(--color-bg-primary) !important;
                     }
                     #normalize-toggle .cds--toggle__text--off,
                     #normalize-toggle .cds--toggle__text--on {
-                      color: #6b7280 !important;
+                      color: var(--color-interactive-secondary) !important;
                     }
                   `}</style>
                 </div>
@@ -415,7 +415,7 @@ export function AudioProcessingSection({
                   <div style={{
                     fontSize: '0.9rem',
                     fontWeight: '500',
-                    color: '#222',
+                    color: 'var(--color-text-primary)',
                     marginBottom: '0.5rem'
                   }}>
                     normalization level: {normalizeLevel.toFixed(1)} db
@@ -433,18 +433,18 @@ export function AudioProcessingSection({
                   </div>
                   <style>{`
                     #normalize-level .cds--slider__track {
-                      background: linear-gradient(to right, #e5e7eb 0%, #6b7280 100%) !important;
+                      background: linear-gradient(to right, var(--color-bg-slider-track) 0%, var(--color-interactive-secondary) 100%) !important;
                     }
                     #normalize-level .cds--slider__filled-track {
-                      background: #374151 !important;
+                      background: var(--color-interactive-dark) !important;
                     }
                     #normalize-level .cds--slider__thumb {
-                      background: #374151 !important;
-                      border: 2px solid #374151 !important;
+                      background: var(--color-interactive-dark) !important;
+                      border: 2px solid var(--color-interactive-dark) !important;
                     }
                     #normalize-level .cds--slider__thumb:hover {
-                      background: #222 !important;
-                      border-color: #222 !important;
+                      background: var(--color-text-primary) !important;
+                      border-color: var(--color-text-primary) !important;
                     }
                   `}</style>
                 </div>

@@ -147,7 +147,7 @@ export const DrumKeyboardContainer: React.FC<DrumKeyboardContainerProps> = ({ on
                 fontWeight: 300,
               }}
             >
-              load and demo samples
+              load and play samples
             </h3>
             <Tooltip
               isVisible={isTooltipVisible}

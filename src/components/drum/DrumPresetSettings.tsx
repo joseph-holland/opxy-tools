@@ -106,8 +106,8 @@ export function DrumPresetSettings() {
           payload: {
             id: Date.now().toString(),
             type: 'success',
-            title: 'Settings Imported',
-            message: 'Successfully imported drum preset settings'
+            title: 'settings imported',
+            message: 'successfully imported drum preset settings'
           }
         });
       } else {
@@ -117,8 +117,8 @@ export function DrumPresetSettings() {
           payload: {
             id: Date.now().toString(),
             type: 'error',
-            title: 'Import Failed',
-            message: result.error || 'Failed to import preset'
+            title: 'import failed',
+            message: result.error || 'failed to import preset'
           }
         });
       }
@@ -129,8 +129,8 @@ export function DrumPresetSettings() {
         payload: {
           id: Date.now().toString(),
           type: 'error',
-          title: 'Import Error',
-          message: `Unexpected error: ${error instanceof Error ? error.message : 'Unknown error'}`
+          title: 'import error',
+          message: `unexpected error: ${error instanceof Error ? error.message : 'Unknown error'}`
         }
       });
     }
@@ -161,7 +161,7 @@ export function DrumPresetSettings() {
         }}>
           <h3 style={{ 
             margin: '0',
-            color: '#222',
+            color: 'var(--color-text-primary)',
             fontSize: '1.25rem',
             fontWeight: '300',
             display: 'flex',
@@ -183,10 +183,10 @@ export function DrumPresetSettings() {
               disabled={!hasPresetChanges}
               style={{
                 padding: '0.625rem 1.25rem',
-                border: '1px solid #d1d5db',
+                border: '1px solid var(--color-interactive-focus-ring)',
                 borderRadius: '3px',
-                backgroundColor: '#fff',
-                color: hasPresetChanges ? '#6b7280' : '#9ca3af',
+                backgroundColor: 'var(--color-bg-primary)',
+                color: hasPresetChanges ? 'var(--color-interactive-secondary)' : 'var(--color-border-medium)',
                 fontSize: '0.9rem',
                 fontWeight: '500',
                 cursor: hasPresetChanges ? 'pointer' : 'not-allowed',
@@ -201,16 +201,16 @@ export function DrumPresetSettings() {
               }}
               onMouseEnter={(e) => {
                 if (hasPresetChanges) {
-                  e.currentTarget.style.backgroundColor = '#f9fafb';
-                  e.currentTarget.style.borderColor = '#9ca3af';
-                  e.currentTarget.style.color = '#374151';
+                  e.currentTarget.style.backgroundColor = 'var(--color-bg-secondary)';
+                  e.currentTarget.style.borderColor = 'var(--color-border-medium)';
+                  e.currentTarget.style.color = 'var(--color-interactive-dark)';
                 }
               }}
               onMouseLeave={(e) => {
                 if (hasPresetChanges) {
-                  e.currentTarget.style.backgroundColor = '#fff';
-                  e.currentTarget.style.borderColor = '#d1d5db';
-                  e.currentTarget.style.color = '#6b7280';
+                  e.currentTarget.style.backgroundColor = 'var(--color-bg-primary)';
+                  e.currentTarget.style.borderColor = 'var(--color-interactive-focus-ring)';
+                  e.currentTarget.style.color = 'var(--color-interactive-secondary)';
                 }
               }}
             >
@@ -224,8 +224,8 @@ export function DrumPresetSettings() {
                 padding: '0.625rem 1.25rem',
                 border: 'none',
                 borderRadius: '3px',
-                backgroundColor: '#333',
-                color: '#fff',
+                backgroundColor: 'var(--color-interactive-focus)',
+                color: 'var(--color-white)',
                 fontSize: '0.9rem',
                 fontWeight: '500',
                 cursor: 'pointer',
@@ -238,12 +238,12 @@ export function DrumPresetSettings() {
                 flex: isMobile ? '1' : 'none'
               }}
               onMouseEnter={(e) => {
-                e.currentTarget.style.backgroundColor = '#555';
+                e.currentTarget.style.backgroundColor = 'var(--color-interactive-dark)';
                 e.currentTarget.style.transform = 'translateY(-1px)';
                 e.currentTarget.style.boxShadow = '0 4px 12px rgba(0, 0, 0, 0.3)';
               }}
               onMouseLeave={(e) => {
-                e.currentTarget.style.backgroundColor = '#333';
+                e.currentTarget.style.backgroundColor = 'var(--color-interactive-focus)';
                 e.currentTarget.style.transform = 'translateY(0)';
                 e.currentTarget.style.boxShadow = 'none';
               }}
@@ -278,7 +278,7 @@ export function DrumPresetSettings() {
             <label style={{
               fontSize: '0.875rem',
               fontWeight: '500',
-              color: '#374151'
+              color: 'var(--color-text-primary)'
             }}>
               playmode
             </label>
@@ -305,7 +305,7 @@ export function DrumPresetSettings() {
                 <div style={{
                   fontSize: '0.9rem',
                   fontWeight: '500',
-                  color: '#222',
+                  color: 'var(--color-text-primary)',
                   marginBottom: '0.5rem'
                 }}>
                   transpose: {state.drumSettings.presetSettings.transpose}
@@ -328,7 +328,7 @@ export function DrumPresetSettings() {
                 <div style={{
                   fontSize: '0.9rem',
                   fontWeight: '500',
-                  color: '#222',
+                  color: 'var(--color-text-primary)',
                   marginBottom: '0.5rem'
                 }}>
                   velocity: {state.drumSettings.presetSettings.velocity}%
@@ -353,7 +353,7 @@ export function DrumPresetSettings() {
                 <div style={{
                   fontSize: '0.9rem',
                   fontWeight: '500',
-                  color: '#222',
+                  color: 'var(--color-text-primary)',
                   marginBottom: '0.5rem'
                 }}>
                   volume: {state.drumSettings.presetSettings.volume}%
@@ -375,7 +375,7 @@ export function DrumPresetSettings() {
                 <div style={{
                   fontSize: '0.9rem',
                   fontWeight: '500',
-                  color: '#222',
+                  color: 'var(--color-text-primary)',
                   marginBottom: '0.5rem'
                 }}>
                   width: {state.drumSettings.presetSettings.width}%
@@ -403,27 +403,27 @@ export function DrumPresetSettings() {
         #preset-velocity-sensitivity .cds--slider__track,
         #preset-volume .cds--slider__track,
         #preset-width .cds--slider__track {
-          background: linear-gradient(to right, #e5e7eb 0%, #6b7280 100%) !important;
+          background: linear-gradient(to right, var(--color-bg-slider-track) 0%, var(--color-interactive-secondary) 100%) !important;
         }
         #preset-transpose .cds--slider__filled-track,
         #preset-velocity-sensitivity .cds--slider__filled-track,
         #preset-volume .cds--slider__filled-track,
         #preset-width .cds--slider__filled-track {
-          background: #374151 !important;
+          background: var(--color-interactive-dark) !important;
         }
         #preset-transpose .cds--slider__thumb,
         #preset-velocity-sensitivity .cds--slider__thumb,
         #preset-volume .cds--slider__thumb,
         #preset-width .cds--slider__thumb {
-          background: #374151 !important;
-          border: 2px solid #374151 !important;
+          background: var(--color-interactive-dark) !important;
+          border: 2px solid var(--color-interactive-dark) !important;
         }
         #preset-transpose .cds--slider__thumb:hover,
         #preset-velocity-sensitivity .cds--slider__thumb:hover,
         #preset-volume .cds--slider__thumb:hover,
         #preset-width .cds--slider__thumb:hover {
-          background: #222 !important;
-          border-color: #222 !important;
+          background: var(--color-text-primary) !important;
+          border-color: var(--color-text-primary) !important;
         }
       `}</style>
 

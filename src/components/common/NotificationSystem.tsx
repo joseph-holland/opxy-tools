@@ -64,12 +64,12 @@ export function NotificationSystem({ notifications, onDismiss }: NotificationSys
           <div
             key={notification.id}
             style={{
-              backgroundColor: '#f8f9fa',
-              border: '1px solid #e5e7eb',
+              backgroundColor: 'var(--color-bg-notification)',
+              border: '1px solid var(--color-border-notification)',
               borderRadius: '6px',
               padding: '12px 16px',
-              boxShadow: '0 4px 12px rgba(0, 0, 0, 0.15)',
-              color: '#374151',
+              boxShadow: '0 4px 12px var(--color-shadow-elevated)',
+              color: 'var(--color-text-secondary)',
               position: 'relative',
               animation: 'slideInRight 0.3s ease-out'
             }}
@@ -82,7 +82,7 @@ export function NotificationSystem({ notifications, onDismiss }: NotificationSys
               <i 
                 className={`fas ${icon}`} 
                 style={{ 
-                  color: '#6b7280', 
+                  color: 'var(--color-text-secondary)', 
                   fontSize: '16px',
                   marginTop: '2px',
                   flexShrink: 0
@@ -93,14 +93,14 @@ export function NotificationSystem({ notifications, onDismiss }: NotificationSys
                   fontWeight: '600',
                   fontSize: '14px',
                   marginBottom: '4px',
-                  color: '#111827'
+                  color: 'var(--color-text-primary)'
                 }}>
                   {notification.title}
                 </div>
                 <div style={{
                   fontSize: '13px',
                   lineHeight: '1.4',
-                  color: '#6b7280'
+                  color: 'var(--color-text-secondary)'
                 }}>
                   {notification.message}
                 </div>
@@ -110,7 +110,7 @@ export function NotificationSystem({ notifications, onDismiss }: NotificationSys
                 style={{
                   background: 'none',
                   border: 'none',
-                  color: '#6b7280',
+                  color: 'var(--color-text-secondary)',
                   cursor: 'pointer',
                   fontSize: '16px',
                   padding: '0',
@@ -119,11 +119,11 @@ export function NotificationSystem({ notifications, onDismiss }: NotificationSys
                 }}
                 onMouseEnter={(e) => {
                   e.currentTarget.style.opacity = '1';
-                  e.currentTarget.style.color = '#374151';
+                  e.currentTarget.style.color = 'var(--color-text-primary)';
                 }}
                 onMouseLeave={(e) => {
                   e.currentTarget.style.opacity = '0.7';
-                  e.currentTarget.style.color = '#6b7280';
+                  e.currentTarget.style.color = 'var(--color-text-secondary)';
                 }}
               >
                 <i className="fas fa-times" />

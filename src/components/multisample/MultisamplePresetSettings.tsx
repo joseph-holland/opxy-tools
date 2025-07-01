@@ -103,8 +103,8 @@ export function MultisamplePresetSettings() {
           payload: {
             id: Date.now().toString(),
             type: 'success',
-            title: 'Settings Imported',
-            message: 'Successfully imported multisample preset settings'
+            title: 'settings imported',
+            message: 'successfully imported multisample preset settings'
           }
         });
       } else {
@@ -114,8 +114,8 @@ export function MultisamplePresetSettings() {
           payload: {
             id: Date.now().toString(),
             type: 'error',
-            title: 'Import Failed',
-            message: result.error || 'Failed to import preset'
+            title: 'import failed',
+            message: result.error || 'failed to import preset'
           }
         });
       }
@@ -126,8 +126,8 @@ export function MultisamplePresetSettings() {
         payload: {
           id: Date.now().toString(),
           type: 'error',
-          title: 'Import Error',
-          message: `Unexpected error: ${error instanceof Error ? error.message : 'Unknown error'}`
+          title: 'import error',
+          message: `unexpected error: ${error instanceof Error ? error.message : 'Unknown error'}`
         }
       });
     }
@@ -225,7 +225,7 @@ export function MultisamplePresetSettings() {
       <div style={{
         marginBottom: '2rem',
         paddingBottom: '1.5rem',
-        borderBottom: '1px solid #e5e7eb'
+        borderBottom: '1px solid var(--color-border-notification)'
       }}>
         {/* Header */}
         <div style={{
@@ -238,7 +238,7 @@ export function MultisamplePresetSettings() {
         }}>
           <h3 style={{ 
             margin: '0',
-            color: '#222',
+            color: 'var(--color-text-primary)',
             fontSize: '1.25rem',
             fontWeight: '300'
           }}>
@@ -255,10 +255,10 @@ export function MultisamplePresetSettings() {
               disabled={!hasPresetChanges}
               style={{
                 padding: '0.625rem 1.25rem',
-                border: '1px solid #d1d5db',
+                border: '1px solid var(--color-interactive-focus-ring)',
                 borderRadius: '3px',
-                backgroundColor: '#fff',
-                color: hasPresetChanges ? '#6b7280' : '#9ca3af',
+                backgroundColor: 'var(--color-bg-primary)',
+                color: hasPresetChanges ? 'var(--color-interactive-secondary)' : 'var(--color-border-medium)',
                 fontSize: '0.9rem',
                 fontWeight: '500',
                 cursor: hasPresetChanges ? 'pointer' : 'not-allowed',
@@ -273,16 +273,16 @@ export function MultisamplePresetSettings() {
               }}
               onMouseEnter={(e) => {
                 if (hasPresetChanges) {
-                  e.currentTarget.style.backgroundColor = '#f9fafb';
-                  e.currentTarget.style.borderColor = '#9ca3af';
-                  e.currentTarget.style.color = '#374151';
+                  e.currentTarget.style.backgroundColor = 'var(--color-bg-secondary)';
+                  e.currentTarget.style.borderColor = 'var(--color-border-medium)';
+                  e.currentTarget.style.color = 'var(--color-interactive-dark)';
                 }
               }}
               onMouseLeave={(e) => {
                 if (hasPresetChanges) {
-                  e.currentTarget.style.backgroundColor = '#fff';
-                  e.currentTarget.style.borderColor = '#d1d5db';
-                  e.currentTarget.style.color = '#6b7280';
+                  e.currentTarget.style.backgroundColor = 'var(--color-bg-primary)';
+                  e.currentTarget.style.borderColor = 'var(--color-interactive-focus-ring)';
+                  e.currentTarget.style.color = 'var(--color-interactive-secondary)';
                 }
               }}
             >
@@ -296,8 +296,8 @@ export function MultisamplePresetSettings() {
                 padding: '0.625rem 1.25rem',
                 border: 'none',
                 borderRadius: '3px',
-                backgroundColor: '#333',
-                color: '#fff',
+                backgroundColor: 'var(--color-interactive-focus)',
+                color: 'var(--color-white)',
                 fontSize: '0.9rem',
                 fontWeight: '500',
                 cursor: 'pointer',
@@ -310,12 +310,12 @@ export function MultisamplePresetSettings() {
                 flex: isMobile ? '1' : 'none'
               }}
               onMouseEnter={(e) => {
-                e.currentTarget.style.backgroundColor = '#555';
+                e.currentTarget.style.backgroundColor = 'var(--color-interactive-dark)';
                 e.currentTarget.style.transform = 'translateY(-1px)';
                 e.currentTarget.style.boxShadow = '0 4px 12px rgba(0, 0, 0, 0.3)';
               }}
               onMouseLeave={(e) => {
-                e.currentTarget.style.backgroundColor = '#333';
+                e.currentTarget.style.backgroundColor = 'var(--color-interactive-focus)';
                 e.currentTarget.style.transform = 'translateY(0)';
                 e.currentTarget.style.boxShadow = 'none';
               }}
@@ -341,9 +341,9 @@ export function MultisamplePresetSettings() {
           <section>
             <h4 style={{ 
               marginBottom: '1rem', 
-              color: '#222',
+              color: 'var(--color-text-primary)',
               fontWeight: '500',
-              borderBottom: '1px solid #e0e0e0',
+              borderBottom: '1px solid var(--color-progress-track)',
               paddingBottom: '0.5rem'
             }}>
               playback
@@ -360,7 +360,7 @@ export function MultisamplePresetSettings() {
                   marginBottom: '0.5rem',
                   fontWeight: '500',
                   fontSize: '0.875rem',
-                  color: '#374151'
+                  color: 'var(--color-text-primary)'
                 }}>
                   playmode
                 </label>
@@ -385,7 +385,7 @@ export function MultisamplePresetSettings() {
                   marginBottom: '0.5rem',
                   fontWeight: '500',
                   fontSize: '0.875rem',
-                  color: '#374151'
+                  color: 'var(--color-text-primary)'
                 }}>
                   loop enabled
                 </label>
@@ -405,9 +405,9 @@ export function MultisamplePresetSettings() {
           <section>
             <h4 style={{ 
               marginBottom: '1rem', 
-              color: '#222',
+              color: 'var(--color-text-primary)',
               fontWeight: '500',
-              borderBottom: '1px solid #e0e0e0',
+              borderBottom: '1px solid var(--color-progress-track)',
               paddingBottom: '0.5rem'
             }}>
               sound
@@ -422,7 +422,7 @@ export function MultisamplePresetSettings() {
                     marginBottom: '0.5rem', 
                     fontWeight: '500',
                     fontSize: '0.875rem',
-                    color: '#374151'
+                    color: 'var(--color-text-primary)'
                   }}>
                     tuning root
                   </label>
@@ -445,7 +445,7 @@ export function MultisamplePresetSettings() {
                   <div style={{
                     fontSize: '0.9rem',
                     fontWeight: '500',
-                    color: '#222',
+                    color: 'var(--color-text-primary)',
                     marginBottom: '0.5rem'
                   }}>
                     velocity sensitivity: {settings.velocitySensitivity}%
@@ -467,7 +467,7 @@ export function MultisamplePresetSettings() {
                   <div style={{
                     fontSize: '0.9rem',
                     fontWeight: '500',
-                    color: '#222',
+                    color: 'var(--color-text-primary)',
                     marginBottom: '0.5rem'
                   }}>
                     volume: {settings.volume}%
@@ -492,7 +492,7 @@ export function MultisamplePresetSettings() {
                   <div style={{
                     fontSize: '0.9rem',
                     fontWeight: '500',
-                    color: '#222',
+                    color: 'var(--color-text-primary)',
                     marginBottom: '0.5rem'
                   }}>
                     transpose: {settings.transpose}
@@ -514,7 +514,7 @@ export function MultisamplePresetSettings() {
                   <div style={{
                     fontSize: '0.9rem',
                     fontWeight: '500',
-                    color: '#222',
+                    color: 'var(--color-text-primary)',
                     marginBottom: '0.5rem'
                   }}>
                     width: {settings.width}%
@@ -536,7 +536,7 @@ export function MultisamplePresetSettings() {
                   <div style={{
                     fontSize: '0.9rem',
                     fontWeight: '500',
-                    color: '#222',
+                    color: 'var(--color-text-primary)',
                     marginBottom: '0.5rem'
                   }}>
                     highpass: {settings.highpass}%
@@ -561,9 +561,9 @@ export function MultisamplePresetSettings() {
           <section>
             <h4 style={{ 
               marginBottom: '1rem', 
-              color: '#222',
+              color: 'var(--color-text-primary)',
               fontWeight: '500',
-              borderBottom: '1px solid #e0e0e0',
+              borderBottom: '1px solid var(--color-progress-track)',
               paddingBottom: '0.5rem'
             }}>
               portamento
@@ -576,7 +576,7 @@ export function MultisamplePresetSettings() {
                   marginBottom: '0.5rem', 
                   fontWeight: '500',
                   fontSize: '0.875rem',
-                  color: '#374151'
+                  color: 'var(--color-text-primary)'
                 }}>
                   type
                 </label>
@@ -598,7 +598,7 @@ export function MultisamplePresetSettings() {
                 <div style={{
                   fontSize: '0.9rem',
                   fontWeight: '500',
-                  color: '#222',
+                  color: 'var(--color-text-primary)',
                   marginBottom: '0.5rem'
                 }}>
                   amount: {settings.portamentoAmount}%
@@ -622,9 +622,9 @@ export function MultisamplePresetSettings() {
           <section>
             <h4 style={{ 
               marginBottom: '1rem', 
-              color: '#222',
+              color: 'var(--color-text-primary)',
               fontWeight: '500',
-              borderBottom: '1px solid #e0e0e0',
+              borderBottom: '1px solid var(--color-progress-track)',
               paddingBottom: '0.5rem'
             }}>
               envelopes and filters
@@ -648,7 +648,7 @@ export function MultisamplePresetSettings() {
         #multisample-width .cds--slider__track,
         #multisample-highpass .cds--slider__track,
         #multisample-portamento-amount .cds--slider__track {
-          background: linear-gradient(to right, #e5e7eb 0%, #6b7280 100%) !important;
+          background: linear-gradient(to right, var(--color-bg-slider-track) 0%, var(--color-interactive-secondary) 100%) !important;
         }
         #multisample-transpose .cds--slider__filled-track,
         #multisample-velocity-sensitivity .cds--slider__filled-track,
@@ -656,7 +656,7 @@ export function MultisamplePresetSettings() {
         #multisample-width .cds--slider__filled-track,
         #multisample-highpass .cds--slider__filled-track,
         #multisample-portamento-amount .cds--slider__filled-track {
-          background: #374151 !important;
+          background: var(--color-interactive-dark) !important;
         }
         #multisample-transpose .cds--slider__thumb,
         #multisample-velocity-sensitivity .cds--slider__thumb,
@@ -664,8 +664,8 @@ export function MultisamplePresetSettings() {
         #multisample-width .cds--slider__thumb,
         #multisample-highpass .cds--slider__thumb,
         #multisample-portamento-amount .cds--slider__thumb {
-          background: #374151 !important;
-          border: 2px solid #374151 !important;
+          background: var(--color-interactive-dark) !important;
+          border: 2px solid var(--color-interactive-dark) !important;
         }
         #multisample-transpose .cds--slider__thumb:hover,
         #multisample-velocity-sensitivity .cds--slider__thumb:hover,
@@ -673,8 +673,8 @@ export function MultisamplePresetSettings() {
         #multisample-width .cds--slider__thumb:hover,
         #multisample-highpass .cds--slider__thumb:hover,
         #multisample-portamento-amount .cds--slider__thumb:hover {
-          background: #222 !important;
-          border-color: #222 !important;
+          background: var(--color-text-primary) !important;
+          border-color: var(--color-text-primary) !important;
         }
       `}</style>
     </>

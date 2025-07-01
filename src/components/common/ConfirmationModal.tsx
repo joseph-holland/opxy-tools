@@ -32,7 +32,7 @@ export function ConfirmationModal({
     >
       <div 
         style={{
-          backgroundColor: '#fff',
+          backgroundColor: 'var(--color-bg-primary)',
           borderRadius: '6px',
           boxShadow: '0 8px 32px rgba(0, 0, 0, 0.15)',
           maxWidth: '400px',
@@ -45,19 +45,19 @@ export function ConfirmationModal({
         {/* Header */}
         <div style={{
           padding: '1.5rem 1.5rem 1rem 1.5rem',
-          borderBottom: '1px solid #f0f0f0'
+          borderBottom: '1px solid var(--color-border-subtle)'
         }}>
           <h3 style={{
             margin: '0',
             fontSize: '1.25rem',
             fontWeight: '300',
-            color: '#222',
+            color: 'var(--color-text-primary)',
             display: 'flex',
             alignItems: 'center',
             gap: '0.5rem'
           }}>
             <i className="fas fa-exclamation-triangle" style={{ 
-              color: '#222', 
+              color: 'var(--color-text-primary)', 
               fontSize: '1.25rem' 
             }}></i>
             confirm action
@@ -67,7 +67,7 @@ export function ConfirmationModal({
         {/* Content */}
         <div style={{
           padding: '1.5rem',
-          color: '#555',
+          color: 'var(--color-text-secondary)',
           fontSize: '0.95rem',
           lineHeight: '1.5'
         }}>
@@ -85,10 +85,10 @@ export function ConfirmationModal({
             onClick={onCancel}
             style={{
               padding: '0.625rem 1.25rem',
-              border: '1px solid #d1d5db',
+              border: '1px solid var(--color-border-medium)',
               borderRadius: '3px',
-              backgroundColor: '#fff',
-              color: '#6b7280',
+              backgroundColor: 'var(--color-bg-primary)',
+              color: 'var(--color-text-secondary)',
               fontSize: '0.875rem',
               fontWeight: '500',
               cursor: 'pointer',
@@ -97,14 +97,14 @@ export function ConfirmationModal({
               minWidth: '80px'
             }}
             onMouseEnter={(e) => {
-              e.currentTarget.style.backgroundColor = '#f9fafb';
-              e.currentTarget.style.borderColor = '#9ca3af';
-              e.currentTarget.style.color = '#374151';
+              e.currentTarget.style.backgroundColor = 'var(--color-bg-secondary)';
+              e.currentTarget.style.borderColor = 'var(--color-border-medium)';
+              e.currentTarget.style.color = 'var(--color-interactive-dark)';
             }}
             onMouseLeave={(e) => {
-              e.currentTarget.style.backgroundColor = '#fff';
-              e.currentTarget.style.borderColor = '#d1d5db';
-              e.currentTarget.style.color = '#6b7280';
+              e.currentTarget.style.backgroundColor = 'var(--color-bg-primary)';
+              e.currentTarget.style.borderColor = 'var(--color-border-medium)';
+              e.currentTarget.style.color = 'var(--color-text-secondary)';
             }}
           >
             cancel
@@ -115,8 +115,8 @@ export function ConfirmationModal({
               padding: '0.625rem 1.25rem',
               border: 'none',
               borderRadius: '3px',
-              backgroundColor: '#333',
-              color: '#fff',
+              backgroundColor: 'var(--color-interactive-focus)',
+              color: 'var(--color-white)',
               fontSize: '0.875rem',
               fontWeight: '500',
               cursor: 'pointer',
@@ -125,12 +125,12 @@ export function ConfirmationModal({
               minWidth: '80px'
             }}
             onMouseEnter={(e) => {
-              e.currentTarget.style.backgroundColor = '#555';
+              e.currentTarget.style.backgroundColor = 'var(--color-interactive-dark)';
               e.currentTarget.style.transform = 'translateY(-1px)';
               e.currentTarget.style.boxShadow = '0 4px 12px rgba(0, 0, 0, 0.3)';
             }}
             onMouseLeave={(e) => {
-              e.currentTarget.style.backgroundColor = '#333';
+              e.currentTarget.style.backgroundColor = 'var(--color-interactive-focus)';
               e.currentTarget.style.transform = 'translateY(0)';
               e.currentTarget.style.boxShadow = 'none';
             }}

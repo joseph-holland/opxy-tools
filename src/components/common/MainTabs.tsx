@@ -11,11 +11,11 @@ export function MainTabs() {
 
   const tabStyle = {
     padding: '0.75rem 1.5rem',
-    border: '1px solid #dee2e6',
+    border: '1px solid var(--color-border-subtle)',
     borderBottom: 'none',
     borderRadius: '15px 15px 0 0',
-    background: '#f8f9fa',
-    color: '#888',
+    background: 'var(--color-bg-secondary)',
+    color: 'var(--color-text-secondary)',
     fontWeight: '500',
     fontFamily: '"Montserrat", "Arial", sans-serif',
     fontSize: '0.95rem',
@@ -23,19 +23,20 @@ export function MainTabs() {
     transition: 'all 0.2s ease',
     marginRight: '2px',
     position: 'relative' as const,
-    zIndex: 1
+    zIndex: 1,
+    outline: 'none'
   };
 
   const drumTabStyle = {
     padding: '0.75rem 1.5rem',
-    border: '1px solid #dee2e6',
+    border: '1px solid var(--color-border-subtle)',
     borderBottom: 'none',
     borderTopLeftRadius: '15px',
     borderTopRightRadius: '15px',
     borderBottomLeftRadius: '0',
     borderBottomRightRadius: '0',
-    background: '#f8f9fa',
-    color: '#888',
+    background: 'var(--color-bg-secondary)',
+    color: 'var(--color-text-secondary)',
     fontWeight: '500',
     fontFamily: '"Montserrat", "Arial", sans-serif',
     fontSize: '0.95rem',
@@ -43,20 +44,21 @@ export function MainTabs() {
     transition: 'all 0.2s ease',
     marginRight: '2px',
     position: 'relative' as const,
-    zIndex: 1
+    zIndex: 1,
+    outline: 'none'
   } as React.CSSProperties;
 
   const activeDrumTabStyle = {
     padding: '0.75rem 1.5rem',
-    border: '1px solid #dee2e6',
+    border: '1px solid var(--color-border-subtle)',
     borderBottom: 'none',
     borderTopLeftRadius: '15px',
     borderTopRightRadius: '15px',
     borderBottomLeftRadius: '0',
     borderBottomRightRadius: '0',
-    background: '#fff',
-    color: '#222',
-    borderColor: '#dee2e6 #dee2e6 #fff',
+    background: 'var(--color-bg-primary)',
+    color: 'var(--color-text-primary)',
+    borderColor: 'var(--color-border-subtle) var(--color-border-subtle) var(--color-bg-primary)',
     fontWeight: '500',
     fontFamily: '"Montserrat", "Arial", sans-serif',
     fontSize: '0.95rem',
@@ -65,16 +67,18 @@ export function MainTabs() {
     marginRight: '2px',
     position: 'relative' as const,
     zIndex: 2,
-    marginBottom: '-1px'
+    marginBottom: '-1px',
+    outline: 'none'
   };
 
   const activeTabStyle = {
     ...tabStyle,
-    background: '#fff',
-    color: '#222',
-    borderColor: '#dee2e6 #dee2e6 #fff',
+    background: 'var(--color-bg-primary)',
+    color: 'var(--color-text-primary)',
+    borderColor: 'var(--color-border-subtle) var(--color-border-subtle) var(--color-bg-primary)',
     zIndex: 2,
-    marginBottom: '-1px'
+    marginBottom: '-1px',
+    outline: 'none'
   };
 
   return (
@@ -83,7 +87,7 @@ export function MainTabs() {
       <div style={{ 
         display: 'flex',
         marginBottom: '0',
-        borderBottom: '1px solid #dee2e6',
+        borderBottom: '1px solid var(--color-border-subtle)',
         marginLeft: '16px',
         marginRight: '16px'
       }}>
@@ -94,14 +98,14 @@ export function MainTabs() {
           onClick={() => handleTabChange('drum')}
           onMouseEnter={(e) => {
             if (state.currentTab !== 'drum') {
-              e.currentTarget.style.background = '#e9ecef';
-              e.currentTarget.style.color = '#495057';
+              e.currentTarget.style.background = 'var(--color-border-subtle)';
+              e.currentTarget.style.color = 'var(--color-text-primary)';
             }
           }}
           onMouseLeave={(e) => {
             if (state.currentTab !== 'drum') {
-              e.currentTarget.style.background = '#f8f9fa';
-              e.currentTarget.style.color = '#888';
+              e.currentTarget.style.background = 'var(--color-bg-secondary)';
+              e.currentTarget.style.color = 'var(--color-text-secondary)';
             }
           }}
         >
@@ -112,14 +116,14 @@ export function MainTabs() {
           onClick={() => handleTabChange('multisample')}
           onMouseEnter={(e) => {
             if (state.currentTab !== 'multisample') {
-              e.currentTarget.style.background = '#e9ecef';
-              e.currentTarget.style.color = '#495057';
+              e.currentTarget.style.background = 'var(--color-border-subtle)';
+              e.currentTarget.style.color = 'var(--color-text-primary)';
             }
           }}
           onMouseLeave={(e) => {
             if (state.currentTab !== 'multisample') {
-              e.currentTarget.style.background = '#f8f9fa';
-              e.currentTarget.style.color = '#888';
+              e.currentTarget.style.background = 'var(--color-bg-secondary)';
+              e.currentTarget.style.color = 'var(--color-text-secondary)';
             }
           }}
         >
@@ -129,9 +133,9 @@ export function MainTabs() {
       
       {/* Tab Content */}
       <div style={{
-        background: '#fff',
+        background: 'var(--color-bg-primary)',
         borderRadius: state.currentTab === 'drum' ? '15px 15px 15px 15px' : '15px 0 15px 15px',
-        border: '1px solid #dee2e6',
+        border: '1px solid var(--color-border-subtle)',
         borderTop: 'none',
         minHeight: '500px',
         overflow: 'hidden'

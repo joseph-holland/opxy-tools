@@ -50,7 +50,8 @@ function AppContent() {
               color: '#aaa'
             }}>
               <div style={{ marginBottom: '1rem', color: '#999', fontSize: '0.85rem' }}>
-                OP-XY is a trademark of teenage engineering. this is an unofficial tool and is not affiliated with or endorsed by teenage engineering. <br />
+                this is an unofficial tool and is not affiliated with or endorsed by teenage engineering.<br />
+                OP-XY, OP-1 is a registered trademark of teenage engineering.<br />
                 this software is provided "as is" without warranty of any kind. use at your own risk. for educational and personal use only.
               </div>
               <div style={{
@@ -75,7 +76,7 @@ function AppContent() {
                 </a>
               </div>
               <div style={{ marginTop: '0.5rem' }}>
-                created with fidelity by{' '}
+                crafted with fidelity by{' '}
                 <a 
                   href="https://github.com/joseph-holland" 
                   target="_blank" 

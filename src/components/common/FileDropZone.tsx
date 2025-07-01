@@ -60,8 +60,8 @@ export function FileDropZone({
   };
 
   const defaultStyle: React.CSSProperties = {
-    background: '#f8f9fa',
-    border: '2px dashed #ced4da',
+    background: 'var(--color-bg-secondary)',
+    border: '2px dashed var(--color-border-medium)',
     borderRadius: '6px',
     padding: '3rem 2rem',
     textAlign: 'center',
@@ -73,15 +73,15 @@ export function FileDropZone({
 
   const handleMouseEnter = (e: React.MouseEvent<HTMLDivElement>) => {
     if (!disabled) {
-      e.currentTarget.style.background = '#f0f0f0';
-      e.currentTarget.style.borderColor = '#999';
+      e.currentTarget.style.background = 'var(--color-border-subtle)';
+      e.currentTarget.style.borderColor = 'var(--color-text-info)';
     }
   };
 
   const handleMouseLeave = (e: React.MouseEvent<HTMLDivElement>) => {
     if (!disabled) {
-      e.currentTarget.style.background = '#f8f9fa';
-      e.currentTarget.style.borderColor = '#ced4da';
+      e.currentTarget.style.background = 'var(--color-bg-secondary)';
+      e.currentTarget.style.borderColor = 'var(--color-border-medium)';
     }
   };
 
@@ -107,7 +107,7 @@ export function FileDropZone({
       >
         {children || (
           <>
-            <div style={{ color: '#666', fontSize: '1.1rem', marginBottom: '1rem' }}>
+            <div style={{ color: 'var(--color-text-secondary)', fontSize: '1.1rem', marginBottom: '1rem' }}>
               {disabled ? 'processing files...' : 'drop audio files here or click to browse'}
             </div>
             <Button 

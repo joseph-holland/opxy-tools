@@ -242,11 +242,11 @@ export function DrumTool() {
       }}>
         {/* Sample Management Section */}
         <div style={{
-          background: '#fff',
+          background: 'var(--color-bg-primary)',
           borderRadius: '15px',
           padding: isMobile ? '1rem' : '2rem',
-          boxShadow: '0 2px 8px rgba(0, 0, 0, 0.1)',
-          border: '1px solid #f0f0f0'
+          boxShadow: '0 2px 8px var(--color-shadow-primary)',
+          border: '1px solid var(--color-border-subtle)'
         }}>
           <div style={{
             display: 'flex',
@@ -258,7 +258,7 @@ export function DrumTool() {
           }}>
             <h3 style={{ 
               margin: '0',
-              color: '#222',
+              color: 'var(--color-text-primary)',
               fontSize: '1.25rem',
               fontWeight: '300',
               display: 'flex',
@@ -279,10 +279,10 @@ export function DrumTool() {
                       disabled={!hasLoadedSamples}
                       style={{
                         padding: '0.625rem 1.25rem',
-                        border: '1px solid #d1d5db',
+                        border: '1px solid var(--color-interactive-focus-ring)',
                         borderRadius: '3px',
-                        backgroundColor: '#fff',
-                        color: hasLoadedSamples ? '#6b7280' : '#9ca3af',
+                        backgroundColor: 'var(--color-bg-primary)',
+                        color: hasLoadedSamples ? 'var(--color-interactive-secondary)' : 'var(--color-border-medium)',
                         fontSize: '0.9rem',
                         fontWeight: '500',
                         cursor: hasLoadedSamples ? 'pointer' : 'not-allowed',
@@ -297,16 +297,16 @@ export function DrumTool() {
                       }}
                       onMouseEnter={(e) => {
                         if (hasLoadedSamples) {
-                          e.currentTarget.style.backgroundColor = '#f9fafb';
-                          e.currentTarget.style.borderColor = '#9ca3af';
-                          e.currentTarget.style.color = '#374151';
+                          e.currentTarget.style.backgroundColor = 'var(--color-bg-secondary)';
+                          e.currentTarget.style.borderColor = 'var(--color-border-medium)';
+                          e.currentTarget.style.color = 'var(--color-interactive-dark)';
                         }
                       }}
                       onMouseLeave={(e) => {
                         if (hasLoadedSamples) {
-                          e.currentTarget.style.backgroundColor = '#fff';
-                          e.currentTarget.style.borderColor = '#d1d5db';
-                          e.currentTarget.style.color = '#6b7280';
+                          e.currentTarget.style.backgroundColor = 'var(--color-bg-primary)';
+                          e.currentTarget.style.borderColor = 'var(--color-interactive-focus-ring)';
+                          e.currentTarget.style.color = 'var(--color-interactive-secondary)';
                         }
                       }}
                     >
@@ -320,8 +320,8 @@ export function DrumTool() {
                         padding: '0.625rem 1.25rem',
                         border: 'none',
                         borderRadius: '3px',
-                        backgroundColor: hasLoadedSamples ? '#333' : '#9ca3af',
-                        color: '#fff',
+                        backgroundColor: hasLoadedSamples ? 'var(--color-interactive-focus)' : 'var(--color-border-medium)',
+                        color: 'var(--color-white)',
                         fontSize: '0.9rem',
                         fontWeight: '500',
                         cursor: hasLoadedSamples ? 'pointer' : 'not-allowed',
@@ -336,16 +336,12 @@ export function DrumTool() {
                       }}
                       onMouseEnter={(e) => {
                         if (hasLoadedSamples) {
-                          e.currentTarget.style.backgroundColor = '#555';
-                          e.currentTarget.style.transform = 'translateY(-1px)';
-                          e.currentTarget.style.boxShadow = '0 4px 12px rgba(0, 0, 0, 0.3)';
+                          e.currentTarget.style.backgroundColor = 'var(--color-interactive-dark)';
                         }
                       }}
                       onMouseLeave={(e) => {
                         if (hasLoadedSamples) {
-                          e.currentTarget.style.backgroundColor = '#333';
-                          e.currentTarget.style.transform = 'translateY(0)';
-                          e.currentTarget.style.boxShadow = 'none';
+                          e.currentTarget.style.backgroundColor = 'var(--color-interactive-focus)';
                         }
                       }}
                     >
@@ -364,8 +360,8 @@ export function DrumTool() {
 
       {/* Preset Settings Panel - Always Visible */}
       <div style={{
-        background: '#fff',
-        borderTop: '1px solid #e0e0e0',
+        background: 'var(--color-bg-primary)',
+        borderTop: '1px solid var(--color-progress-track)',
         padding: '1.5rem 2rem'
       }}>
         <DrumPresetSettings />
