@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { useAppContext } from '../../context/AppContext';
 import { ConfirmationModal } from '../common/ConfirmationModal';
 import { RecordingModal } from '../common/RecordingModal';
@@ -203,8 +203,6 @@ export function MultisampleTool() {
     }
   };
 
-
-
   const handleAudioFileImport = async (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
     if (!file) return;
@@ -231,6 +229,45 @@ export function MultisampleTool() {
       }
     }
   };
+
+  // Handler for clicking an assigned key
+  const handleKeyClick = useCallback((midiNote: number) => {
+    // Find and play the sample assigned to this MIDI note
+    const sampleIndex = state.multisampleFiles.findIndex(file => file.rootNote === midiNote);
+    if (sampleIndex !== -1 && state.multisampleFiles[sampleIndex].audioBuffer) {
+      const sample = state.multisampleFiles[sampleIndex];
+      const audioContext = new (window.AudioContext || (window as any).webkitAudioContext)();
+      const source = audioContext.createBufferSource();
+      source.buffer = sample.audioBuffer;
+      source.connect(audioContext.destination);
+      source.start();
+    }
+  }, [state.multisampleFiles]);
+
+  // Handler for clicking an unassigned key
+  const handleUnassignedKeyClick = useCallback((midiNote: number) => {
+    // Store the target MIDI note and open audio file browser
+    setTargetMidiNote(midiNote);
+    audioFileInputRef.current?.click();
+  }, []);
+
+  // Handler for dropping files onto keys
+  const handleKeyDrop = useCallback(async (midiNote: number, files: File[]) => {
+    // Handle drag and drop onto specific MIDI keys
+    if (files.length > 0 && state.multisampleFiles.length < 24) {
+      const file = files[0]; // Use first file
+      await handleMultisampleUpload(file);
+      // After upload, assign to the specific MIDI note
+      const newIndex = state.multisampleFiles.length;
+      dispatch({
+        type: 'UPDATE_MULTISAMPLE_FILE',
+        payload: {
+          index: newIndex,
+          updates: { rootNote: midiNote }
+        }
+      });
+    }
+  }, [state.multisampleFiles.length, handleMultisampleUpload, dispatch]);
 
   const hasLoadedSamples = state.multisampleFiles.length > 0;
   const hasPresetName = state.multisampleSettings.presetName.trim().length > 0;
@@ -273,80 +310,14 @@ export function MultisampleTool() {
         background: 'transparent',
         padding: isMobile ? '1rem 0.5rem' : '2rem'
       }}>
-        <div style={{
-          display: 'flex',
-          justifyContent: 'space-between',
-          alignItems: 'center',
-          marginBottom: '1.5rem'
-        }}>
-          <h3 style={{ 
-            margin: '0',
-            color: '#222',
-            fontSize: '1.25rem',
-            fontWeight: '300',
-            display: 'flex',
-            alignItems: 'center',
-            gap: '0.5rem'
-          }}>
-            demo samples
-          </h3>
-          <div style={{
-            display: 'flex',
-            alignItems: 'center',
-            gap: '1.5rem',
-            fontSize: '0.875rem',
-            color: '#666'
-          }}>
-            <div style={{ 
-              display: 'flex', 
-              alignItems: 'center', 
-              gap: '0.5rem',
-              fontWeight: '500'
-            }}>
-              <i className="fas fa-check-circle" style={{ color: '#666' }}></i>
-              {state.multisampleFiles.filter(s => s.isLoaded).length} / 24 loaded
-            </div>
-          </div>
-        </div>
-
         <ErrorDisplay message={state.error || ''} />
 
         <VirtualMidiKeyboard
-          assignedNotes={state.multisampleFiles.map(file => file.rootNote).filter(note => note !== undefined)}
-          loadedSamplesCount={state.multisampleFiles.length}
-          onKeyClick={(midiNote) => {
-            // Find and play the sample assigned to this MIDI note
-            const sampleIndex = state.multisampleFiles.findIndex(file => file.rootNote === midiNote);
-            if (sampleIndex !== -1 && state.multisampleFiles[sampleIndex].audioBuffer) {
-              const sample = state.multisampleFiles[sampleIndex];
-              const audioContext = new (window.AudioContext || (window as any).webkitAudioContext)();
-              const source = audioContext.createBufferSource();
-              source.buffer = sample.audioBuffer;
-              source.connect(audioContext.destination);
-              source.start();
-            }
-          }}
-          onUnassignedKeyClick={(midiNote) => {
-            // Store the target MIDI note and open audio file browser
-            setTargetMidiNote(midiNote);
-            audioFileInputRef.current?.click();
-          }}
-          onKeyDrop={async (midiNote, files) => {
-            // Handle drag and drop onto specific MIDI keys
-            if (files.length > 0 && state.multisampleFiles.length < 24) {
-              const file = files[0]; // Use first file
-              await handleMultisampleUpload(file);
-              // After upload, assign to the specific MIDI note
-              const newIndex = state.multisampleFiles.length;
-              dispatch({
-                type: 'UPDATE_MULTISAMPLE_FILE',
-                payload: {
-                  index: newIndex,
-                  updates: { rootNote: midiNote }
-                }
-              });
-            }
-          }}
+          assignedNotes={state.multisampleFiles.map(s => s.rootNote || -1)}
+          onKeyClick={handleKeyClick}
+          onUnassignedKeyClick={handleUnassignedKeyClick}
+          onKeyDrop={handleKeyDrop}
+          loadedSamplesCount={state.multisampleFiles.filter(s => s.isLoaded).length}
         />
       </div>
 

@@ -203,12 +203,57 @@ export function VirtualMidiKeyboard({
   };
 
   return (
-    <div className={`virtual-midi-keyboard ${className}`}>
+    <div className={`virtual-midi-keyboard ${className}`} style={{
+      border: '1px solid #dee2e6',
+      borderRadius: '15px',
+      backgroundColor: '#fff',
+      boxShadow: '0 2px 8px rgba(0, 0, 0, 0.1)',
+      overflow: 'hidden'
+    }}>
+      {/* Header */}
+      <div style={{
+        display: 'flex',
+        justifyContent: 'space-between',
+        alignItems: 'center',
+        padding: '1rem 1rem 0.5rem 1rem',
+        borderBottom: '1px solid #dee2e6',
+        backgroundColor: '#fff'
+      }}>
+        <h3 style={{ 
+          margin: '0',
+          color: '#222',
+          fontSize: '1.25rem',
+          fontWeight: '300',
+          display: 'flex',
+          alignItems: 'center',
+          gap: '0.5rem'
+        }}>
+          demo samples
+        </h3>
+        <div style={{
+          display: 'flex',
+          alignItems: 'center',
+          gap: '1.5rem',
+          fontSize: '0.875rem',
+          color: '#666'
+        }}>
+          <div style={{ 
+            display: 'flex', 
+            alignItems: 'center', 
+            gap: '0.5rem',
+            fontWeight: '500'
+          }}>
+            <i className="fas fa-check-circle" style={{ color: '#666' }}></i>
+            {loadedSamplesCount} / 24 loaded
+          </div>
+        </div>
+      </div>
+
       {/* Keyboard Container */}
       <div style={{
         backgroundColor: '#f9fafb',
-        border: '1px solid #e5e7eb',
-        borderRadius: '8px',
+        border: 'none',
+        borderRadius: '0',
         padding: '1rem',
         overflowX: 'auto',
         overflowY: 'hidden'
