@@ -194,7 +194,7 @@ export function AudioProcessingSection({
                         wordBreak: 'break-word',
                         maxWidth: '100%'
                       }}>
-                        cut at loop end
+                        loop end cut
                       </div>
                       <Toggle
                         id="cut-loop-toggle"
@@ -334,7 +334,7 @@ export function AudioProcessingSection({
                       fontWeight: '500',
                       color: '#222'
                     }}>
-                      cut at loop end
+                      loop end cut
                     </div>
                     <Toggle
                       id="cut-loop-toggle"

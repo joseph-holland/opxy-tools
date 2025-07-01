@@ -106,7 +106,7 @@ export const DrumKeyboardContainer: React.FC<DrumKeyboardContainerProps> = ({ on
               gap: '0.5rem',
             }}
           >
-            demo samples
+            load and demo samples
           </h3>
           <div
             style={{
