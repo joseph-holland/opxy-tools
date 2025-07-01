@@ -11,6 +11,7 @@ import { DrumBulkEditModal } from './DrumBulkEditModal';
 import { useFileUpload } from '../../hooks/useFileUpload';
 import { usePatchGeneration } from '../../hooks/usePatchGeneration';
 import { audioBufferToWav } from '../../utils/audio';
+import { DrumKeyboardContainer } from './DrumKeyboardContainer';
 
 export function DrumTool() {
   const { state, dispatch } = useAppContext();
@@ -228,48 +229,9 @@ export function DrumTool() {
       height: '100%'
     }}>
 
-
-      {/* Always Visible Keyboard Section */}
-      <div style={{
-        background: 'transparent',
-        padding: isMobile ? '1rem 0.5rem' : '2rem'
-      }}>
-        <div style={{
-          display: 'flex',
-          justifyContent: 'space-between',
-          alignItems: 'center',
-          marginBottom: '1.5rem'
-        }}>
-          <h3 style={{ 
-            margin: '0',
-            color: '#222',
-            fontSize: '1.25rem',
-            fontWeight: '300',
-            display: 'flex',
-            alignItems: 'center',
-            gap: '0.5rem'
-          }}>
-            demo samples
-          </h3>
-          <div style={{
-            display: 'flex',
-            alignItems: 'center',
-            gap: '1.5rem',
-            fontSize: '0.875rem',
-            color: '#666'
-          }}>
-            <div style={{ 
-              display: 'flex', 
-              alignItems: 'center', 
-              gap: '0.5rem',
-              fontWeight: '500'
-            }}>
-              <i className="fas fa-check-circle" style={{ color: '#666' }}></i>
-              {state.drumSamples.filter(s => s.isLoaded).length} / 24 loaded
-            </div>
-          </div>
-        </div>
-        <DrumKeyboard onFileUpload={handleFileUpload} />
+      {/* Always Visible Drum Keyboard Section with pinning */}
+      <div style={{ background: 'transparent', padding: isMobile ? '1rem 0.5rem' : '2rem' }}>
+        <DrumKeyboardContainer onFileUpload={handleFileUpload} />
       </div>
 
       {/* Tabbed Content Area */}
