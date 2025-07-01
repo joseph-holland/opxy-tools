@@ -170,8 +170,8 @@ export function VirtualMidiKeyboard({
             className="midi-key white-key"
             style={{
               position: 'relative',
-              width: '20px',
-              height: '80px',
+              width: '24px',
+              height: '120px',
               backgroundColor: isDragOver ? '#e5e7eb' : isAssigned ? '#6b7280' : isHovered ? '#f3f4f6' : '#ffffff',
               border: isDragOver ? '2px solid #9ca3af' : '1px solid #d1d5db',
               borderRadius: '0 0 4px 4px',
@@ -206,11 +206,11 @@ export function VirtualMidiKeyboard({
       
       // Black keys for this octave (positioned absolutely over white keys)
       const blackKeyPositions = [
-        { noteInOctave: 1, position: 15 },   // C#
-        { noteInOctave: 3, position: 35 },   // D#
-        { noteInOctave: 6, position: 75 },   // F#
-        { noteInOctave: 8, position: 95 },   // G#
-        { noteInOctave: 10, position: 115 }  // A#
+        { noteInOctave: 1, position: 17 },   // C# - between C and D
+        { noteInOctave: 3, position: 41 },   // D# - between D and E
+        { noteInOctave: 6, position: 89 },   // F# - between F and G
+        { noteInOctave: 8, position: 113 },  // G# - between G and A
+        { noteInOctave: 10, position: 137 }  // A# - between A and B
       ];
       
       for (const { noteInOctave, position } of blackKeyPositions) {
@@ -230,8 +230,8 @@ export function VirtualMidiKeyboard({
               position: 'absolute',
               left: `${position}px`,
               top: '0',
-              width: '12px',
-              height: '50px',
+              width: '14px',
+              height: '75px',
               backgroundColor: isDragOver ? '#9ca3af' : isAssigned ? '#374151' : isHovered ? '#374151' : '#1f2937',
               border: isDragOver ? '2px solid #6b7280' : '1px solid #111827',
               borderRadius: '0 0 2px 2px',
@@ -257,8 +257,7 @@ export function VirtualMidiKeyboard({
           key={`octave-${octave}`}
           style={{
             position: 'relative',
-            display: 'flex',
-            marginRight: '1px'
+            display: 'flex'
           }}
         >
           {octaveKeys}
@@ -360,7 +359,7 @@ export function VirtualMidiKeyboard({
             display: 'flex',
             alignItems: 'flex-start',
             minWidth: '1400px', // Ensure enough space for all keys
-            height: '90px'
+            height: '120px'
           }}>
             {renderKeys()}
           </div>
