@@ -38,5 +38,7 @@ export const cookieUtils = {
 // Cookie keys used in the app
 export const COOKIE_KEYS = {
   LAST_TAB: 'opxy_last_tab',
+  DRUM_KEYBOARD_PINNED: 'opxy_drum_keyboard_pinned',
+  MULTISAMPLE_KEYBOARD_PINNED: 'opxy_multisample_keyboard_pinned',
   // Add other cookie keys here as needed
 } as const; 

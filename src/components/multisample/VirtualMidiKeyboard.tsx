@@ -1,4 +1,5 @@
 import { useState, useCallback, useEffect, useRef } from 'react';
+import { Tooltip } from '../common/Tooltip';
 
 interface VirtualMidiKeyboardProps {
   assignedNotes?: number[]; // MIDI note numbers that have samples assigned
@@ -7,6 +8,8 @@ interface VirtualMidiKeyboardProps {
   onKeyDrop?: (midiNote: number, files: File[]) => void;
   className?: string;
   loadedSamplesCount?: number; // Number of loaded samples
+  isPinned: boolean;
+  onTogglePin: () => void;
 }
 
 export function VirtualMidiKeyboard({ 
@@ -15,7 +18,9 @@ export function VirtualMidiKeyboard({
   onUnassignedKeyClick,
   onKeyDrop,
   className = '',
-  loadedSamplesCount = 0
+  loadedSamplesCount = 0,
+  isPinned,
+  onTogglePin
 }: VirtualMidiKeyboardProps) {
   const containerRef = useRef<HTMLDivElement>(null);
   const placeholderRef = useRef<HTMLDivElement>(null);
@@ -23,10 +28,11 @@ export function VirtualMidiKeyboard({
   
   const [hoveredKey, setHoveredKey] = useState<number | null>(null);
   const [dragOverKey, setDragOverKey] = useState<number | null>(null);
-  const [isPinned, setIsPinned] = useState(false);
   const [isStuck, setIsStuck] = useState(false);
   const [dynamicStyles, setDynamicStyles] = useState({});
   const [placeholderHeight, setPlaceholderHeight] = useState(0);
+  const [isTooltipVisible, setIsTooltipVisible] = useState(false);
+  const [isMobile, setIsMobile] = useState(window.innerWidth <= 768);
   
   // Keyboard control state
   const [activeOctave, setActiveOctave] = useState(4); // Default to middle C (C4)
@@ -49,10 +55,6 @@ export function VirtualMidiKeyboard({
     'y': 8,  // G#
     'u': 10  // A#
   };
-
-  const togglePin = useCallback(() => {
-    setIsPinned(!isPinned);
-  }, [isPinned]);
 
   // Octave control functions
   const changeOctave = useCallback((direction: 'up' | 'down') => {
@@ -189,11 +191,33 @@ export function VirtualMidiKeyboard({
     return () => window.removeEventListener('scroll', handleScroll);
   }, [isPinned, isStuck]);
 
+  useEffect(() => {
+    const handleResize = () => setIsMobile(window.innerWidth <= 768);
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
+
+  const iconSize = '18px';
+
+  const tooltipContent = isMobile ? (
+    <>
+      <strong>load:</strong> tap empty keys to browse and select files<br />
+      <strong>play:</strong> tap keys to play loaded samples<br />
+      <strong>pin:</strong> use the pin icon to keep the keyboard at the top of the screen
+    </>
+  ) : (
+    <>
+      <strong>load:</strong> click empty keys to browse files or drag & drop audio onto any key<br />
+      <strong>play:</strong> use keyboard keys (<strong>A-J, W, E, T, Y, U</strong>) & <strong>Z/X</strong> to change octave<br />
+      <strong>pin:</strong> keep the keyboard fixed using the pin icon
+    </>
+  );
+
   const combinedStyles: React.CSSProperties = {
-    border: '1px solid #f0f0f0',
+    border: '1px solid var(--color-border-subtle)',
     borderRadius: '15px',
-    backgroundColor: '#fff',
-    boxShadow: '0 2px 8px rgba(0, 0, 0, 0.1)',
+    backgroundColor: 'var(--color-bg-primary)',
+    boxShadow: '0 2px 8px var(--color-shadow-primary)',
     overflow: 'hidden',
     position: isStuck ? 'fixed' : 'relative',
     top: isStuck ? '10px' : undefined,
@@ -415,7 +439,7 @@ export function VirtualMidiKeyboard({
       />
       <div
         ref={containerRef}
-        className={className}
+        className={`virtual-midi-keyboard ${isPinned ? 'pinned' : ''} ${className}`}
         style={combinedStyles}
       >
         {/* Left fade overlay */}
@@ -448,26 +472,48 @@ export function VirtualMidiKeyboard({
           justifyContent: 'space-between',
           alignItems: 'center',
           padding: '1rem 1rem 0.5rem 1rem',
-          borderBottom: '1px solid #dee2e6',
-          backgroundColor: '#fff'
+          borderBottom: '1px solid var(--color-border-medium)',
+          backgroundColor: 'var(--color-bg-primary)'
         }}>
-          <h3 style={{
-            margin: 0,
-            color: '#222',
-            fontSize: '1.25rem',
-            fontWeight: 300,
-            display: 'flex',
-            alignItems: 'center',
-            gap: '0.5rem'
-          }}>
-             load and play samples
-          </h3>
+          <div style={{ display: 'flex', alignItems: 'baseline', gap: '0.5rem' }}>
+            <h3 style={{
+              margin: 0,
+              color: '#222',
+              fontSize: '1.25rem',
+              fontWeight: 300,
+            }}>
+              load and play samples
+            </h3>
+            <Tooltip
+              isVisible={isTooltipVisible}
+              content={tooltipContent}
+            >
+              <span
+                style={{ display: 'flex' }}
+                onClick={(e) => {
+                  e.stopPropagation();
+                  setIsTooltipVisible(!isTooltipVisible);
+                }}
+                onMouseEnter={() => setIsTooltipVisible(true)}
+                onMouseLeave={() => setIsTooltipVisible(false)}
+              >
+                <i 
+                  className="fas fa-question-circle" 
+                  style={{ 
+                    fontSize: iconSize, 
+                    color: 'var(--color-text-secondary)',
+                    cursor: 'help'
+                  }}
+                />
+              </span>
+            </Tooltip>
+          </div>
           <div style={{
             display: 'flex',
             alignItems: 'center',
             gap: '1rem',
             fontSize: '0.875rem',
-            color: '#666'
+            color: 'var(--color-text-secondary)'
           }}>
             <div style={{ 
               display: 'flex', 
@@ -475,11 +521,11 @@ export function VirtualMidiKeyboard({
               gap: '0.5rem',
               fontWeight: 500
             }}>
-              <i className="fas fa-check-circle" style={{ color: '#666' }}></i>
+              <i className="fas fa-check-circle" style={{ color: 'var(--color-text-secondary)', fontSize: iconSize }}></i>
               {loadedSamplesCount} / 24 loaded
             </div>
-            <button 
-              onClick={togglePin} 
+            <button
+              onClick={onTogglePin}
               className="pin-button"
               style={{
                 background: 'none',
@@ -491,23 +537,11 @@ export function VirtualMidiKeyboard({
                 alignItems: 'center',
                 justifyContent: 'center',
                 transition: 'all 0.2s ease',
-                color: isPinned ? '#007aff' : '#666'
-              }}
-              onMouseEnter={(e) => {
-                if (!isPinned) {
-                  e.currentTarget.style.backgroundColor = '#f0f0f0';
-                }
-              }}
-              onMouseLeave={(e) => {
-                if (!isPinned) {
-                  e.currentTarget.style.backgroundColor = 'transparent';
-                }
               }}
               title={isPinned ? 'Unpin keyboard' : 'Pin keyboard to top'}
             >
               <i className="fas fa-thumbtack" style={{ 
-                fontSize: 14,
-                transform: isPinned ? 'rotate(45deg)' : 'none'
+                fontSize: iconSize,
               }}></i>
             </button>
           </div>

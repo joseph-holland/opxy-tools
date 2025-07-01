@@ -89,6 +89,8 @@ export interface AppState {
   // UI state
   isLoading: boolean;
   error: string | null;
+  isDrumKeyboardPinned: boolean;
+  isMultisampleKeyboardPinned: boolean;
   
   // Notifications
   notifications: Notification[];
@@ -132,7 +134,9 @@ export type AppAction =
   | { type: 'ADD_NOTIFICATION'; payload: Notification }
   | { type: 'REMOVE_NOTIFICATION'; payload: string }
   | { type: 'SET_IMPORTED_DRUM_PRESET'; payload: any | null }
-  | { type: 'SET_IMPORTED_MULTISAMPLE_PRESET'; payload: any | null };
+  | { type: 'SET_IMPORTED_MULTISAMPLE_PRESET'; payload: any | null }
+  | { type: 'TOGGLE_DRUM_KEYBOARD_PIN' }
+  | { type: 'TOGGLE_MULTISAMPLE_KEYBOARD_PIN' };
 
 // Initial state
 const initialDrumSample: DrumSample = {
@@ -171,6 +175,17 @@ const getInitialTab = (): 'drum' | 'multisample' => {
   }
 };
 
+// Function to get initial pin state from cookie
+const getInitialPinState = (key: string): boolean => {
+  try {
+    const savedPinState = cookieUtils.getCookie(key);
+    return savedPinState === 'true';
+  } catch (error) {
+    console.warn(`Failed to load pin state from cookie for key: ${key}`, error);
+    return false;
+  }
+}
+
 const initialState: AppState = {
   currentTab: getInitialTab(),
   drumSettings: {
@@ -202,6 +217,8 @@ const initialState: AppState = {
   selectedMultisample: null,
   isLoading: false,
   error: null,
+  isDrumKeyboardPinned: getInitialPinState(COOKIE_KEYS.DRUM_KEYBOARD_PINNED),
+  isMultisampleKeyboardPinned: getInitialPinState(COOKIE_KEYS.MULTISAMPLE_KEYBOARD_PINNED),
   notifications: [],
   importedDrumPreset: null,
   importedMultisamplePreset: null
@@ -493,6 +510,12 @@ function appReducer(state: AppState, action: AppAction): AppState {
       
     case 'SET_IMPORTED_MULTISAMPLE_PRESET':
       return { ...state, importedMultisamplePreset: action.payload };
+      
+    case 'TOGGLE_DRUM_KEYBOARD_PIN':
+      return { ...state, isDrumKeyboardPinned: !state.isDrumKeyboardPinned };
+      
+    case 'TOGGLE_MULTISAMPLE_KEYBOARD_PIN':
+      return { ...state, isMultisampleKeyboardPinned: !state.isMultisampleKeyboardPinned };
       
     default:
       return state;

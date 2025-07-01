@@ -1,7 +1,7 @@
 import React, { useState, useCallback, useEffect, useRef } from 'react';
 import { useAppContext } from '../../context/AppContext';
 import { DrumKeyboard } from './DrumKeyboard';
-import { cookieUtils } from '../../utils/cookies';
+import { cookieUtils, COOKIE_KEYS } from '../../utils/cookies';
 import { Tooltip } from '../common/Tooltip';
 
 interface DrumKeyboardContainerProps {
@@ -14,12 +14,12 @@ interface DrumKeyboardContainerProps {
  * DrumKeyboard component unchanged.
  */
 export const DrumKeyboardContainer: React.FC<DrumKeyboardContainerProps> = ({ onFileUpload }) => {
-  const { state } = useAppContext();
+  const { state, dispatch } = useAppContext();
+  const { isDrumKeyboardPinned } = state;
 
   const containerRef = useRef<HTMLDivElement>(null);
   const placeholderRef = useRef<HTMLDivElement>(null);
 
-  const [isPinned, setIsPinned] = useState(false);
   const [isStuck, setIsStuck] = useState(false);
   const [dynamicStyles, setDynamicStyles] = useState<React.CSSProperties>({});
   const [placeholderHeight, setPlaceholderHeight] = useState(0);
@@ -29,8 +29,17 @@ export const DrumKeyboardContainer: React.FC<DrumKeyboardContainerProps> = ({ on
   const loadedSamplesCount = state.drumSamples.filter(s => s.isLoaded).length;
 
   const togglePin = useCallback(() => {
-    setIsPinned(prev => !prev);
-  }, []);
+    dispatch({ type: 'TOGGLE_DRUM_KEYBOARD_PIN' });
+  }, [dispatch]);
+
+  // Effect to save pin state to cookies
+  useEffect(() => {
+    try {
+      cookieUtils.setCookie(COOKIE_KEYS.DRUM_KEYBOARD_PINNED, String(isDrumKeyboardPinned));
+    } catch (error) {
+      console.warn('Failed to save drum keyboard pin state to cookie:', error);
+    }
+  }, [isDrumKeyboardPinned]);
 
   const iconSize = '18px';
 
@@ -64,7 +73,7 @@ export const DrumKeyboardContainer: React.FC<DrumKeyboardContainerProps> = ({ on
     const placeholder = placeholderRef.current;
 
     const handleScroll = () => {
-      if (!isPinned || !container || !placeholder) return;
+      if (!isDrumKeyboardPinned || !container || !placeholder) return;
 
       if (!isStuck) {
         const rect = container.getBoundingClientRect();
@@ -86,7 +95,7 @@ export const DrumKeyboardContainer: React.FC<DrumKeyboardContainerProps> = ({ on
 
     window.addEventListener('scroll', handleScroll, { passive: true });
     return () => window.removeEventListener('scroll', handleScroll);
-  }, [isPinned, isStuck]);
+  }, [isDrumKeyboardPinned, isStuck]);
 
   // Close tooltip when clicking outside
   useEffect(() => {
@@ -124,7 +133,7 @@ export const DrumKeyboardContainer: React.FC<DrumKeyboardContainerProps> = ({ on
       {/* Actual Keyboard Container */}
       <div
         ref={containerRef}
-        className={`virtual-midi-keyboard ${isPinned ? 'pinned' : ''}`}
+        className={`virtual-midi-keyboard ${isDrumKeyboardPinned ? 'pinned' : ''}`}
         style={combinedStyles}
       >
         {/* Header */}
@@ -207,7 +216,7 @@ export const DrumKeyboardContainer: React.FC<DrumKeyboardContainerProps> = ({ on
                 justifyContent: 'center',
                 transition: 'all 0.2s ease',
               }}
-              title={isPinned ? 'Unpin keyboard' : 'Pin keyboard to top'}
+              title={isDrumKeyboardPinned ? 'Unpin keyboard' : 'Pin keyboard to top'}
             >
               <i className="fas fa-thumbtack" style={{ fontSize: iconSize }}></i>
             </button>

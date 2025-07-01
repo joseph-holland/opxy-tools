@@ -19,6 +19,20 @@ const drumSampleNames = [
   'triangle', 'low tom', 'low conga', 'clave', 'hi-conga', 'guiro'
 ];
 
+// Theme colour shortcuts for readability
+const c = {
+  bg: 'var(--color-bg-primary)',
+  bgAlt: 'var(--color-bg-secondary)',
+  border: 'var(--color-border-light)',
+  borderMed: 'var(--color-border-medium)',
+  borderSubtle: 'var(--color-border-subtle)',
+  text: 'var(--color-text-primary)',
+  textSecondary: 'var(--color-text-secondary)',
+  shadow: '0 2px 8px var(--color-shadow-primary)',
+  action: 'var(--color-interactive-focus)',
+  actionHover: 'var(--color-interactive-dark)',
+};
+
 export function DrumSampleTable({ onFileUpload, onClearSample, onRecordSample }: DrumSampleTableProps) {
   const { state, dispatch } = useAppContext();
   const fileInputRefs = useRef<(HTMLInputElement | null)[]>([]);
@@ -131,8 +145,8 @@ export function DrumSampleTable({ onFileUpload, onClearSample, onRecordSample }:
                 
                 <div
                   style={{
-                    background: '#fff',
-                    border: '1px solid #e0e0e0',
+                    background: c.bg,
+                    border: `1px solid ${c.border}`,
                     borderRadius: '3px',
                     padding: '1rem',
                     transition: 'background 0.2s ease'
@@ -150,7 +164,7 @@ export function DrumSampleTable({ onFileUpload, onClearSample, onRecordSample }:
                     <div style={{
                       fontSize: '0.9rem',
                       fontWeight: '600',
-                      color: '#222',
+                      color: c.text,
                       display: 'flex',
                       alignItems: 'center',
                       gap: '0.5rem'
@@ -161,7 +175,7 @@ export function DrumSampleTable({ onFileUpload, onClearSample, onRecordSample }:
                           className="fas fa-pencil-alt" 
                           style={{ 
                             fontSize: '0.7rem', 
-                            color: '#666',
+                            color: c.textSecondary,
                             opacity: 0.8
                           }}
                           title="edited sample"
@@ -186,10 +200,10 @@ export function DrumSampleTable({ onFileUpload, onClearSample, onRecordSample }:
                            display: 'flex',
                            alignItems: 'center',
                            justifyContent: 'center',
-                           border: '1px solid #ccc',
+                           border: `1px solid ${c.borderMed}`,
                            borderRadius: '3px',
-                           backgroundColor: '#fff',
-                           color: isLoaded ? '#333' : '#999'
+                           backgroundColor: c.bg,
+                           color: isLoaded ? c.action : c.textSecondary
                          }}
                          title="play"
                        >
@@ -207,10 +221,10 @@ export function DrumSampleTable({ onFileUpload, onClearSample, onRecordSample }:
                            display: 'flex',
                            alignItems: 'center',
                            justifyContent: 'center',
-                           border: '1px solid #ccc',
+                           border: `1px solid ${c.borderMed}`,
                            borderRadius: '3px',
-                           backgroundColor: '#fff',
-                           color: isLoaded ? '#666' : '#999'
+                           backgroundColor: c.bg,
+                           color: isLoaded ? c.action : c.textSecondary
                          }}
                          title="clear"
                        >
@@ -227,10 +241,10 @@ export function DrumSampleTable({ onFileUpload, onClearSample, onRecordSample }:
                            display: 'flex',
                            alignItems: 'center',
                            justifyContent: 'center',
-                           border: '1px solid #ccc',
+                           border: `1px solid ${c.borderMed}`,
                            borderRadius: '3px',
-                           backgroundColor: '#fff',
-                           color: '#333'
+                           backgroundColor: c.bg,
+                           color: c.action
                          }}
                          title="record"
                        >
@@ -248,10 +262,10 @@ export function DrumSampleTable({ onFileUpload, onClearSample, onRecordSample }:
                            display: 'flex',
                            alignItems: 'center',
                            justifyContent: 'center',
-                           border: '1px solid #ccc',
+                           border: `1px solid ${c.borderMed}`,
                            borderRadius: '3px',
-                           backgroundColor: '#fff',
-                           color: isLoaded ? '#333' : '#999'
+                           backgroundColor: c.bg,
+                           color: isLoaded ? c.action : c.textSecondary
                          }}
                          title="settings"
                        >
@@ -267,7 +281,7 @@ export function DrumSampleTable({ onFileUpload, onClearSample, onRecordSample }:
                       <div style={{
                         fontSize: '0.85rem',
                         fontWeight: '500',
-                        color: '#222',
+                        color: c.text,
                         marginBottom: '0.5rem',
                         wordBreak: 'break-word'
                       }}>
@@ -313,12 +327,12 @@ export function DrumSampleTable({ onFileUpload, onClearSample, onRecordSample }:
                            <div style={{
                              width: '100%',
                              height: '50px',
-                             background: '#f0f0f0',
+                             background: c.borderSubtle,
                              borderRadius: '3px',
                              display: 'flex',
                              alignItems: 'center',
                              justifyContent: 'center',
-                             color: '#999',
+                             color: c.textSecondary,
                              fontSize: '0.7rem'
                            }}>
                              no sample
@@ -332,22 +346,22 @@ export function DrumSampleTable({ onFileUpload, onClearSample, onRecordSample }:
                       style={{
                         width: '100%',
                         background: 'none',
-                        border: '2px dashed #ccc',
+                        border: `2px dashed ${c.borderMed}`,
                         borderRadius: '3px',
                         padding: '1.5rem 1rem',
-                        color: '#666',
+                        color: c.textSecondary,
                         fontSize: '0.9rem',
                         cursor: 'pointer',
                         transition: 'all 0.2s ease',
                         textAlign: 'center'
                       }}
                       onTouchStart={(e) => {
-                        e.currentTarget.style.borderColor = '#999';
-                        e.currentTarget.style.color = '#333';
+                        e.currentTarget.style.borderColor = c.textSecondary;
+                        e.currentTarget.style.color = c.action;
                       }}
                       onTouchEnd={(e) => {
-                        e.currentTarget.style.borderColor = '#ccc';
-                        e.currentTarget.style.color = '#666';
+                        e.currentTarget.style.borderColor = c.borderMed;
+                        e.currentTarget.style.color = c.textSecondary;
                       }}
                     >
                       tap to browse for audio file
@@ -373,13 +387,13 @@ export function DrumSampleTable({ onFileUpload, onClearSample, onRecordSample }:
         gridTemplateColumns: '140px 1fr 120px 140px',
         gap: '0.5rem',
         padding: '0.75rem',
-        background: '#f8f9fa',
+        background: c.bgAlt,
         borderRadius: '6px 6px 0 0',
-        border: '1px solid #e0e0e0',
+        border: `1px solid ${c.border}`,
         borderBottom: 'none',
         fontSize: '0.8rem',
         fontWeight: 'bold',
-        color: '#666'
+        color: c.textSecondary
       }}>
         <div>drum key</div>
         <div>file details</div>
@@ -389,7 +403,7 @@ export function DrumSampleTable({ onFileUpload, onClearSample, onRecordSample }:
 
       {/* Sample Rows */}
       <div style={{
-        border: '1px solid #e0e0e0',
+        border: `1px solid ${c.border}`,
         borderRadius: '0 0 6px 6px',
         overflow: 'hidden'
       }}>
@@ -419,8 +433,8 @@ export function DrumSampleTable({ onFileUpload, onClearSample, onRecordSample }:
                   gridTemplateColumns: '140px 1fr 120px 140px',
                   gap: '0.5rem',
                   padding: '0.75rem',
-                  background: '#fff',
-                  borderBottom: index < 23 ? '1px solid #e0e0e0' : 'none',
+                  background: c.bg,
+                  borderBottom: index < 23 ? `1px solid ${c.border}` : 'none',
                   transition: 'background 0.2s ease',
                   alignItems: 'center',
                   minHeight: '60px'
@@ -428,17 +442,17 @@ export function DrumSampleTable({ onFileUpload, onClearSample, onRecordSample }:
                 onDragOver={handleDragOver}
                 onDrop={(e) => handleDrop(e, index)}
                 onMouseEnter={(e) => {
-                  e.currentTarget.style.background = '#f8f9fa';
+                  e.currentTarget.style.background = c.bgAlt;
                 }}
                 onMouseLeave={(e) => {
-                  e.currentTarget.style.background = '#fff';
+                  e.currentTarget.style.background = c.bg;
                 }}
               >
                 {/* Drum Name */}
                 <div style={{
                   fontSize: '0.8rem',
                   fontWeight: '500',
-                  color: '#222',
+                  color: c.text,
                   display: 'flex',
                   alignItems: 'center',
                   gap: '0.5rem'
@@ -449,7 +463,7 @@ export function DrumSampleTable({ onFileUpload, onClearSample, onRecordSample }:
                       className="fas fa-pencil-alt" 
                       style={{ 
                         fontSize: '0.6rem', 
-                        color: '#666',
+                        color: c.textSecondary,
                         opacity: 0.8
                       }}
                       title="edited sample"
@@ -468,7 +482,7 @@ export function DrumSampleTable({ onFileUpload, onClearSample, onRecordSample }:
                       <div style={{
                         fontSize: '0.8rem',
                         fontWeight: '500',
-                        color: '#222',
+                        color: c.text,
                         wordBreak: 'break-word',
                         marginBottom: '0.25rem'
                       }}>
@@ -487,21 +501,21 @@ export function DrumSampleTable({ onFileUpload, onClearSample, onRecordSample }:
                       onClick={() => openFileDialog(index)}
                       style={{
                         background: 'none',
-                        border: '2px dashed #ccc',
+                        border: `2px dashed ${c.borderMed}`,
                         borderRadius: '3px',
                         padding: '1rem',
-                        color: '#666',
+                        color: c.textSecondary,
                         fontSize: '0.8rem',
                         cursor: 'pointer',
                         transition: 'all 0.2s ease'
                       }}
                       onMouseEnter={(e) => {
-                        e.currentTarget.style.borderColor = '#999';
-                        e.currentTarget.style.color = '#333';
+                        e.currentTarget.style.borderColor = c.textSecondary;
+                        e.currentTarget.style.color = c.action;
                       }}
                       onMouseLeave={(e) => {
-                        e.currentTarget.style.borderColor = '#ccc';
-                        e.currentTarget.style.color = '#666';
+                        e.currentTarget.style.borderColor = c.borderMed;
+                        e.currentTarget.style.color = c.textSecondary;
                       }}
                     >
                       drop sample here or click to browse
@@ -538,12 +552,12 @@ export function DrumSampleTable({ onFileUpload, onClearSample, onRecordSample }:
                     <div style={{
                       width: '100%',
                       height: '40px',
-                      background: '#f0f0f0',
+                      background: c.borderSubtle,
                       borderRadius: '3px',
                       display: 'flex',
                       alignItems: 'center',
                       justifyContent: 'center',
-                      color: '#999',
+                      color: c.textSecondary,
                       fontSize: '0.7rem'
                     }}>
                       no sample
@@ -569,10 +583,10 @@ export function DrumSampleTable({ onFileUpload, onClearSample, onRecordSample }:
                       display: 'flex',
                       alignItems: 'center',
                       justifyContent: 'center',
-                      border: '1px solid #ccc',
+                      border: `1px solid ${c.borderMed}`,
                       borderRadius: '3px',
-                      backgroundColor: '#fff',
-                      color: isLoaded ? '#333' : '#999'
+                      backgroundColor: c.bg,
+                      color: isLoaded ? c.action : c.textSecondary
                     }}
                     title="play"
                   >
@@ -590,10 +604,10 @@ export function DrumSampleTable({ onFileUpload, onClearSample, onRecordSample }:
                       display: 'flex',
                       alignItems: 'center',
                       justifyContent: 'center',
-                      border: '1px solid #ccc',
+                      border: `1px solid ${c.borderMed}`,
                       borderRadius: '3px',
-                      backgroundColor: '#fff',
-                      color: isLoaded ? '#666' : '#999'
+                      backgroundColor: c.bg,
+                      color: isLoaded ? c.action : c.textSecondary
                     }}
                     title="clear"
                   >
@@ -610,10 +624,10 @@ export function DrumSampleTable({ onFileUpload, onClearSample, onRecordSample }:
                       display: 'flex',
                       alignItems: 'center',
                       justifyContent: 'center',
-                      border: '1px solid #ccc',
+                      border: `1px solid ${c.borderMed}`,
                       borderRadius: '3px',
-                      backgroundColor: '#fff',
-                      color: '#333'
+                      backgroundColor: c.bg,
+                      color: c.action
                     }}
                     title="record"
                   >
@@ -631,10 +645,10 @@ export function DrumSampleTable({ onFileUpload, onClearSample, onRecordSample }:
                       display: 'flex',
                       alignItems: 'center',
                       justifyContent: 'center',
-                      border: '1px solid #ccc',
+                      border: `1px solid ${c.borderMed}`,
                       borderRadius: '3px',
-                      backgroundColor: '#fff',
-                      color: isLoaded ? '#333' : '#999'
+                      backgroundColor: c.bg,
+                      color: isLoaded ? c.action : c.textSecondary
                     }}
                     title="settings"
                   >

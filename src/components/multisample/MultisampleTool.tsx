@@ -11,6 +11,7 @@ import { VirtualMidiKeyboard } from './VirtualMidiKeyboard';
 import { useFileUpload } from '../../hooks/useFileUpload';
 import { usePatchGeneration } from '../../hooks/usePatchGeneration';
 import { audioBufferToWav } from '../../utils/audio';
+import { cookieUtils, COOKIE_KEYS } from '../../utils/cookies';
 
 
 export function MultisampleTool() {
@@ -31,6 +32,22 @@ export function MultisampleTool() {
   }>({ isOpen: false, targetIndex: null });
 
   const [targetMidiNote, setTargetMidiNote] = useState<number | null>(null);
+
+  // Get pin state from context
+  const { isMultisampleKeyboardPinned } = state;
+
+  const handleTogglePin = useCallback(() => {
+    dispatch({ type: 'TOGGLE_MULTISAMPLE_KEYBOARD_PIN' });
+  }, [dispatch]);
+  
+  // Effect to save pin state to cookies
+  useEffect(() => {
+    try {
+      cookieUtils.setCookie(COOKIE_KEYS.MULTISAMPLE_KEYBOARD_PINNED, String(isMultisampleKeyboardPinned));
+    } catch (error) {
+      console.warn('Failed to save multisample keyboard pin state to cookie:', error);
+    }
+  }, [isMultisampleKeyboardPinned]);
 
   // Detect mobile screen size
   useEffect(() => {
@@ -312,13 +329,17 @@ export function MultisampleTool() {
       }}>
         <ErrorDisplay message={state.error || ''} />
 
-        <VirtualMidiKeyboard
-          assignedNotes={state.multisampleFiles.map(s => s.rootNote || -1)}
-          onKeyClick={handleKeyClick}
-          onUnassignedKeyClick={handleUnassignedKeyClick}
-          onKeyDrop={handleKeyDrop}
-          loadedSamplesCount={state.multisampleFiles.filter(s => s.isLoaded).length}
-        />
+        <div style={{ position: 'relative' }}>
+          <VirtualMidiKeyboard
+            assignedNotes={state.multisampleFiles.map(f => f.rootNote)}
+            onKeyClick={handleKeyClick}
+            onUnassignedKeyClick={handleUnassignedKeyClick}
+            onKeyDrop={handleKeyDrop}
+            loadedSamplesCount={state.multisampleFiles.length}
+            isPinned={isMultisampleKeyboardPinned}
+            onTogglePin={handleTogglePin}
+          />
+        </div>
       </div>
 
       {/* Tabbed Content Area */}

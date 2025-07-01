@@ -2,6 +2,7 @@ import React, { useState, useRef } from 'react';
 import { useAppContext } from '../../context/AppContext';
 import { FileDetailsBadges } from '../common/FileDetailsBadges';
 import { WaveformEditor } from '../common/WaveformEditor';
+import { Button } from '@carbon/react';
 
 interface MultisampleSampleTableProps {
   onFileUpload: (index: number, file: File) => void;
@@ -11,6 +12,21 @@ interface MultisampleSampleTableProps {
   onClearAll: () => void;
   onBrowseFilesRef?: React.MutableRefObject<(() => void) | null>;
 }
+
+// Theme colour shortcuts for readability
+const c = {
+  bg: 'var(--color-bg-primary)',
+  bgAlt: 'var(--color-bg-secondary)',
+  border: 'var(--color-border-light)',
+  borderMed: 'var(--color-border-medium)',
+  borderSubtle: 'var(--color-border-subtle)',
+  text: 'var(--color-text-primary)',
+  textSecondary: 'var(--color-text-secondary)',
+  shadow: '0 2px 8px var(--color-shadow-primary)',
+  action: 'var(--color-interactive-focus)',
+  actionHover: 'var(--color-interactive-dark)',
+  disabled: 'var(--color-border-medium)'
+};
 
 export function MultisampleSampleTable({ 
   onFileUpload, 
@@ -317,8 +333,9 @@ export function MultisampleSampleTable({
               minHeight: '200px',
               cursor: 'pointer',
               transition: 'all 0.2s ease',
-              border: '2px dashed #ccc',
-              borderRadius: '6px'
+              border: `2px dashed ${c.borderMed}`,
+              borderRadius: '6px',
+              backgroundColor: c.bg
             }}
             onClick={handleEmptyAreaClick}
             onDragOver={handleTableDragOver}
@@ -351,8 +368,8 @@ export function MultisampleSampleTable({
                 
                 <div
                                      style={{
-                     background: '#fff',
-                     border: '1px solid #e0e0e0',
+                     background: c.bg,
+                     border: `1px solid ${c.border}`,
                      borderRadius: '3px',
                      padding: '1rem',
                      transition: 'background 0.2s ease'
@@ -369,7 +386,7 @@ export function MultisampleSampleTable({
                     <div style={{
                       fontSize: '0.9rem',
                       fontWeight: '600',
-                      color: '#222'
+                      color: c.text
                     }}>
                       {sample.isLoaded ? midiNoteToString(sample.rootNote || 60) : 'empty slot'}
                     </div>
@@ -389,10 +406,10 @@ export function MultisampleSampleTable({
                               display: 'flex',
                               alignItems: 'center',
                               justifyContent: 'center',
-                              border: '1px solid #ccc',
+                              border: `1px solid ${c.borderMed}`,
                               borderRadius: '3px',
-                              backgroundColor: '#fff',
-                              color: '#333',
+                              backgroundColor: c.bg,
+                              color: c.action,
                               cursor: 'pointer'
                             }}
                             title="play"
@@ -408,10 +425,10 @@ export function MultisampleSampleTable({
                               display: 'flex',
                               alignItems: 'center',
                               justifyContent: 'center',
-                              border: '1px solid #ccc',
+                              border: `1px solid ${c.borderMed}`,
                               borderRadius: '3px',
-                              backgroundColor: '#fff',
-                              color: '#666',
+                              backgroundColor: c.bg,
+                              color: c.textSecondary,
                               cursor: 'pointer'
                             }}
                             title="clear"
@@ -430,10 +447,10 @@ export function MultisampleSampleTable({
                               display: 'flex',
                               alignItems: 'center',
                               justifyContent: 'center',
-                              border: '1px solid #ccc',
+                              border: `1px solid ${c.borderMed}`,
                               borderRadius: '3px',
-                              backgroundColor: '#fff',
-                              color: '#333',
+                              backgroundColor: c.bg,
+                              color: c.action,
                               cursor: 'pointer'
                             }}
                             title="browse"
@@ -449,10 +466,10 @@ export function MultisampleSampleTable({
                               display: 'flex',
                               alignItems: 'center',
                               justifyContent: 'center',
-                              border: '1px solid #ccc',
+                              border: `1px solid ${c.borderMed}`,
                               borderRadius: '3px',
-                              backgroundColor: '#fff',
-                              color: '#333',
+                              backgroundColor: c.bg,
+                              color: c.action,
                               cursor: 'pointer'
                             }}
                             title="record"
@@ -469,7 +486,7 @@ export function MultisampleSampleTable({
                       <div style={{
                         fontSize: '0.85rem',
                         fontWeight: '500',
-                        color: '#222',
+                        color: c.text,
                         marginBottom: '0.5rem',
                         wordBreak: 'break-word'
                       }}>
@@ -513,12 +530,12 @@ export function MultisampleSampleTable({
                           <div style={{
                             width: '100%',
                             height: '50px',
-                            background: '#f0f0f0',
+                            background: c.borderSubtle,
                             borderRadius: '3px',
                             display: 'flex',
                             alignItems: 'center',
                             justifyContent: 'center',
-                            color: '#999',
+                            color: c.textSecondary,
                             fontSize: '0.7rem'
                           }}>
                             no sample
@@ -531,11 +548,11 @@ export function MultisampleSampleTable({
                       onClick={() => openFileDialog(index)}
                       style={{
                         width: '100%',
-                        background: 'none',
-                        border: '2px dashed #ccc',
+                        background: c.bg,
+                        border: `2px dashed ${c.borderMed}`,
                         borderRadius: '3px',
                         padding: '1.5rem 1rem',
-                        color: '#666',
+                        color: c.textSecondary,
                         fontSize: '0.9rem',
                         cursor: 'pointer',
                         transition: 'all 0.2s ease',
@@ -582,9 +599,9 @@ export function MultisampleSampleTable({
             minHeight: '200px',
             cursor: 'pointer',
             transition: 'all 0.2s ease',
-            border: isDragOver ? '2px dashed #6b7280' : '2px dashed #ccc',
+            border: isDragOver ? `2px dashed ${c.borderMed}` : `2px dashed ${c.border}`,
             borderRadius: '6px',
-            backgroundColor: isDragOver ? '#f3f4f6' : 'transparent'
+            backgroundColor: isDragOver ? c.bgAlt : c.bg
           }}
           onClick={handleEmptyAreaClick}
           onDragOver={handleTableDragOver}
@@ -607,13 +624,13 @@ export function MultisampleSampleTable({
             gridTemplateColumns: '140px 1fr 160px',
             gap: '0.5rem',
             padding: '0.75rem',
-            background: '#f8f9fa',
+            background: c.bgAlt,
             borderRadius: '6px 6px 0 0',
-            border: '1px solid #e0e0e0',
+            border: `1px solid ${c.border}`,
             borderBottom: 'none',
             fontSize: '0.8rem',
             fontWeight: 'bold',
-            color: '#666'
+            color: c.textSecondary
           }}>
             <div>key</div>
             <div>file details</div>
@@ -622,7 +639,7 @@ export function MultisampleSampleTable({
 
           {/* Sample Rows */}
           <div style={{
-            border: '1px solid #e0e0e0',
+            border: `1px solid ${c.border}`,
             borderRadius: '0 0 6px 6px',
             overflow: 'hidden'
           }}>
@@ -653,8 +670,8 @@ export function MultisampleSampleTable({
                       gridTemplateColumns: '140px 1fr 160px',
                       gap: '0.5rem',
                       padding: '0.75rem',
-                      background: isDraggedOver ? '#f3f4f6' : '#fff',
-                      borderBottom: index < state.multisampleFiles.length - 1 ? '1px solid #e0e0e0' : 'none',
+                      background: isDraggedOver ? c.bgAlt : c.bg,
+                      borderBottom: index < state.multisampleFiles.length - 1 ? `1px solid ${c.border}` : 'none',
                       transition: 'background 0.2s ease',
                       alignItems: 'center',
                       minHeight: '60px',
@@ -674,7 +691,7 @@ export function MultisampleSampleTable({
                             style={{
                               width: '100px',
                               padding: '0.375rem 0.5rem',
-                              border: '1px solid #d1d5db',
+                              border: `1px solid ${c.border}`,
                               borderRadius: '3px',
                               fontSize: '0.875rem',
                               fontFamily: 'monospace',
@@ -682,12 +699,12 @@ export function MultisampleSampleTable({
                               marginBottom: '0.25rem'
                             }}
                           />
-                          <div style={{ fontSize: '0.75rem', color: '#999' }}>
+                          <div style={{ fontSize: '0.75rem', color: c.textSecondary }}>
                             midi {sample.rootNote || 60}
                           </div>
                         </div>
                       ) : (
-                        <div style={{ textAlign: 'center', color: '#ccc' }}>-</div>
+                        <div style={{ textAlign: 'center', color: c.textSecondary }}>-</div>
                       )}
                     </div>
 
@@ -697,7 +714,7 @@ export function MultisampleSampleTable({
                         <div>
                           <div style={{ 
                             fontWeight: '500', 
-                            color: '#222', 
+                            color: c.text, 
                             marginBottom: '0.25rem',
                             fontSize: '0.9rem',
                             wordBreak: 'break-word'
@@ -716,11 +733,11 @@ export function MultisampleSampleTable({
                         <button
                           onClick={() => openFileDialog(index)}
                           style={{
-                            background: 'none',
-                            border: '2px dashed #ccc',
+                            background: c.bg,
+                            border: `2px dashed ${c.borderMed}`,
                             borderRadius: '3px',
                             padding: '0.75rem',
-                            color: '#666',
+                            color: c.textSecondary,
                             fontSize: '0.8rem',
                             cursor: 'pointer',
                             transition: 'all 0.2s ease',
@@ -728,20 +745,18 @@ export function MultisampleSampleTable({
                             textAlign: 'center'
                           }}
                           onMouseEnter={(e) => {
-                            e.currentTarget.style.borderColor = '#999';
-                            e.currentTarget.style.color = '#333';
+                            e.currentTarget.style.borderColor = c.textSecondary;
+                            e.currentTarget.style.color = c.action;
                           }}
                           onMouseLeave={(e) => {
-                            e.currentTarget.style.borderColor = '#ccc';
-                            e.currentTarget.style.color = '#666';
+                            e.currentTarget.style.borderColor = c.borderMed;
+                            e.currentTarget.style.color = c.textSecondary;
                           }}
                         >
                           click to browse for audio file
                         </button>
                       )}
                     </div>
-
-
 
                     {/* Actions Column */}
                     <div style={{ display: 'flex', gap: '0.5rem', justifyContent: 'flex-end' }}>
@@ -751,21 +766,21 @@ export function MultisampleSampleTable({
                             onClick={() => playSample(index)}
                             style={{
                               padding: '0.375rem 0.75rem',
-                              border: '1px solid #d1d5db',
+                              border: `1px solid ${c.border}`,
                               borderRadius: '3px',
-                              backgroundColor: '#fff',
-                              color: '#6b7280',
+                              backgroundColor: c.bg,
+                              color: c.textSecondary,
                               fontSize: '0.875rem',
                               cursor: 'pointer',
                               transition: 'all 0.2s ease'
                             }}
                             onMouseEnter={(e) => {
-                              e.currentTarget.style.backgroundColor = '#f9fafb';
-                              e.currentTarget.style.borderColor = '#9ca3af';
+                              e.currentTarget.style.backgroundColor = c.bgAlt;
+                              e.currentTarget.style.borderColor = c.borderMed;
                             }}
                             onMouseLeave={(e) => {
-                              e.currentTarget.style.backgroundColor = '#fff';
-                              e.currentTarget.style.borderColor = '#d1d5db';
+                              e.currentTarget.style.backgroundColor = c.bg;
+                              e.currentTarget.style.borderColor = c.border;
                             }}
                             title="play"
                           >
@@ -775,21 +790,21 @@ export function MultisampleSampleTable({
                             onClick={() => onClearSample(index)}
                             style={{
                               padding: '0.375rem 0.75rem',
-                              border: '1px solid #d1d5db',
+                              border: `1px solid ${c.border}`,
                               borderRadius: '3px',
-                              backgroundColor: '#fff',
-                              color: '#6b7280',
+                              backgroundColor: c.bg,
+                              color: c.textSecondary,
                               fontSize: '0.875rem',
                               cursor: 'pointer',
                               transition: 'all 0.2s ease'
                             }}
                             onMouseEnter={(e) => {
-                              e.currentTarget.style.backgroundColor = '#f9fafb';
-                              e.currentTarget.style.borderColor = '#9ca3af';
+                              e.currentTarget.style.backgroundColor = c.bgAlt;
+                              e.currentTarget.style.borderColor = c.borderMed;
                             }}
                             onMouseLeave={(e) => {
-                              e.currentTarget.style.backgroundColor = '#fff';
-                              e.currentTarget.style.borderColor = '#d1d5db';
+                              e.currentTarget.style.backgroundColor = c.bg;
+                              e.currentTarget.style.borderColor = c.border;
                             }}
                             title="clear"
                           >
@@ -799,21 +814,21 @@ export function MultisampleSampleTable({
                             onClick={() => toggleRowExpansion(index)}
                             style={{
                               padding: '0.375rem 0.75rem',
-                              border: '1px solid #d1d5db',
+                              border: `1px solid ${c.border}`,
                               borderRadius: '3px',
-                              backgroundColor: '#fff',
-                              color: '#6b7280',
+                              backgroundColor: c.bg,
+                              color: c.textSecondary,
                               fontSize: '0.875rem',
                               cursor: 'pointer',
                               transition: 'all 0.2s ease'
                             }}
                             onMouseEnter={(e) => {
-                              e.currentTarget.style.backgroundColor = '#f9fafb';
-                              e.currentTarget.style.borderColor = '#9ca3af';
+                              e.currentTarget.style.backgroundColor = c.bgAlt;
+                              e.currentTarget.style.borderColor = c.borderMed;
                             }}
                             onMouseLeave={(e) => {
-                              e.currentTarget.style.backgroundColor = '#fff';
-                              e.currentTarget.style.borderColor = '#d1d5db';
+                              e.currentTarget.style.backgroundColor = c.bg;
+                              e.currentTarget.style.borderColor = c.border;
                             }}
                             title="edit waveform"
                           >
@@ -828,19 +843,19 @@ export function MultisampleSampleTable({
                               padding: '0.375rem 0.75rem',
                               border: 'none',
                               borderRadius: '3px',
-                              backgroundColor: '#333',
-                              color: '#fff',
+                              backgroundColor: c.action,
+                              color: 'var(--color-white)',
                               fontSize: '0.875rem',
                               cursor: 'pointer',
                               transition: 'all 0.2s ease'
                             }}
                             onMouseEnter={(e) => {
-                              e.currentTarget.style.backgroundColor = '#555';
+                              e.currentTarget.style.backgroundColor = c.actionHover;
                               e.currentTarget.style.transform = 'translateY(-1px)';
                               e.currentTarget.style.boxShadow = '0 4px 12px rgba(0, 0, 0, 0.3)';
                             }}
                             onMouseLeave={(e) => {
-                              e.currentTarget.style.backgroundColor = '#333';
+                              e.currentTarget.style.backgroundColor = c.action;
                               e.currentTarget.style.transform = 'translateY(0)';
                               e.currentTarget.style.boxShadow = 'none';
                             }}
@@ -852,21 +867,21 @@ export function MultisampleSampleTable({
                             onClick={() => onRecordSample(index)}
                             style={{
                               padding: '0.375rem 0.75rem',
-                              border: '1px solid #d1d5db',
+                              border: `1px solid ${c.border}`,
                               borderRadius: '3px',
-                              backgroundColor: '#fff',
-                              color: '#6b7280',
+                              backgroundColor: c.bg,
+                              color: c.textSecondary,
                               fontSize: '0.875rem',
                               cursor: 'pointer',
                               transition: 'all 0.2s ease'
                             }}
                             onMouseEnter={(e) => {
-                              e.currentTarget.style.backgroundColor = '#f9fafb';
-                              e.currentTarget.style.borderColor = '#9ca3af';
+                              e.currentTarget.style.backgroundColor = c.bgAlt;
+                              e.currentTarget.style.borderColor = c.borderMed;
                             }}
                             onMouseLeave={(e) => {
-                              e.currentTarget.style.backgroundColor = '#fff';
-                              e.currentTarget.style.borderColor = '#d1d5db';
+                              e.currentTarget.style.backgroundColor = c.bg;
+                              e.currentTarget.style.borderColor = c.border;
                             }}
                             title="record"
                           >
@@ -880,9 +895,9 @@ export function MultisampleSampleTable({
                   {/* Expanded Row Content */}
                   {isExpanded && sample.isLoaded && sample.audioBuffer && (
                     <div style={{
-                      borderTop: '1px solid #e0e0e0',
+                      borderTop: `1px solid ${c.border}`,
                       padding: '1rem',
-                      backgroundColor: '#f9fafb'
+                      backgroundColor: c.bgAlt
                     }}>
                       <WaveformEditor
                         audioBuffer={sample.audioBuffer}
