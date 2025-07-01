@@ -322,15 +322,19 @@ export const ADSREnvelope: React.FC<ADSREnvelopeProps> = ({
     return d;
   }, [getPhasePositions]);
 
-  // Handle mouse interactions
-  const handleMouseDown = useCallback((event: React.MouseEvent<SVGElement>) => {
+  // Handle mouse and touch interactions
+  const handlePointerDown = useCallback((event: React.MouseEvent<SVGElement> | React.TouchEvent<SVGElement>) => {
     const svg = svgRef.current;
     if (!svg) return;
 
+    // Get coordinates from mouse or touch event
+    const clientX = 'clientX' in event ? event.clientX : event.touches[0].clientX;
+    const clientY = 'clientY' in event ? event.clientY : event.touches[0].clientY;
+
     // Create a point for the screen coordinates
     const pt = svg.createSVGPoint();
-    pt.x = event.clientX;
-    pt.y = event.clientY;
+    pt.x = clientX;
+    pt.y = clientY;
 
     // Get the transformation matrix from screen to SVG space and transform the point
     const ctm = svg.getScreenCTM();
@@ -350,14 +354,18 @@ export const ADSREnvelope: React.FC<ADSREnvelopeProps> = ({
         // Store the SVG rect for global mouse events
         const svgRect = svg.getBoundingClientRect();
         
-        // Add global mouse event listeners to prevent losing drag when leaving canvas
-        const handleGlobalMouseMove = (e: MouseEvent) => {
+        // Add global mouse and touch event listeners to prevent losing drag when leaving canvas
+        const handleGlobalMove = (e: MouseEvent | TouchEvent) => {
           if (!svg) return;
 
-          // Same transformation for global mouse move
+          // Get coordinates from mouse or touch event
+          const clientX = 'clientX' in e ? e.clientX : e.touches[0].clientX;
+          const clientY = 'clientY' in e ? e.clientY : e.touches[0].clientY;
+
+          // Same transformation for global move
           const pt = svg.createSVGPoint();
-          pt.x = e.clientX;
-          pt.y = e.clientY;
+          pt.x = clientX;
+          pt.y = clientY;
           const ctm = svg.getScreenCTM();
           if (!ctm) return;
           const svgP = pt.matrixTransform(ctm.inverse());
@@ -433,15 +441,19 @@ export const ADSREnvelope: React.FC<ADSREnvelopeProps> = ({
           }
         };
         
-        const handleGlobalMouseUp = () => {
+        const handleGlobalEnd = () => {
           setIsDragging(null);
-          document.removeEventListener('mousemove', handleGlobalMouseMove);
-          document.removeEventListener('mouseup', handleGlobalMouseUp);
+          document.removeEventListener('mousemove', handleGlobalMove);
+          document.removeEventListener('touchmove', handleGlobalMove);
+          document.removeEventListener('mouseup', handleGlobalEnd);
+          document.removeEventListener('touchend', handleGlobalEnd);
         };
         
-        // Add global listeners
-        document.addEventListener('mousemove', handleGlobalMouseMove);
-        document.addEventListener('mouseup', handleGlobalMouseUp);
+        // Add global listeners for both mouse and touch
+        document.addEventListener('mousemove', handleGlobalMove);
+        document.addEventListener('touchmove', handleGlobalMove);
+        document.addEventListener('mouseup', handleGlobalEnd);
+        document.addEventListener('touchend', handleGlobalEnd);
         
         break;
       }
@@ -491,16 +503,18 @@ export const ADSREnvelope: React.FC<ADSREnvelopeProps> = ({
   }, [getHandlePositions]);
 
   return (
-    <div style={{ 
-      display: 'flex', 
-      flexDirection: 'column', 
-      gap: '1rem',
-      border: '1px solid #ddd',
-      borderRadius: '4px',
-      padding: '1rem',
-      backgroundColor: '#fafafa',
-      width: '50%'
-    }}>
+    <div 
+      className="adsr-envelope-container"
+      style={{ 
+        display: 'flex', 
+        flexDirection: 'column', 
+        gap: '1rem',
+        border: '1px solid #ddd',
+        borderRadius: '4px',
+        padding: '1rem',
+        backgroundColor: '#fafafa',
+        width: window.innerWidth <= 768 ? '100%' : '50%'
+      }}>
       {/* Header with envelope selector */}
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
         <h3 style={{ margin: 0, fontSize: '1rem', fontWeight: '500' }}>envelopes</h3>
@@ -549,7 +563,8 @@ export const ADSREnvelope: React.FC<ADSREnvelopeProps> = ({
           backgroundColor: '#f5f5f5',
           cursor: isDragging ? 'grabbing' : 'crosshair'
         }}
-        onMouseDown={handleMouseDown}
+        onMouseDown={handlePointerDown}
+        onTouchStart={handlePointerDown}
         onMouseMove={handleMouseMove}
         onMouseUp={handleMouseUp}
         onMouseLeave={handleMouseUp}

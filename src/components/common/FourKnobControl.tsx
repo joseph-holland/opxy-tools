@@ -20,16 +20,20 @@ export const FourKnobControl: React.FC<FourKnobControlProps> = ({
   const [isDragging, setIsDragging] = useState<number | null>(null);
   const containerRef = useRef<HTMLDivElement>(null);
 
-  const handleMouseDown = useCallback((event: React.MouseEvent, knobIndex: number) => {
+  const handlePointerDown = useCallback((event: React.MouseEvent | React.TouchEvent, knobIndex: number) => {
     event.preventDefault();
     setIsDragging(knobIndex);
     
-    const startY = event.clientY;
+    // Get coordinates from mouse or touch event
+    const startY = 'clientY' in event ? event.clientY : event.touches[0].clientY;
     const startValue = knobs[knobIndex].value;
 
-    const handleGlobalMouseMove = (e: MouseEvent) => {
+    const handleGlobalMove = (e: MouseEvent | TouchEvent) => {
+      // Get coordinates from mouse or touch event
+      const currentY = 'clientY' in e ? e.clientY : e.touches[0].clientY;
+      
       // Calculate the drag distance in pixels
-      const deltaY = startY - e.clientY; // Inverted: up = positive
+      const deltaY = startY - currentY; // Inverted: up = positive
       
       // Convert to percentage change (adjust sensitivity as needed)
       const sensitivity = 0.5; // 1 pixel = 0.5% change
@@ -41,14 +45,18 @@ export const FourKnobControl: React.FC<FourKnobControlProps> = ({
       onValueChange(knobIndex, Math.round(newValue));
     };
 
-    const handleGlobalMouseUp = () => {
+    const handleGlobalEnd = () => {
       setIsDragging(null);
-      document.removeEventListener('mousemove', handleGlobalMouseMove);
-      document.removeEventListener('mouseup', handleGlobalMouseUp);
+      document.removeEventListener('mousemove', handleGlobalMove);
+      document.removeEventListener('touchmove', handleGlobalMove);
+      document.removeEventListener('mouseup', handleGlobalEnd);
+      document.removeEventListener('touchend', handleGlobalEnd);
     };
 
-    document.addEventListener('mousemove', handleGlobalMouseMove);
-    document.addEventListener('mouseup', handleGlobalMouseUp);
+    document.addEventListener('mousemove', handleGlobalMove);
+    document.addEventListener('touchmove', handleGlobalMove);
+    document.addEventListener('mouseup', handleGlobalEnd);
+    document.addEventListener('touchend', handleGlobalEnd);
   }, [knobs, onValueChange]);
 
   const renderKnob = useCallback((knob: KnobConfig, index: number) => {
@@ -74,7 +82,8 @@ export const FourKnobControl: React.FC<FourKnobControlProps> = ({
             transform: isBeingDragged ? 'scale(1.05)' : 'scale(1)',
             transition: isBeingDragged ? 'none' : 'transform 0.1s ease'
           }}
-          onMouseDown={(e) => handleMouseDown(e, index)}
+          onMouseDown={(e) => handlePointerDown(e, index)}
+          onTouchStart={(e) => handlePointerDown(e, index)}
         >
           {/* Inner thin circle close to colored center */}
           <div
@@ -113,7 +122,7 @@ export const FourKnobControl: React.FC<FourKnobControlProps> = ({
         </span>
       </div>
     );
-  }, [isDragging, handleMouseDown]);
+  }, [isDragging, handlePointerDown]);
 
   return (
     <div 
