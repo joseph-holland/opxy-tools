@@ -133,7 +133,7 @@ export const ADSREnvelope: React.FC<ADSREnvelopeProps> = ({
   onAmpEnvelopeChange,
   onFilterEnvelopeChange,
   width = 480,  // OP-XY outer border: 62mm × 7.74 scale = 480px (2:1 ratio)
-  height = 240   // OP-XY outer border: 31mm × 7.74 scale = 240px (2:1 ratio)
+  height = 194   // OP-XY inner border: 25mm × 7.74 scale = 194px (removes white space)
 }) => {
   const svgRef = React.useRef<SVGSVGElement>(null);
   const [activeEnvelope, setActiveEnvelope] = useState<'amp' | 'filter'>('amp');
@@ -194,7 +194,7 @@ export const ADSREnvelope: React.FC<ADSREnvelopeProps> = ({
     const envelopeHeight = Math.round(20 * 7.74); // 155px
     
     const outerBorderX = (width - innerWidth) / 2;
-    const outerBorderY = (height - innerHeight) / 2;
+    const outerBorderY = 0; // Start grey border at top of 194px canvas
     const innerBorderX = (innerWidth - envelopeWidth) / 2;
     const innerBorderY = (innerHeight - envelopeHeight) / 2;
     
@@ -376,7 +376,7 @@ export const ADSREnvelope: React.FC<ADSREnvelopeProps> = ({
           const envelopeHeight = Math.round(20 * 7.74); // 155px
           
           const outerBorderX = (width - innerWidth) / 2;
-          const outerBorderY = (height - innerHeight) / 2;
+          const outerBorderY = 0; // Start grey border at top of 194px canvas
           const innerBorderX = (innerWidth - envelopeWidth) / 2;
           const innerBorderY = (innerHeight - envelopeHeight) / 2;
           
@@ -546,7 +546,7 @@ export const ADSREnvelope: React.FC<ADSREnvelopeProps> = ({
         style={{ 
           border: '1px solid #ccc',
           borderRadius: '6px',
-          backgroundColor: '#ffffff',
+          backgroundColor: '#f5f5f5',
           cursor: isDragging ? 'grabbing' : 'crosshair'
         }}
         onMouseDown={handleMouseDown}
@@ -554,21 +554,10 @@ export const ADSREnvelope: React.FC<ADSREnvelopeProps> = ({
         onMouseUp={handleMouseUp}
         onMouseLeave={handleMouseUp}
       >
-        {/* Outer border with 6px rounded corners - OP-XY exact 62×31mm */}
-        <rect 
-          width={width} 
-          height={height} 
-          fill="#f5f5f5" 
-          stroke="#ccc" 
-          strokeWidth="1" 
-          rx="6" 
-          ry="6" 
-        />
-        
-        {/* Inner border with square corners - OP-XY exact 55×25mm */}
+        {/* Grey border - now fills the entire 194px height */}
         <rect 
           x={(width - Math.round(55 * 7.74)) / 2} 
-          y={(height - Math.round(25 * 7.74)) / 2} 
+          y="0" 
           width={Math.round(55 * 7.74)} 
           height={Math.round(25 * 7.74)} 
           fill="#ffffff" 
@@ -581,9 +570,9 @@ export const ADSREnvelope: React.FC<ADSREnvelopeProps> = ({
         {/* Bottom line for envelope area */}
         <line 
           x1={(width - Math.round(55 * 7.74)) / 2 + (Math.round(55 * 7.74) - Math.round(46 * 7.74)) / 2} 
-          y1={(height - Math.round(25 * 7.74)) / 2 + (Math.round(25 * 7.74) - Math.round(20 * 7.74)) / 2 + Math.round(20 * 7.74)} 
+          y1={(Math.round(25 * 7.74) - Math.round(20 * 7.74)) / 2 + Math.round(20 * 7.74)} 
           x2={(width - Math.round(55 * 7.74)) / 2 + (Math.round(55 * 7.74) - Math.round(46 * 7.74)) / 2 + Math.round(46 * 7.74)} 
-          y2={(height - Math.round(25 * 7.74)) / 2 + (Math.round(25 * 7.74) - Math.round(20 * 7.74)) / 2 + Math.round(20 * 7.74)} 
+          y2={(Math.round(25 * 7.74) - Math.round(20 * 7.74)) / 2 + Math.round(20 * 7.74)} 
           stroke="#ddd" 
           strokeWidth="4" 
         />
