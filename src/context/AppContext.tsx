@@ -124,7 +124,7 @@ export type AppAction =
   | { type: 'LOAD_DRUM_SAMPLE'; payload: { index: number; file: File; audioBuffer: AudioBuffer; metadata: WavMetadata } }
   | { type: 'CLEAR_DRUM_SAMPLE'; payload: number }
   | { type: 'UPDATE_DRUM_SAMPLE'; payload: { index: number; updates: Partial<DrumSample> } }
-  | { type: 'LOAD_MULTISAMPLE_FILE'; payload: { file: File; audioBuffer: AudioBuffer; metadata: WavMetadata } }
+  | { type: 'LOAD_MULTISAMPLE_FILE'; payload: { file: File; audioBuffer: AudioBuffer; metadata: WavMetadata; rootNoteOverride?: number; } }
   | { type: 'CLEAR_MULTISAMPLE_FILE'; payload: number }
   | { type: 'UPDATE_MULTISAMPLE_FILE'; payload: { index: number; updates: Partial<MultisampleFile> } }
   | { type: 'REORDER_MULTISAMPLE_FILES'; payload: { fromIndex: number; toIndex: number } }
@@ -420,7 +420,11 @@ function appReducer(state: AppState, action: AppAction): AppState {
       let detectedMidiNote = 60; // Default to middle C
       let detectedNote = 'C4'; // Default note name
       
-      if (action.payload.metadata.midiNote !== -1) {
+      if (action.payload.rootNoteOverride !== undefined) {
+        // Prioritize the override from user interaction (e.g., clicking a specific key)
+        detectedMidiNote = action.payload.rootNoteOverride;
+        detectedNote = midiNoteToString(detectedMidiNote);
+      } else if (action.payload.metadata.midiNote !== -1) {
         // Use MIDI note from WAV metadata
         detectedMidiNote = action.payload.metadata.midiNote;
         detectedNote = midiNoteToString(action.payload.metadata.midiNote);
@@ -461,9 +465,14 @@ function appReducer(state: AppState, action: AppAction): AppState {
         duration: action.payload.metadata.duration
       };
       
+      const updatedFiles = [...state.multisampleFiles, newMultisampleFile];
+      
+      // Sort by rootNote descending to make zone calculation easier
+      updatedFiles.sort((a, b) => b.rootNote - a.rootNote);
+      
       return { 
         ...state, 
-        multisampleFiles: [...state.multisampleFiles, newMultisampleFile] 
+        multisampleFiles: updatedFiles
       };
       
     case 'CLEAR_MULTISAMPLE_FILE':

@@ -34,7 +34,7 @@ export function useFileUpload() {
     }
   }, [dispatch]);
 
-  const handleMultisampleUpload = useCallback(async (file: File) => {
+  const handleMultisampleUpload = useCallback(async (file: File, rootNoteOverride?: number) => {
     try {
       dispatch({ type: 'SET_LOADING', payload: true });
       dispatch({ type: 'SET_ERROR', payload: null });
@@ -47,7 +47,8 @@ export function useFileUpload() {
         payload: { 
           file, 
           audioBuffer: metadata.audioBuffer,
-          metadata
+          metadata,
+          rootNoteOverride 
         }
       });
 

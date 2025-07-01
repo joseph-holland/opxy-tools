@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef, useCallback } from 'react';
+import React, { useState, useEffect, useRef, useCallback, useMemo } from 'react';
 import { useAppContext } from '../../context/AppContext';
 import { ConfirmationModal } from '../common/ConfirmationModal';
 import { RecordingModal } from '../common/RecordingModal';
@@ -48,6 +48,28 @@ export function MultisampleTool() {
       console.warn('Failed to save multisample keyboard pin state to cookie:', error);
     }
   }, [isMultisampleKeyboardPinned]);
+
+  // Create a zone map for the multisamples
+  const zoneMap = useMemo(() => {
+    const map = new Map<number, { rootNote: number; pitchOffset: number }>();
+    if (state.multisampleFiles.length === 0) {
+      return map;
+    }
+
+    // Since the files are sorted by rootNote descending, we can iterate through all MIDI notes
+    for (let midiNote = 0; midiNote <= 127; midiNote++) {
+      // Find the first sample whose rootNote is >= the current midiNote
+      const rootSample = state.multisampleFiles.find(sample => sample.rootNote >= midiNote);
+
+      if (rootSample) {
+        map.set(midiNote, {
+          rootNote: rootSample.rootNote,
+          pitchOffset: midiNote - rootSample.rootNote,
+        });
+      }
+    }
+    return map;
+  }, [state.multisampleFiles]);
 
   // Detect mobile screen size
   useEffect(() => {
@@ -229,16 +251,9 @@ export function MultisampleTool() {
 
     if (targetMidiNote !== null) {
       try {
-        await handleMultisampleUpload(file);
-        // After upload, assign to the specific MIDI note
-        const newIndex = state.multisampleFiles.length;
-        dispatch({
-          type: 'UPDATE_MULTISAMPLE_FILE',
-          payload: {
-            index: newIndex,
-            updates: { rootNote: targetMidiNote }
-          }
-        });
+        // Here, we manually create the payload for handleMultisampleUpload
+        // so we can set the rootNote BEFORE it goes into the context and gets sorted.
+        await handleMultisampleUpload(file, targetMidiNote);
         setTargetMidiNote(null);
       } catch (error) {
         console.error('Error uploading file for MIDI note assignment:', error);
@@ -249,17 +264,31 @@ export function MultisampleTool() {
 
   // Handler for clicking an assigned key
   const handleKeyClick = useCallback((midiNote: number) => {
-    // Find and play the sample assigned to this MIDI note
-    const sampleIndex = state.multisampleFiles.findIndex(file => file.rootNote === midiNote);
-    if (sampleIndex !== -1 && state.multisampleFiles[sampleIndex].audioBuffer) {
-      const sample = state.multisampleFiles[sampleIndex];
-      const audioContext = new (window.AudioContext || (window as any).webkitAudioContext)();
-      const source = audioContext.createBufferSource();
-      source.buffer = sample.audioBuffer;
-      source.connect(audioContext.destination);
-      source.start();
+    const zoneInfo = zoneMap.get(midiNote);
+    if (!zoneInfo) return;
+
+    const { rootNote, pitchOffset } = zoneInfo;
+    
+    // Find the sample that is the root for this zone
+    const rootSample = state.multisampleFiles.find(f => f.rootNote === rootNote);
+
+    if (rootSample && rootSample.audioBuffer) {
+      try {
+        const audioContext = new (window.AudioContext || (window as any).webkitAudioContext)();
+        const source = audioContext.createBufferSource();
+        source.buffer = rootSample.audioBuffer;
+
+        // Apply pitch shifting
+        const playbackRate = Math.pow(2, pitchOffset / 12);
+        source.playbackRate.value = playbackRate;
+
+        source.connect(audioContext.destination);
+        source.start();
+      } catch (error) {
+        console.error("Error playing pitched sample:", error);
+      }
     }
-  }, [state.multisampleFiles]);
+  }, [zoneMap, state.multisampleFiles]);
 
   // Handler for clicking an unassigned key
   const handleUnassignedKeyClick = useCallback((midiNote: number) => {
@@ -273,18 +302,10 @@ export function MultisampleTool() {
     // Handle drag and drop onto specific MIDI keys
     if (files.length > 0 && state.multisampleFiles.length < 24) {
       const file = files[0]; // Use first file
-      await handleMultisampleUpload(file);
-      // After upload, assign to the specific MIDI note
-      const newIndex = state.multisampleFiles.length;
-      dispatch({
-        type: 'UPDATE_MULTISAMPLE_FILE',
-        payload: {
-          index: newIndex,
-          updates: { rootNote: midiNote }
-        }
-      });
+      // Pass the target midiNote to the upload function
+      await handleMultisampleUpload(file, midiNote);
     }
-  }, [state.multisampleFiles.length, handleMultisampleUpload, dispatch]);
+  }, [state.multisampleFiles.length, handleMultisampleUpload]);
 
   const hasLoadedSamples = state.multisampleFiles.length > 0;
   const hasPresetName = state.multisampleSettings.presetName.trim().length > 0;
@@ -331,7 +352,7 @@ export function MultisampleTool() {
 
         <div style={{ position: 'relative' }}>
           <VirtualMidiKeyboard
-            assignedNotes={state.multisampleFiles.map(f => f.rootNote)}
+            assignedNotes={Array.from(zoneMap.keys())}
             onKeyClick={handleKeyClick}
             onUnassignedKeyClick={handleUnassignedKeyClick}
             onKeyDrop={handleKeyDrop}

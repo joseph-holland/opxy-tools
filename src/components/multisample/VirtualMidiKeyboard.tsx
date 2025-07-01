@@ -320,6 +320,14 @@ export function VirtualMidiKeyboard({
         const computerKey = getComputerKeyForNote(midiNote);
         const isPressed = computerKey && pressedKeys.has(computerKey.toLowerCase());
         
+        // Define key colors based on state
+        const whiteKeyColors = {
+          base: isAssigned ? 'var(--color-bg-primary)' : 'var(--color-key-inactive-white-bg)',
+          hover: '#e0e0e0',
+          pressed: '#c9c9c9',
+          dragOver: 'var(--color-interactive-focus-ring)',
+        };
+        
         octaveKeys.push(
           <div
             key={`white-${midiNote}`}
@@ -328,8 +336,8 @@ export function VirtualMidiKeyboard({
               position: 'relative',
               width: '24px',
               height: '120px',
-              backgroundColor: isDragOver ? '#e5e7eb' : isPressed ? '#d1d5db' : isAssigned ? '#6b7280' : isHovered ? '#f3f4f6' : '#ffffff',
-              border: isDragOver ? '2px solid #9ca3af' : '1px solid #d1d5db',
+              backgroundColor: isDragOver ? whiteKeyColors.dragOver : isPressed ? whiteKeyColors.pressed : isHovered ? whiteKeyColors.hover : whiteKeyColors.base,
+              border: isDragOver ? '2px solid var(--color-text-secondary)' : `1px solid ${isAssigned ? 'var(--color-black)' : 'var(--color-key-inactive-border)'}`,
               borderRadius: '0 0 4px 4px',
               cursor: 'pointer',
               display: 'flex',
@@ -337,7 +345,7 @@ export function VirtualMidiKeyboard({
               justifyContent: 'center',
               fontSize: '9px',
               fontWeight: '500',
-              color: isAssigned ? '#ffffff' : '#6b7280',
+              color: isAssigned ? 'var(--color-black)' : 'var(--color-key-inactive-white-bg)',
               padding: '2px',
               transition: 'all 0.1s ease',
               userSelect: 'none',
@@ -351,9 +359,13 @@ export function VirtualMidiKeyboard({
             onDragLeave={handleKeyDragLeave}
             onDrop={(e) => handleKeyDrop(e, midiNote)}
           >
-            {/* Octave marker for C notes */}
-            {octave >= 0 && octave <= 8 && noteInOctave === 0 && (
-              <span style={{ fontSize: '8px', fontWeight: '600' }}>
+            {/* Octave marker for C notes - always visible, color changes */}
+            {noteInOctave === 0 && (
+              <span style={{ 
+                fontSize: '9px', 
+                fontWeight: '600',
+                color: isAssigned ? 'var(--color-black)' : 'var(--color-text-secondary)'
+              }}>
                 C{octave}
               </span>
             )}
@@ -381,6 +393,14 @@ export function VirtualMidiKeyboard({
         const computerKey = getComputerKeyForNote(midiNote);
         const isPressed = computerKey && pressedKeys.has(computerKey.toLowerCase());
         
+        // Define key colors based on state
+        const blackKeyColors = {
+          base: isAssigned ? 'var(--color-interactive-dark)' : 'var(--color-key-inactive-black-bg)',
+          hover: 'var(--color-interactive-dark)',
+          pressed: 'var(--color-interactive-secondary)',
+          dragOver: 'var(--color-interactive-secondary)',
+        };
+        
         octaveKeys.push(
           <div
             key={`black-${midiNote}`}
@@ -391,8 +411,8 @@ export function VirtualMidiKeyboard({
               top: '0',
               width: '14px',
               height: '75px',
-              backgroundColor: isDragOver ? '#9ca3af' : isPressed ? '#6b7280' : isAssigned ? '#374151' : isHovered ? '#374151' : '#1f2937',
-              border: isDragOver ? '2px solid #6b7280' : '1px solid #111827',
+              backgroundColor: isDragOver ? blackKeyColors.dragOver : isPressed ? blackKeyColors.pressed : isHovered ? blackKeyColors.hover : blackKeyColors.base,
+              border: isDragOver ? '2px solid var(--color-text-secondary)' : `1px solid ${isAssigned ? 'var(--color-interactive-focus)' : 'var(--color-key-inactive-border)'}`,
               borderRadius: '0 0 2px 2px',
               cursor: 'pointer',
               zIndex: 2,
