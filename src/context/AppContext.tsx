@@ -1,8 +1,9 @@
-import { createContext, useContext, useReducer } from 'react';
+import { createContext, useContext, useReducer, useEffect } from 'react';
 import type { ReactNode } from 'react';
 import type { WavMetadata } from '../utils/audio';
 import { midiNoteToString } from '../utils/audio';
 import type { Notification } from '../components/common/NotificationSystem';
+import { cookieUtils, COOKIE_KEYS } from '../utils/cookies';
 
 // Define enhanced types for the application state
 export interface DrumSample {
@@ -159,8 +160,19 @@ const initialMultisampleFile: MultisampleFile = {
   outPoint: 0
 };
 
+// Function to get initial tab from cookie
+const getInitialTab = (): 'drum' | 'multisample' => {
+  try {
+    const savedTab = cookieUtils.getCookie(COOKIE_KEYS.LAST_TAB);
+    return (savedTab === 'multisample') ? 'multisample' : 'drum';
+  } catch (error) {
+    console.warn('Failed to load saved tab from cookie, defaulting to drum tab:', error);
+    return 'drum';
+  }
+};
+
 const initialState: AppState = {
-  currentTab: 'drum',
+  currentTab: getInitialTab(),
   drumSettings: {
     sampleRate: 0,
     bitDepth: 0,
@@ -199,6 +211,12 @@ const initialState: AppState = {
 function appReducer(state: AppState, action: AppAction): AppState {
   switch (action.type) {
     case 'SET_TAB':
+      // Save tab to cookie for persistence
+      try {
+        cookieUtils.setCookie(COOKIE_KEYS.LAST_TAB, action.payload, 30);
+      } catch (error) {
+        console.warn('Failed to save tab to cookie:', error);
+      }
       return { ...state, currentTab: action.payload };
       
     case 'SET_DRUM_SAMPLE_RATE':
