@@ -1,4 +1,4 @@
-import { useState, useCallback } from 'react';
+import { useState, useCallback, useEffect, useRef } from 'react';
 
 interface VirtualMidiKeyboardProps {
   assignedNotes?: number[]; // MIDI note numbers that have samples assigned
@@ -17,8 +17,75 @@ export function VirtualMidiKeyboard({
   className = '',
   loadedSamplesCount = 0
 }: VirtualMidiKeyboardProps) {
+  const containerRef = useRef<HTMLDivElement>(null);
+  const placeholderRef = useRef<HTMLDivElement>(null);
+  
   const [hoveredKey, setHoveredKey] = useState<number | null>(null);
   const [dragOverKey, setDragOverKey] = useState<number | null>(null);
+  const [isPinned, setIsPinned] = useState(false);
+  const [isStuck, setIsStuck] = useState(false);
+  const [dynamicStyles, setDynamicStyles] = useState({});
+  const [placeholderHeight, setPlaceholderHeight] = useState(0);
+
+  const togglePin = useCallback(() => {
+    setIsPinned(!isPinned);
+  }, [isPinned]);
+
+  useEffect(() => {
+    const container = containerRef.current;
+    const placeholder = placeholderRef.current;
+
+    const handleScroll = () => {
+      if (!isPinned || !container || !placeholder) {
+        return;
+      }
+
+      // The decision to STICK is based on the container's position.
+      // The decision to UNSTICK is based on the placeholder's position.
+      if (!isStuck) {
+        const rect = container.getBoundingClientRect();
+        if (rect.top <= 10) {
+          // Time to STICK
+          const { height, left, width } = rect;
+          setPlaceholderHeight(height);
+          setDynamicStyles({
+            left: `${left}px`,
+            width: `${width}px`,
+          });
+          setIsStuck(true);
+        }
+      } else {
+        const placeholderRect = placeholder.getBoundingClientRect();
+        if (placeholderRect.top > 10) {
+          // Time to UNSTICK
+          setDynamicStyles({});
+          setIsStuck(false);
+        }
+      }
+    };
+
+    window.addEventListener('scroll', handleScroll, { passive: true });
+
+    // Cleanup on unpin
+    if (!isPinned && isStuck) {
+      setDynamicStyles({});
+      setIsStuck(false);
+    }
+    
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, [isPinned, isStuck]);
+
+  const combinedStyles: React.CSSProperties = {
+    border: '1px solid #f0f0f0',
+    borderRadius: '15px',
+    backgroundColor: '#fff',
+    boxShadow: '0 2px 8px rgba(0, 0, 0, 0.1)',
+    overflow: 'hidden',
+    position: isStuck ? 'fixed' : 'relative',
+    top: isStuck ? '10px' : undefined,
+    zIndex: isStuck ? 1000 : undefined,
+    ...dynamicStyles,
+  };
 
   // Helper function to get note name from MIDI number
   const getMidiNoteName = (midiNote: number): string => {
@@ -203,70 +270,101 @@ export function VirtualMidiKeyboard({
   };
 
   return (
-    <div className={`virtual-midi-keyboard ${className}`} style={{
-      border: '1px solid #dee2e6',
-      borderRadius: '15px',
-      backgroundColor: '#fff',
-      boxShadow: '0 2px 8px rgba(0, 0, 0, 0.1)',
-      overflow: 'hidden'
-    }}>
-      {/* Header */}
-      <div style={{
-        display: 'flex',
-        justifyContent: 'space-between',
-        alignItems: 'center',
-        padding: '1rem 1rem 0.5rem 1rem',
-        borderBottom: '1px solid #dee2e6',
-        backgroundColor: '#fff'
-      }}>
-        <h3 style={{ 
-          margin: '0',
-          color: '#222',
-          fontSize: '1.25rem',
-          fontWeight: '300',
-          display: 'flex',
-          alignItems: 'center',
-          gap: '0.5rem'
-        }}>
-          demo samples
-        </h3>
+    <>
+      <div 
+        ref={placeholderRef}
+        style={{
+          display: isStuck ? 'block' : 'none',
+          height: `${placeholderHeight}px`,
+        }}
+      />
+      <div
+        ref={containerRef}
+        className={`virtual-midi-keyboard ${className} ${isPinned ? 'pinned' : ''}`}
+        style={combinedStyles}
+      >
+        {/* Header */}
         <div style={{
           display: 'flex',
+          justifyContent: 'space-between',
           alignItems: 'center',
-          gap: '1.5rem',
-          fontSize: '0.875rem',
-          color: '#666'
+          padding: '1rem 1rem 0.5rem 1rem',
+          borderBottom: '1px solid #dee2e6',
+          backgroundColor: '#fff'
         }}>
-          <div style={{ 
-            display: 'flex', 
-            alignItems: 'center', 
-            gap: '0.5rem',
-            fontWeight: '500'
+          <h3 style={{ 
+            margin: '0',
+            color: '#222',
+            fontSize: '1.25rem',
+            fontWeight: '300',
+            display: 'flex',
+            alignItems: 'center',
+            gap: '0.5rem'
           }}>
-            <i className="fas fa-check-circle" style={{ color: '#666' }}></i>
-            {loadedSamplesCount} / 24 loaded
+            demo samples
+          </h3>
+          <div style={{
+            display: 'flex',
+            alignItems: 'center',
+            gap: '1rem',
+            fontSize: '0.875rem',
+            color: '#666'
+          }}>
+            <div style={{ 
+              display: 'flex', 
+              alignItems: 'center', 
+              gap: '0.5rem',
+              fontWeight: '500'
+            }}>
+              <i className="fas fa-check-circle" style={{ color: '#666' }}></i>
+              {loadedSamplesCount} / 24 loaded
+            </div>
+            <button
+              onClick={togglePin}
+              className="pin-button"
+              style={{
+                background: 'none',
+                border: 'none',
+                cursor: 'pointer',
+                padding: '4px',
+                borderRadius: '4px',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                transition: 'all 0.2s ease'
+              }}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.backgroundColor = '#f0f0f0';
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.backgroundColor = 'transparent';
+              }}
+              title={isPinned ? 'Unpin keyboard' : 'Pin keyboard to top'}
+            >
+              <i className="fas fa-thumbtack" style={{ fontSize: '14px' }}></i>
+            </button>
+          </div>
+        </div>
+
+        {/* Keyboard Container */}
+        <div style={{
+          backgroundColor: '#f9fafb',
+          border: 'none',
+          borderRadius: '0',
+          padding: '1rem',
+          overflowX: 'auto',
+          overflowY: 'hidden'
+        }}>
+          <div style={{
+            display: 'flex',
+            alignItems: 'flex-start',
+            minWidth: '1400px', // Ensure enough space for all keys
+            height: '90px'
+          }}>
+            {renderKeys()}
           </div>
         </div>
       </div>
-
-      {/* Keyboard Container */}
-      <div style={{
-        backgroundColor: '#f9fafb',
-        border: 'none',
-        borderRadius: '0',
-        padding: '1rem',
-        overflowX: 'auto',
-        overflowY: 'hidden'
-      }}>
-        <div style={{
-          display: 'flex',
-          alignItems: 'flex-start',
-          minWidth: '1400px', // Ensure enough space for all keys
-          height: '90px'
-        }}>
-          {renderKeys()}
-        </div>
-      </div>
-    </div>
+    </>
   );
 } 
