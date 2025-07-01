@@ -404,7 +404,7 @@ export function DrumKeyboard({ onFileUpload }: DrumKeyboardProps = {}) {
       <div style={{
         display: 'flex',
         justifyContent: 'center',
-        margin: '0 auto 2rem'
+        margin: '0 auto 0.5rem'
       }}>
         <div style={{
           display: 'inline-flex',
@@ -579,28 +579,6 @@ export function DrumKeyboard({ onFileUpload }: DrumKeyboardProps = {}) {
           </div>
         </div>
       </div>
-      </div>
-
-      {/* Instructions */}
-      <div style={{
-        textAlign: 'center',
-        fontSize: '0.8rem',
-        color: '#666',
-        lineHeight: '1.4'
-      }}>
-
-        {isMobile ? (
-          <>
-            <strong>load:</strong> tap empty keys to browse and select files<br />
-            <strong>play:</strong> tap keys to play loaded samples
-          </>
-        ) : (
-          <>
-            <strong>load:</strong> click empty keys to browse files or drag and drop audio files directly onto any key<br />
-            <strong>play:</strong> use keyboard keys (<strong>A-J, W, E, R, Y, U</strong>) to trigger samples and <strong>Z</strong> / <strong>X</strong> to switch octaves<br />
-            <strong>pin:</strong> use the pin icon to keep the keyboard at the top of the screen
-          </>
-        )}
       </div>
     </div>
   );

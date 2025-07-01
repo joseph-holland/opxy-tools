@@ -1,6 +1,8 @@
 import React, { useState, useCallback, useEffect, useRef } from 'react';
 import { useAppContext } from '../../context/AppContext';
 import { DrumKeyboard } from './DrumKeyboard';
+import { cookieUtils } from '../../utils/cookies';
+import { Tooltip } from '../common/Tooltip';
 
 interface DrumKeyboardContainerProps {
   onFileUpload?: (index: number, file: File) => void;
@@ -21,11 +23,39 @@ export const DrumKeyboardContainer: React.FC<DrumKeyboardContainerProps> = ({ on
   const [isStuck, setIsStuck] = useState(false);
   const [dynamicStyles, setDynamicStyles] = useState<React.CSSProperties>({});
   const [placeholderHeight, setPlaceholderHeight] = useState(0);
+  const [isMobile, setIsMobile] = useState(window.innerWidth <= 768);
+  const [isTooltipVisible, setIsTooltipVisible] = useState(false);
 
   const loadedSamplesCount = state.drumSamples.filter(s => s.isLoaded).length;
 
   const togglePin = useCallback(() => {
     setIsPinned(prev => !prev);
+  }, []);
+
+  const iconSize = '18px';
+
+  const tooltipContent = isMobile ? (
+    <>
+      <strong>load:</strong> tap empty keys to browse and select files<br />
+      <strong>play:</strong> tap keys to play loaded samples<br />
+      <strong>pin:</strong> use the pin icon to keep the keyboard at the top of the screen
+    </>
+  ) : (
+    <>
+      <strong>load:</strong> click empty keys to browse files or drag and drop audio files directly onto any key<br />
+      <strong>play:</strong> use keyboard keys (<strong>A-J, W, E, R, Y, U</strong>) to trigger samples and <strong>Z</strong> / <strong>X</strong> to switch octaves<br />
+      <strong>pin:</strong> use the pin icon to keep the keyboard at the top of the screen
+    </>
+  );
+
+  // Add resize listener for mobile detection
+  useEffect(() => {
+    const handleResize = () => {
+      setIsMobile(window.innerWidth <= 768);
+    };
+    
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
   }, []);
 
   // Scroll handling for stick / unstick
@@ -57,6 +87,19 @@ export const DrumKeyboardContainer: React.FC<DrumKeyboardContainerProps> = ({ on
     window.addEventListener('scroll', handleScroll, { passive: true });
     return () => window.removeEventListener('scroll', handleScroll);
   }, [isPinned, isStuck]);
+
+  // Close tooltip when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      const target = event.target as HTMLElement;
+      if (!target.closest('[data-tooltip]')) {
+        setIsTooltipVisible(false);
+      }
+    };
+
+    document.addEventListener('click', handleClickOutside);
+    return () => document.removeEventListener('click', handleClickOutside);
+  }, []);
 
   const combinedStyles: React.CSSProperties = {
     border: '1px solid #f0f0f0',
@@ -95,19 +138,41 @@ export const DrumKeyboardContainer: React.FC<DrumKeyboardContainerProps> = ({ on
             backgroundColor: '#fff',
           }}
         >
-          <h3
-            style={{
-              margin: 0,
-              color: '#222',
-              fontSize: '1.25rem',
-              fontWeight: 300,
-              display: 'flex',
-              alignItems: 'center',
-              gap: '0.5rem',
-            }}
-          >
-            load and play samples
-          </h3>
+          <div style={{ display: 'flex', alignItems: 'baseline', gap: '0.5rem' }}>
+            <h3
+              style={{
+                margin: 0,
+                color: '#222',
+                fontSize: '1.25rem',
+                fontWeight: 300,
+              }}
+            >
+              load and demo samples
+            </h3>
+            <Tooltip
+              isVisible={isTooltipVisible}
+              content={tooltipContent}
+            >
+              <span
+                style={{ display: 'flex' }}
+                onClick={(e) => {
+                  e.stopPropagation();
+                  setIsTooltipVisible(!isTooltipVisible);
+                }}
+                onMouseEnter={() => setIsTooltipVisible(true)}
+                onMouseLeave={() => setIsTooltipVisible(false)}
+              >
+                <i 
+                  className="fas fa-question-circle" 
+                  style={{ 
+                    fontSize: iconSize, 
+                    color: '#666',
+                    cursor: 'help'
+                  }}
+                />
+              </span>
+            </Tooltip>
+          </div>
           <div
             style={{
               display: 'flex',
@@ -125,7 +190,7 @@ export const DrumKeyboardContainer: React.FC<DrumKeyboardContainerProps> = ({ on
                 fontWeight: 500,
               }}
             >
-              <i className="fas fa-check-circle" style={{ color: '#666' }}></i>
+              <i className="fas fa-check-circle" style={{ color: '#666', fontSize: iconSize }}></i>
               {loadedSamplesCount} / 24 loaded
             </div>
             <button
@@ -144,13 +209,13 @@ export const DrumKeyboardContainer: React.FC<DrumKeyboardContainerProps> = ({ on
               }}
               title={isPinned ? 'Unpin keyboard' : 'Pin keyboard to top'}
             >
-              <i className="fas fa-thumbtack" style={{ fontSize: 14 }}></i>
+              <i className="fas fa-thumbtack" style={{ fontSize: iconSize }}></i>
             </button>
           </div>
         </div>
 
         {/* Drum Keyboard */}
-        <div style={{ padding: '1rem' }}>
+        <div style={{ padding: '0.5rem 1rem 1rem 1rem' }}>
           <DrumKeyboard onFileUpload={onFileUpload} />
         </div>
       </div>
