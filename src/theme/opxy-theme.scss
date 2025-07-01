@@ -79,3 +79,49 @@ $opxy-theme-map: (
     border-color: #374151 !important;
   }
 }
+
+.pin-button {
+  color: #666;
+  
+  .fa-thumbtack {
+    transition: transform 0.2s ease-in-out;
+  }
+}
+
+.virtual-midi-keyboard.pinned {
+  .pin-button {
+    color: #000;
+    
+    .fa-thumbtack {
+      transform: rotate(0deg);
+    }
+  }
+}
+
+.pin-button:not(:hover) .fa-thumbtack {
+  transform: rotate(45deg);
+}
+
+.virtual-midi-keyboard.pinned .pin-button:not(:hover) .fa-thumbtack {
+  transform: rotate(0deg);
+}
+
+.multisample-keyboard-container {
+  padding: 2rem;
+  background: transparent;
+}
+
+.virtual-midi-keyboard {
+  border: 1px solid #dee2e6;
+  border-radius: 15px;
+  background-color: #fff;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+  position: relative; // Default position
+}
+
+.virtual-midi-keyboard.pinned {
+  position: sticky;
+  top: 10px; // Sticks 10px from the top
+  z-index: 1000;
+}
