@@ -115,13 +115,25 @@ const generatePowerCurve = (
   return points;
 };
 
+/**
+ * ADSREnvelope Component - OP-XY Device Faithful Recreation
+ * 
+ * This component replicates the exact dimensions and ratios of the OP-XY hardware
+ * envelope editor. All measurements are based on physical device specs:
+ * 
+ * CRITICAL: These ratios must be maintained across ALL functions:
+ * - getPhasePositions() for envelope curve positioning  
+ * - handleMouseDown() dragging area boundaries
+ * - SVG element positioning and sizing
+ * - Any future layout modifications
+ */
 export const ADSREnvelope: React.FC<ADSREnvelopeProps> = ({
   ampEnvelope,
   filterEnvelope,
   onAmpEnvelopeChange,
   onFilterEnvelopeChange,
-  width = 480,  // More compact size around envelope area
-  height = 240   // More compact size around envelope area
+  width = 480,  // OP-XY outer border: 62mm × 7.74 scale = 480px (2:1 ratio)
+  height = 240   // OP-XY outer border: 31mm × 7.74 scale = 240px (2:1 ratio)
 }) => {
   const svgRef = React.useRef<SVGSVGElement>(null);
   const [activeEnvelope, setActiveEnvelope] = useState<'amp' | 'filter'>('amp');
@@ -162,10 +174,21 @@ export const ADSREnvelope: React.FC<ADSREnvelopeProps> = ({
     }
   }, [activeEnvelope, ampEnvelope, filterEnvelope, onAmpEnvelopeChange, onFilterEnvelopeChange]);
 
-  // Calculate fixed positions based on OP-XY style constraints
+  // Calculate fixed positions based on OP-XY exact device constraints
   const getPhasePositions = useCallback((envelope: ADSRValues) => {
-    // OP-XY exact ratios: 62×31mm outer, 55×25mm inner, 46×20mm envelope
-    // Scale factor: 7.74x (480px / 62mm = 240px / 31mm)
+    // ═══════════════════════════════════════════════════════════════════════════════
+    // OP-XY DEVICE EXACT RATIOS - DO NOT MODIFY WITHOUT UPDATING ALL REFERENCES
+    // ═══════════════════════════════════════════════════════════════════════════════
+    // Physical device measurements:
+    // • Outer border: 62mm × 31mm (6px rounded corners) → 2:1 ratio
+    // • Inner border: 55mm × 25mm (square corners) → 2.2:1 ratio  
+    // • Envelope area: 46mm × 20mm (drawing area) → 2.3:1 ratio
+    //
+    // Digital implementation at 7.74x scale factor:
+    // • Container: 480px × 240px (62mm × 31mm × 7.74)
+    // • Inner: 426px × 194px (55mm × 25mm × 7.74)
+    // • Envelope: 356px × 155px (46mm × 20mm × 7.74)
+    // ═══════════════════════════════════════════════════════════════════════════════
     const innerWidth = Math.round(55 * 7.74);   // 426px
     const innerHeight = Math.round(25 * 7.74);  // 194px
     const envelopeWidth = Math.round(46 * 7.74); // 356px
@@ -344,16 +367,23 @@ export const ADSREnvelope: React.FC<ADSREnvelopeProps> = ({
           const globalY = svgP.y;
           
           const newEnvelope = { ...currentEnvelope };
-          // Use same positioning as getPhasePositions
-          const outerBorderX = (width - 550) / 2;
-          const outerBorderY = (height - 250) / 2;
-          const innerBorderX = (550 - 460) / 2;
-          const innerBorderY = (250 - 200) / 2;
+          // OP-XY exact ratios for dragging area - MUST match getPhasePositions
+          // Scale factor: 7.74x (480px / 62mm = 240px / 31mm)
+          // Outer: 62×31mm = 480×240px (2:1 ratio)
+          // Inner: 55×25mm = 426×194px (2.2:1 ratio)  
+          // Envelope: 46×20mm = 356×155px (2.3:1 ratio)
+          const innerWidth = Math.round(55 * 7.74);   // 426px
+          const innerHeight = Math.round(25 * 7.74);  // 194px
+          const envelopeWidth = Math.round(46 * 7.74); // 356px
+          const envelopeHeight = Math.round(20 * 7.74); // 155px
+          
+          const outerBorderX = (width - innerWidth) / 2;
+          const outerBorderY = (height - innerHeight) / 2;
+          const innerBorderX = (innerWidth - envelopeWidth) / 2;
+          const innerBorderY = (innerHeight - envelopeHeight) / 2;
           
           const envelopeLeft = outerBorderX + innerBorderX;
           const envelopeTop = outerBorderY + innerBorderY;
-          const envelopeWidth = 460;
-          const envelopeHeight = 200;
           
           const maxY = envelopeTop;
           const minY = envelopeTop + envelopeHeight;
@@ -471,7 +501,7 @@ export const ADSREnvelope: React.FC<ADSREnvelopeProps> = ({
       borderRadius: '4px',
       padding: '1rem',
       backgroundColor: '#fafafa',
-      width: 'fit-content'
+      width: '50%'
     }}>
       {/* Header with envelope selector */}
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
