@@ -138,7 +138,6 @@ export const ADSREnvelope: React.FC<ADSREnvelopeProps> = ({
   const svgRef = React.useRef<SVGSVGElement>(null);
   const [activeEnvelope, setActiveEnvelope] = useState<'amp' | 'filter'>('amp');
   const [isDragging, setIsDragging] = useState<string | null>(null);
-  const [dragStart, setDragStart] = useState({ x: 0, y: 0 });
 
   const currentEnvelope = activeEnvelope === 'amp' ? ampEnvelope : filterEnvelope;
   const inactiveEnvelope = activeEnvelope === 'amp' ? filterEnvelope : ampEnvelope;
@@ -347,7 +346,6 @@ export const ADSREnvelope: React.FC<ADSREnvelopeProps> = ({
     for (const [handleName, pos] of Object.entries(positions)) {
       if (Math.abs(x - pos.x) <= handleSize && Math.abs(y - pos.y) <= handleSize) {
         setIsDragging(handleName);
-        setDragStart({ x, y });
         
         // Store the SVG rect for global mouse events
         const svgRect = svg.getBoundingClientRect();
