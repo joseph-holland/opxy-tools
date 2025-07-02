@@ -46,7 +46,7 @@ All notable changes to this project will be documented in this file.
 
 ## [v0.1.0] - Initial Release
 - Initial project setup and feature implementation.
-- Forked from https://buba447.github.io/opxy-drum-tool
+- Forked from https://buba447.github.io/opxy-drum-tool (now OP-PatchStudio)
 - Basic drum and multisample patch generation for OP-XY
 - Drag-and-drop sample loading
 - Advanced preset settings

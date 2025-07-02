@@ -29,7 +29,7 @@ describe('usePatchGeneration', () => {
 
   it('should return generation functions', () => {
     const { result } = renderHook(() => usePatchGeneration(), { wrapper: createTestWrapperWithSamples() })
-
+    
     expect(typeof result.current.generateDrumPatchFile).toBe('function')
     expect(typeof result.current.generateMultisamplePatchFile).toBe('function')
   })

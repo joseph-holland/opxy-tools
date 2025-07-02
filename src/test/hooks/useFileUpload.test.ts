@@ -15,7 +15,6 @@ describe('useFileUpload', () => {
 
   it('should return upload and clear functions', () => {
     const { result } = renderHook(() => useFileUpload(), { wrapper: createTestWrapper() })
-
     expect(typeof result.current.handleDrumSampleUpload).toBe('function')
     expect(typeof result.current.handleMultisampleUpload).toBe('function')
     expect(typeof result.current.clearDrumSample).toBe('function')

@@ -87,6 +87,7 @@ describe('AudioContextManager', () => {
 
     it('should not close already closed AudioContext', async () => {
       await audioContextManager.getAudioContext()
+
       mockAudioContext.state = 'closed'
       
       await audioContextManager.closeAudioContext()
@@ -213,3 +214,4 @@ describe('AudioContextManager', () => {
     })
   })
 })
+

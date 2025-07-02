@@ -50,9 +50,9 @@ function AppContent() {
               color: '#aaa'
             }}>
               <div style={{ marginBottom: '1rem', color: '#999', fontSize: '0.85rem' }}>
-                this is an unofficial tool and is not affiliated with or endorsed by teenage engineering.<br />
-                OP-XY, OP-1 is a registered trademark of teenage engineering.<br />
+                OP-PatchStudio is an unofficial tool not affiliated with or endorsed by teenage engineering.<br />
                 this software is provided "as is" without warranty of any kind. use at your own risk. for educational and personal use only.
+                OP-XY, OP-1 are a registered trademarks of teenage engineering.<br />
               </div>
               <div style={{
                 display: 'flex',
@@ -104,7 +104,7 @@ function AppContent() {
                   rel="noopener"
                   style={{ color: '#666' }}
                 >
-                  opxy-drum-tool
+                  original opxy-drum-tool
                 </a>
                 {' '} by zeitgeese
               </div>
