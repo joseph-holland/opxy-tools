@@ -1,264 +1,313 @@
-import { describe, it, expect } from 'vitest'
-import { validatePresetJson } from '../../utils/presetImport'
+import { describe, it, expect, vi } from 'vitest'
+import {
+  validatePresetJson,
+  importPresetFromFile,
+  internalToPercent,
+  extractDrumSettings,
+  type DrumPresetJson,
+  type MultisamplePresetJson
+} from '../../utils/presetImport'
 
-describe('presetImport', () => {
-  describe('validatePresetJson', () => {
-    describe('drum preset validation', () => {
-      it('should validate a valid drum preset', () => {
-        const validDrumPreset = {
-          type: 'drum',
-          engine: {
-            'velocity.sensitivity': 15000,
-            volume: 20000,
-            width: 0
-          },
-          regions: [],
-          platform: 'OP-XY',
-          version: 4
+describe('validatePresetJson', () => {
+  describe('drum preset validation', () => {
+    it('should validate valid drum preset', () => {
+      const validDrumPreset = {
+        type: 'drum',
+        engine: {
+          playmode: 'poly',
+          volume: 26214,
+          'velocity.sensitivity': 16383
         }
+      }
 
-        const result = validatePresetJson(validDrumPreset, 'drum')
-        
-        expect(result.success).toBe(true)
-        expect(result.data).toEqual(validDrumPreset)
-        expect(result.error).toBeUndefined()
-      })
-
-      it('should reject non-drum preset when expecting drum', () => {
-        const multisamplePreset = {
-          type: 'multisampler',
-          engine: {
-            'velocity.sensitivity': 15000,
-            volume: 20000,
-            width: 0
-          }
-        }
-
-        const result = validatePresetJson(multisamplePreset, 'drum')
-        
-        expect(result.success).toBe(false)
-        expect(result.error).toContain('multisample preset')
-      })
-
-      it('should reject preset without type field', () => {
-        const invalidPreset = {
-          engine: {
-            'velocity.sensitivity': 15000,
-            volume: 20000
-          }
-        }
-
-        const result = validatePresetJson(invalidPreset, 'drum')
-        
-        expect(result.success).toBe(false)
-        expect(result.error).toContain('Missing "type" field')
-      })
-
-      it('should reject preset without engine field', () => {
-        const invalidPreset = {
-          type: 'drum',
-          regions: []
-        }
-
-        const result = validatePresetJson(invalidPreset, 'drum')
-        
-        expect(result.success).toBe(false)
-        expect(result.error).toContain('Missing or invalid "engine" field')
-      })
-
-      it('should validate drum preset with minimal required fields', () => {
-        const minimalDrumPreset = {
-          type: 'drum',
-          engine: {}
-        }
-
-        const result = validatePresetJson(minimalDrumPreset, 'drum')
-        
-        expect(result.success).toBe(true)
-        expect(result.data?.type).toBe('drum')
-      })
+      const result = validatePresetJson(validDrumPreset, 'drum')
+      expect(result.success).toBe(true)
+      expect(result.data).toEqual(validDrumPreset)
+      expect(result.error).toBeUndefined()
     })
 
-    describe('multisample preset validation', () => {
-      it('should validate a valid multisample preset', () => {
-        const validMultisamplePreset = {
-          type: 'multisampler',
-          engine: {
-            bendrange: 13653,
-            'velocity.sensitivity': 10240,
-            volume: 16466,
-            width: 0
-          },
-          regions: [],
-          platform: 'OP-XY',
-          version: 4
+    it('should reject multisampler preset when expecting drum', () => {
+      const multisamplePreset = {
+        type: 'multisampler',
+        engine: {
+          volume: 26214
         }
+      }
 
-        const result = validatePresetJson(validMultisamplePreset, 'multisampler')
-        
-        expect(result.success).toBe(true)
-        expect(result.data).toEqual(validMultisamplePreset)
-        expect(result.error).toBeUndefined()
-      })
-
-      it('should reject non-multisample preset when expecting multisample', () => {
-        const drumPreset = {
-          type: 'drum',
-          engine: {
-            'velocity.sensitivity': 15000,
-            volume: 20000
-          }
-        }
-
-        const result = validatePresetJson(drumPreset, 'multisampler')
-        
-        expect(result.success).toBe(false)
-        expect(result.error).toContain('drum preset')
-      })
-
-      it('should validate multisample preset with extra fields', () => {
-        const presetWithExtras = {
-          type: 'multisampler',
-          engine: {
-            bendrange: 13653,
-            'velocity.sensitivity': 10240,
-            volume: 16466,
-            width: 0,
-            customField: 'should be preserved'
-          },
-          envelope: {
-            amp: { attack: 0, decay: 0 }
-          },
-          fx: { active: false },
-          customTopLevel: 'also preserved'
-        }
-
-        const result = validatePresetJson(presetWithExtras, 'multisampler')
-        
-        expect(result.success).toBe(true)
-        expect(result.data?.engine?.customField).toBe('should be preserved')
-        expect(result.data?.customTopLevel).toBe('also preserved')
-      })
+      const result = validatePresetJson(multisamplePreset, 'drum')
+      expect(result.success).toBe(false)
+      expect(result.error).toContain('This is a multisample preset')
+      expect(result.error).toContain('switch to the multisample tab')
     })
 
-    describe('error handling', () => {
-      it('should handle null input', () => {
-        const result = validatePresetJson(null, 'drum')
-        
-        expect(result.success).toBe(false)
-        expect(result.error).toContain('Invalid JSON format')
-      })
-
-      it('should handle undefined input', () => {
-        const result = validatePresetJson(undefined, 'drum')
-        
-        expect(result.success).toBe(false)
-        expect(result.error).toContain('Invalid JSON format')
-      })
-
-      it('should handle non-object input', () => {
-        const result = validatePresetJson('not an object', 'drum')
-        
-        expect(result.success).toBe(false)
-        expect(result.error).toContain('Invalid JSON format')
-      })
-
-      it('should handle array input', () => {
-        const result = validatePresetJson(['not', 'an', 'object'], 'drum')
-        
-        expect(result.success).toBe(false)
-        expect(result.error).toContain('Missing "type" field')
-      })
-
-      it('should handle JSON parsing errors gracefully', () => {
-        // Test with an object that would cause issues during processing
-        const problematicObject = {
-          type: 'drum',
-          engine: null // This might cause issues in some validation logic
+    it('should reject unknown preset type', () => {
+      const unknownPreset = {
+        type: 'synthesizer',
+        engine: {
+          volume: 26214
         }
+      }
 
-        const result = validatePresetJson(problematicObject, 'drum')
-        
-        // Should still handle gracefully, even if validation fails
-        expect(result).toHaveProperty('success')
-        expect(result).toHaveProperty('error')
-      })
+      const result = validatePresetJson(unknownPreset, 'drum')
+      expect(result.success).toBe(false)
+      expect(result.error).toContain('has type "synthesizer"')
+      expect(result.error).toContain('expected a "drum" preset')
+    })
+  })
+
+  describe('multisample preset validation', () => {
+    it('should validate valid multisample preset', () => {
+      const validMultisamplePreset = {
+        type: 'multisampler',
+        engine: {
+          volume: 26214
+        }
+      }
+
+      const result = validatePresetJson(validMultisamplePreset, 'multisampler')
+      expect(result.success).toBe(true)
+      expect(result.data).toEqual(validMultisamplePreset)
+      expect(result.error).toBeUndefined()
     })
 
-    describe('type validation edge cases', () => {
-      it('should handle unexpected type values', () => {
-        const invalidTypePreset = {
-          type: 'synth', // Not drum or multisampler
-          engine: {}
+    it('should reject drum preset when expecting multisampler', () => {
+      const drumPreset = {
+        type: 'drum',
+        engine: {
+          playmode: 'poly',
+          volume: 26214
         }
+      }
 
-        const result = validatePresetJson(invalidTypePreset, 'drum')
-        
-        expect(result.success).toBe(false)
-        expect(result.error).toContain('type "synth"')
-      })
+      const result = validatePresetJson(drumPreset, 'multisampler')
+      expect(result.success).toBe(false)
+      expect(result.error).toContain('This is a drum preset')
+      expect(result.error).toContain('switch to the drum tab')
+    })
+  })
 
-      it('should handle wrong case type', () => {
-        const casePreset = {
-          type: 'DRUM', // Wrong case
-          engine: {}
-        }
-
-        const result = validatePresetJson(casePreset, 'drum')
-        
-        expect(result.success).toBe(false)
-        expect(result.error).toContain('type "DRUM"')
-      })
-
-      it('should handle type as number', () => {
-        const numberTypePreset = {
-          type: 123,
-          engine: {}
-        }
-
-        const result = validatePresetJson(numberTypePreset, 'drum')
-        
-        expect(result.success).toBe(false)
-        expect(result.error).toContain('type "123"')
-      })
+  describe('error cases', () => {
+    it('should reject non-object input', () => {
+      const result = validatePresetJson('not an object', 'drum')
+      expect(result.success).toBe(false)
+      expect(result.error).toBe('Invalid JSON format')
     })
 
-    describe('engine validation', () => {
-      it('should handle engine as non-object', () => {
-        const invalidEnginePreset = {
-          type: 'drum',
-          engine: 'not an object'
-        }
-
-        const result = validatePresetJson(invalidEnginePreset, 'drum')
-        
-        expect(result.success).toBe(false)
-        expect(result.error).toContain('Missing or invalid "engine" field')
-      })
-
-      it('should handle missing engine field', () => {
-        const noEnginePreset = {
-          type: 'drum',
-          regions: []
-        }
-
-        const result = validatePresetJson(noEnginePreset, 'drum')
-        
-        expect(result.success).toBe(false)
-        expect(result.error).toContain('Missing or invalid "engine" field')
-      })
-
-      it('should accept empty engine object', () => {
-        const emptyEnginePreset = {
-          type: 'drum',
-          engine: {}
-        }
-
-        const result = validatePresetJson(emptyEnginePreset, 'drum')
-        
-        expect(result.success).toBe(true)
-        expect(result.data?.engine).toEqual({})
-      })
+    it('should reject null input', () => {
+      const result = validatePresetJson(null, 'drum')
+      expect(result.success).toBe(false)
+      expect(result.error).toBe('Invalid JSON format')
     })
+
+    it('should reject preset without type field', () => {
+      const presetWithoutType = {
+        engine: {
+          volume: 26214
+        }
+      }
+
+      const result = validatePresetJson(presetWithoutType, 'drum')
+      expect(result.success).toBe(false)
+      expect(result.error).toBe('Missing "type" field in JSON')
+    })
+
+    it('should reject preset without engine field', () => {
+      const presetWithoutEngine = {
+        type: 'drum'
+      }
+
+      const result = validatePresetJson(presetWithoutEngine, 'drum')
+      expect(result.success).toBe(false)
+      expect(result.error).toBe('Missing or invalid "engine" field')
+    })
+
+    it('should reject preset with invalid engine field', () => {
+      const presetWithInvalidEngine = {
+        type: 'drum',
+        engine: 'not an object'
+      }
+
+      const result = validatePresetJson(presetWithInvalidEngine, 'drum')
+      expect(result.success).toBe(false)
+      expect(result.error).toBe('Missing or invalid "engine" field')
+    })
+  })
+})
+
+describe('importPresetFromFile', () => {
+  it('should import valid JSON file', async () => {
+    const validJsonContent = JSON.stringify({
+      type: 'drum',
+      engine: {
+        playmode: 'poly',
+        volume: 26214
+      }
+    })
+
+    const mockFile = new File([validJsonContent], 'preset.json', {
+      type: 'application/json'
+    })
+
+    const result = await importPresetFromFile(mockFile, 'drum')
+    expect(result.success).toBe(true)
+    expect(result.data?.type).toBe('drum')
+  })
+
+  it('should reject non-JSON files', async () => {
+    const textContent = 'This is not JSON'
+    const mockFile = new File([textContent], 'preset.txt', {
+      type: 'text/plain'
+    })
+
+    const result = await importPresetFromFile(mockFile, 'drum')
+    expect(result.success).toBe(false)
+    expect(result.error).toBe('File must be a JSON file (.json)')
+  })
+
+  it('should handle malformed JSON', async () => {
+    const invalidJsonContent = '{ invalid json syntax }'
+    const mockFile = new File([invalidJsonContent], 'preset.json', {
+      type: 'application/json'
+    })
+
+    const result = await importPresetFromFile(mockFile, 'drum')
+    expect(result.success).toBe(false)
+    expect(result.error).toContain('Invalid JSON format')
+  })
+
+  it('should handle file reading errors', async () => {
+    // Create a mock file that will cause an error when reading
+    const mockFile = {
+      name: 'preset.json',
+      text: vi.fn().mockRejectedValue(new Error('File read error'))
+    } as any
+
+    const result = await importPresetFromFile(mockFile, 'drum')
+    expect(result.success).toBe(false)
+    expect(result.error).toContain('File reading error')
+  })
+
+  it('should handle validation errors', async () => {
+    const invalidPresetContent = JSON.stringify({
+      type: 'drum'
+      // Missing engine field
+    })
+
+    const mockFile = new File([invalidPresetContent], 'preset.json', {
+      type: 'application/json'
+    })
+
+    const result = await importPresetFromFile(mockFile, 'drum')
+    expect(result.success).toBe(false)
+    expect(result.error).toContain('Missing or invalid "engine" field')
+  })
+})
+
+describe('internalToPercent', () => {
+  it('should convert internal values to percentages', () => {
+    expect(internalToPercent(0)).toBe(0)
+    expect(internalToPercent(32767)).toBe(100)
+    expect(internalToPercent(16384)).toBe(50)
+  })
+
+  it('should handle edge cases', () => {
+    expect(internalToPercent(-32767)).toBe(-100)
+    expect(internalToPercent(65534)).toBe(200)
+  })
+
+  it('should round to nearest integer', () => {
+    expect(internalToPercent(328)).toBe(1)
+    expect(internalToPercent(164)).toBe(1)
+    expect(internalToPercent(163)).toBe(0)
+  })
+})
+
+describe('extractDrumSettings', () => {
+  it('should extract drum settings with all properties', () => {
+    const drumPreset: DrumPresetJson = {
+      type: 'drum',
+      engine: {
+        playmode: 'mono',
+        transpose: 12,
+        'velocity.sensitivity': 16383,
+        volume: 19660,
+        width: 6553
+      }
+    }
+
+    const result = extractDrumSettings(drumPreset)
+    
+    expect(result.presetSettings.playmode).toBe('mono')
+    expect(result.presetSettings.transpose).toBe(12)
+    expect(result.presetSettings.velocity).toBe(50) // 16383 -> 50%
+    expect(result.presetSettings.volume).toBe(60) // 19660 -> 60%
+    expect(result.presetSettings.width).toBe(20) // 6553 -> 20%
+  })
+
+  it('should use defaults for missing properties', () => {
+    const drumPreset: DrumPresetJson = {
+      type: 'drum',
+      engine: {
+        // Only some properties provided
+        playmode: 'legato',
+        volume: 26214
+      }
+    }
+
+    const result = extractDrumSettings(drumPreset)
+    
+    expect(result.presetSettings.playmode).toBe('legato')
+    expect(result.presetSettings.transpose).toBe(0) // default
+    expect(result.presetSettings.velocity).toBe(20) // default
+    expect(result.presetSettings.volume).toBe(80) // 26214 -> 80%
+    expect(result.presetSettings.width).toBe(0) // default
+  })
+
+  it('should handle empty engine object', () => {
+    const drumPreset: DrumPresetJson = {
+      type: 'drum',
+      engine: {}
+    }
+
+    const result = extractDrumSettings(drumPreset)
+    
+    expect(result.presetSettings.playmode).toBe('poly')
+    expect(result.presetSettings.transpose).toBe(0)
+    expect(result.presetSettings.velocity).toBe(20)
+    expect(result.presetSettings.volume).toBe(69)
+    expect(result.presetSettings.width).toBe(0)
+  })
+
+  it('should handle various playmode values', () => {
+    const testCases = ['poly', 'mono', 'legato'] as const
+    
+    testCases.forEach(mode => {
+      const drumPreset: DrumPresetJson = {
+        type: 'drum',
+        engine: {
+          playmode: mode
+        }
+      }
+
+      const result = extractDrumSettings(drumPreset)
+      expect(result.presetSettings.playmode).toBe(mode)
+    })
+  })
+
+  it('should handle extreme internal values', () => {
+    const drumPreset: DrumPresetJson = {
+      type: 'drum',
+      engine: {
+        'velocity.sensitivity': 32767, // max value
+        volume: 0, // min value
+        width: 16383 // middle value
+      }
+    }
+
+    const result = extractDrumSettings(drumPreset)
+    
+    expect(result.presetSettings.velocity).toBe(100)
+    expect(result.presetSettings.volume).toBe(0)
+    expect(result.presetSettings.width).toBe(50)
   })
 })

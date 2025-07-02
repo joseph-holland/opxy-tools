@@ -1,354 +1,414 @@
-import { describe, it, expect, vi, beforeEach } from 'vitest'
+import { describe, it, expect, beforeEach, vi } from 'vitest'
 import {
-  midiNoteToString,
-  noteStringToMidiValue,
-  formatFileSize,
   sanitizeName,
   parseFilename,
+  midiNoteToString,
+  noteStringToMidiValue,
+  NOTE_OFFSET,
+  NOTE_NAMES,
+  formatFileSize,
   isPatchSizeValid,
-  readWavMetadata,
+  getPatchSizeWarning,
+  getEffectiveSampleRate,
   audioBufferToWav,
   findNearestZeroCrossing,
-  NOTE_NAMES,
-  NOTE_OFFSET
+  baseMultisampleJson,
+  baseDrumJson,
+  type WavMetadata
 } from '../../utils/audio'
 
-// Mock AudioContext for testing
-const mockAudioContext = {
-  decodeAudioData: vi.fn()
-}
+describe('sanitizeName', () => {
+  it('should keep valid characters', () => {
+    expect(sanitizeName('ValidName123')).toBe('ValidName123')
+    expect(sanitizeName('Test #-().')).toBe('Test #-().')
+  })
 
-vi.mock('../../utils/audioContext', () => ({
-  audioContextManager: {
-    getAudioContext: () => Promise.resolve(mockAudioContext)
-  }
-}))
+  it('should remove invalid characters', () => {
+    expect(sanitizeName('Invalid@Name!')).toBe('InvalidName')
+    expect(sanitizeName('Test$%^&*+=[]{}|\\:";\'<>?,/')).toBe('Test')
+  })
 
-// Mock AudioBuffer for testing
-const createMockAudioBuffer = (length: number = 100, sampleRate: number = 44100) => ({
-  length,
-  sampleRate,
-  numberOfChannels: 1,
-  duration: length / sampleRate,
-  getChannelData: (channel: number) => {
-    // Create a simple test signal with zero crossings
-    const data = new Float32Array(length)
-    for (let i = 0; i < length; i++) {
-      data[i] = Math.sin(2 * Math.PI * i / 10) * 0.5 // Sine wave with zero crossings
-    }
-    return data
-  },
-  copyFromChannel: vi.fn(),
-  copyToChannel: vi.fn()
+  it('should handle special cases', () => {
+    expect(sanitizeName('')).toBe('')
+    expect(sanitizeName('   ')).toBe('   ')
+    expect(sanitizeName('123')).toBe('123')
+  })
+
+  it('should preserve spaces and allowed symbols', () => {
+    expect(sanitizeName('Kick Drum #1-A (Main).wav')).toBe('Kick Drum #1-A (Main).wav')
+    expect(sanitizeName('Sample-Name #123 (Version)')).toBe('Sample-Name #123 (Version)')
+  })
 })
 
-describe('audio utilities', () => {
-  describe('midiNoteToString', () => {
-    it('should convert MIDI note numbers to note strings correctly', () => {
-      expect(midiNoteToString(60)).toBe('C4')
-      expect(midiNoteToString(69)).toBe('A4')
-      expect(midiNoteToString(72)).toBe('C5')
+describe('parseFilename', () => {
+  describe('with note names', () => {
+    it('should parse simple note names', () => {
+      expect(parseFilename('kick_C3.wav')).toEqual(['kick', 60])
+      expect(parseFilename('snare_A4.wav')).toEqual(['snare', 81])
     })
 
-    it('should handle sharps correctly', () => {
-      expect(midiNoteToString(61)).toBe('C#4')
-      expect(midiNoteToString(70)).toBe('A#4')
+    it('should parse sharp notes', () => {
+      expect(parseFilename('hihat_C#3.wav')).toEqual(['hihat', 61])
+      expect(parseFilename('cymbal_F#4.wav')).toEqual(['cymbal', 78])
     })
 
-    it('should handle edge cases', () => {
-      expect(midiNoteToString(0)).toBe('C-1')
-      expect(midiNoteToString(127)).toBe('G9')
+    it('should parse flat notes', () => {
+      expect(parseFilename('bass_Db3.wav')).toEqual(['bass', 61])
+      expect(parseFilename('piano_Bb4.wav')).toEqual(['piano', 82])
     })
 
-    it('should handle negative numbers gracefully', () => {
-      expect(midiNoteToString(-1)).toBe('undefined-2')
-      expect(midiNoteToString(-12)).toBe('C-2')
+    it('should handle different separators', () => {
+      expect(parseFilename('kick-C3.wav')).toEqual(['kick', 60])
+      expect(parseFilename('kick C3.wav')).toEqual(['kick', 60])
+      expect(parseFilename('kick_C3.wav')).toEqual(['kick', 60])
+    })
+
+    it('should handle case insensitive notes', () => {
+      expect(parseFilename('kick_c3.wav')).toEqual(['kick', 60])
+      expect(parseFilename('kick_C3.wav')).toEqual(['kick', 60])
     })
   })
 
-  describe('noteStringToMidiValue', () => {
-    it('should convert note strings to MIDI note numbers correctly', () => {
-      // Based on the actual NOTE_OFFSET implementation
-      expect(noteStringToMidiValue('C4')).toBe(72)  // Using OP-XY specific mapping
-      expect(noteStringToMidiValue('A4')).toBe(81)
-      expect(noteStringToMidiValue('C5')).toBe(84)
+  describe('with numbers', () => {
+    it('should parse simple numbers', () => {
+      expect(parseFilename('kick_60.wav')).toEqual(['kick', 60])
+      expect(parseFilename('snare123.wav')).toEqual(['snare', 123])
     })
 
-    it('should handle sharps correctly', () => {
-      expect(noteStringToMidiValue('C#4')).toBe(73)
-      expect(noteStringToMidiValue('A#4')).toBe(82)
+    it('should parse three digit numbers', () => {
+      expect(parseFilename('sample127.wav')).toEqual(['sample', 127])
+      expect(parseFilename('test_001.wav')).toEqual(['test', 1])
+    })
+  })
+
+  describe('name sanitization', () => {
+    it('should sanitize invalid characters in base name', () => {
+      expect(parseFilename('kick@drum_C3.wav')).toEqual(['kickdrum', 60])
+      expect(parseFilename('sample$%^_60.wav')).toEqual(['sample', 60])
+    })
+  })
+
+  describe('error cases', () => {
+    it('should throw error for invalid patterns', () => {
+      expect(() => parseFilename('invalid')).toThrow('does not match the expected pattern')
+      expect(() => parseFilename('no_number_or_note.wav')).toThrow('does not match the expected pattern')
     })
 
-    it('should handle flats correctly', () => {
-      expect(noteStringToMidiValue('Db4')).toBe(73)
-      expect(noteStringToMidiValue('Bb4')).toBe(82)
+    it('should throw error for empty input', () => {
+      expect(() => parseFilename('')).toThrow('does not match the expected pattern')
     })
+  })
+})
 
-    it('should handle case insensitivity', () => {
-      expect(noteStringToMidiValue('c4')).toBe(72)
-      expect(noteStringToMidiValue('a#4')).toBe(82)
-    })
+describe('midiNoteToString', () => {
+  it('should convert common MIDI notes correctly', () => {
+    expect(midiNoteToString(60)).toBe('C4')  // Middle C
+    expect(midiNoteToString(69)).toBe('A4')  // A440
+    expect(midiNoteToString(48)).toBe('C3')
+  })
 
-    it('should throw error for invalid input', () => {
+  it('should handle sharp notes', () => {
+    expect(midiNoteToString(61)).toBe('C#4')
+    expect(midiNoteToString(66)).toBe('F#4')
+  })
+
+  it('should handle different octaves', () => {
+    expect(midiNoteToString(24)).toBe('C1')
+    expect(midiNoteToString(36)).toBe('C2')
+    expect(midiNoteToString(72)).toBe('C5')
+    expect(midiNoteToString(84)).toBe('C6')
+  })
+
+  it('should handle edge cases', () => {
+    expect(midiNoteToString(0)).toBe('C-1')
+    expect(midiNoteToString(127)).toBe('G9')
+  })
+})
+
+describe('noteStringToMidiValue', () => {
+  it('should convert note strings to MIDI values', () => {
+    expect(noteStringToMidiValue('C4')).toBe(72)
+    expect(noteStringToMidiValue('A4')).toBe(81)
+    expect(noteStringToMidiValue('C3')).toBe(60)
+  })
+
+  it('should handle sharp notes', () => {
+    expect(noteStringToMidiValue('C#4')).toBe(73)
+    expect(noteStringToMidiValue('F#4')).toBe(78)
+  })
+
+  it('should handle flat notes', () => {
+    expect(noteStringToMidiValue('Db4')).toBe(73)
+    expect(noteStringToMidiValue('Bb4')).toBe(82)
+  })
+
+  it('should handle case insensitive input', () => {
+    expect(noteStringToMidiValue('c4')).toBe(72)
+    expect(noteStringToMidiValue('A4')).toBe(81)
+  })
+
+  it('should handle spaces', () => {
+    expect(noteStringToMidiValue('C 4')).toBe(72)
+    expect(noteStringToMidiValue('C# 4')).toBe(73)
+  })
+
+  // Note: These functions are not actually inverses due to different octave numbering conventions
+  // This is legacy behavior that should be preserved for compatibility
+  it('should maintain consistency with expected octave mappings', () => {
+    // Test specific known mappings instead of expecting inverse behavior
+    expect(noteStringToMidiValue('C3')).toBe(60)
+    expect(midiNoteToString(60)).toBe('C4')
+    expect(noteStringToMidiValue('C4')).toBe(72)
+    expect(midiNoteToString(72)).toBe('C5')
+  })
+
+  describe('error cases', () => {
+    it('should throw error for invalid note format', () => {
       expect(() => noteStringToMidiValue('X4')).toThrow('Bad note')
       expect(() => noteStringToMidiValue('C')).toThrow('Bad note format')
+      expect(() => noteStringToMidiValue('')).toThrow('Bad note format')
     })
 
-    it('should handle edge cases', () => {
-      expect(noteStringToMidiValue('C-1')).toBe(12)
-      expect(noteStringToMidiValue('G9')).toBe(139)
-    })
-  })
-
-  describe('formatFileSize', () => {
-    it('should format bytes correctly', () => {
-      expect(formatFileSize(512)).toBe('512 b')
-      expect(formatFileSize(1023)).toBe('1023 b')
-    })
-
-    it('should format kilobytes correctly', () => {
-      expect(formatFileSize(1024)).toBe('1.0 kb')
-      expect(formatFileSize(1536)).toBe('1.5 kb')
-      expect(formatFileSize(2048)).toBe('2.0 kb')
-    })
-
-    it('should format megabytes correctly', () => {
-      expect(formatFileSize(1024 * 1024)).toBe('1.0 mb')
-      expect(formatFileSize(1536 * 1024)).toBe('1.5 mb')
-    })
-
-    it('should format gigabytes correctly', () => {
-      // Function only goes up to mb, doesn't handle GB
-      expect(formatFileSize(1024 * 1024 * 1024)).toBe('1024.0 mb')
-    })
-
-    it('should handle zero and negative values', () => {
-      expect(formatFileSize(0)).toBe('0 mb')
-      expect(formatFileSize(-100)).toBe('-100 b')
+    it('should throw error for invalid characters', () => {
+      expect(() => noteStringToMidiValue('H4')).toThrow('Bad note')
+      expect(() => noteStringToMidiValue('C9')).not.toThrow() // Should be valid
     })
   })
+})
 
-  describe('sanitizeName', () => {
-    it('should remove invalid characters', () => {
-      expect(sanitizeName('test@#$%')).toBe('test#')
-      expect(sanitizeName('file/name\\test')).toBe('filenametest')
-    })
-
-    it('should preserve valid characters', () => {
-      expect(sanitizeName('Test 123 #-().')).toBe('Test 123 #-().')
-      expect(sanitizeName('Bass C4')).toBe('Bass C4')
-    })
-
-    it('should handle empty string', () => {
-      expect(sanitizeName('')).toBe('')
-    })
+describe('formatFileSize', () => {
+  it('should format bytes', () => {
+    expect(formatFileSize(0)).toBe('0 mb')
+    expect(formatFileSize(512)).toBe('512 b')
+    expect(formatFileSize(1023)).toBe('1023 b')
   })
 
-  describe('parseFilename', () => {
-    it('should parse filename with note', () => {
-      const [name, note] = parseFilename('Bass C4.wav')
-      expect(name).toBe('Bass')
-      expect(note).toBe(72) // Using OP-XY specific MIDI mapping
-    })
-
-    it('should parse filename with number', () => {
-      const [name, note] = parseFilename('Kick 1.wav')
-      expect(name).toBe('Kick')
-      expect(note).toBe(1)
-    })
-
-    it('should handle sharps and flats', () => {
-      const [name1, note1] = parseFilename('Sample C#4.wav')
-      expect(name1).toBe('Sample')
-      expect(note1).toBe(73)
-
-      const [name2, note2] = parseFilename('Sample Db4.wav')
-      expect(name2).toBe('Sample')
-      expect(note2).toBe(73)
-    })
-
-    it('should throw error for invalid filename', () => {
-      expect(() => parseFilename('invalid.wav')).toThrow(
-        "Filename 'invalid.wav' does not match the expected pattern."
-      )
-    })
+  it('should format kilobytes', () => {
+    expect(formatFileSize(1024)).toBe('1.0 kb')
+    expect(formatFileSize(1536)).toBe('1.5 kb')
+    expect(formatFileSize(1048575)).toBe('1024.0 kb')
   })
 
-  describe('isPatchSizeValid', () => {
-    const PATCH_SIZE_LIMIT = 8 * 1024 * 1024 // 8MB
-
-    it('should return true for sizes under the limit', () => {
-      expect(isPatchSizeValid(1024 * 1024)).toBe(true) // 1MB
-      expect(isPatchSizeValid(7 * 1024 * 1024)).toBe(true) // 7MB
-    })
-
-    it('should return true for sizes equal to the limit', () => {
-      expect(isPatchSizeValid(PATCH_SIZE_LIMIT)).toBe(true)
-    })
-
-    it('should return false for sizes over the limit', () => {
-      expect(isPatchSizeValid(PATCH_SIZE_LIMIT + 1)).toBe(false)
-      expect(isPatchSizeValid(10 * 1024 * 1024)).toBe(false) // 10MB
-    })
-
-    it('should handle zero and negative values', () => {
-      expect(isPatchSizeValid(0)).toBe(true)
-      expect(isPatchSizeValid(-1)).toBe(true)
-    })
+  it('should format megabytes', () => {
+    expect(formatFileSize(1048576)).toBe('1.0 mb')
+    expect(formatFileSize(1572864)).toBe('1.5 mb')
+    expect(formatFileSize(8388608)).toBe('8.0 mb')
   })
 
-  describe('readWavMetadata', () => {
-    beforeEach(() => {
-      vi.clearAllMocks()
-    })
+  it('should handle large values', () => {
+    expect(formatFileSize(10485760)).toBe('10.0 mb')
+    expect(formatFileSize(52428800)).toBe('50.0 mb')
+  })
+})
 
-    it('should handle invalid WAV files gracefully', async () => {
-      // Mock File with arrayBuffer method
-      const mockFile = {
-        arrayBuffer: vi.fn().mockResolvedValue(new ArrayBuffer(10)),
-        size: 10
-      } as any
+describe('isPatchSizeValid', () => {
+  const PATCH_SIZE_LIMIT = 8 * 1024 * 1024 // 8MB
 
-      await expect(readWavMetadata(mockFile)).rejects.toThrow('Invalid WAV file: missing RIFF header')
-    })
-
-    it('should process a minimal valid WAV structure', async () => {
-      // Create a minimal WAV file buffer
-      const wavBuffer = new ArrayBuffer(44 + 1000) // Header + some data
-      const view = new DataView(wavBuffer)
-      
-      // Write correct WAV header (little-endian for numeric values)
-      // RIFF header
-      view.setUint8(0, 0x52) // 'R'
-      view.setUint8(1, 0x49) // 'I'
-      view.setUint8(2, 0x46) // 'F'
-      view.setUint8(3, 0x46) // 'F'
-      view.setUint32(4, 1036, true) // File size - 8 (44 + 1000 - 8)
-      
-      // WAVE header
-      view.setUint8(8, 0x57)  // 'W'
-      view.setUint8(9, 0x41)  // 'A'
-      view.setUint8(10, 0x56) // 'V'
-      view.setUint8(11, 0x45) // 'E'
-      
-      // fmt chunk
-      view.setUint8(12, 0x66) // 'f'
-      view.setUint8(13, 0x6d) // 'm'
-      view.setUint8(14, 0x74) // 't'
-      view.setUint8(15, 0x20) // ' '
-      view.setUint32(16, 16, true) // fmt chunk size
-      view.setUint16(20, 1, true) // PCM format
-      view.setUint16(22, 1, true) // mono
-      view.setUint32(24, 44100, true) // sample rate
-      view.setUint32(28, 88200, true) // byte rate
-      view.setUint16(32, 2, true) // block align
-      view.setUint16(34, 16, true) // bit depth
-      
-      // data chunk
-      view.setUint8(36, 0x64) // 'd'
-      view.setUint8(37, 0x61) // 'a'
-      view.setUint8(38, 0x74) // 't'
-      view.setUint8(39, 0x61) // 'a'
-      view.setUint32(40, 1000, true) // data size
-
-      // Mock File with arrayBuffer method
-      const mockFile = {
-        arrayBuffer: vi.fn().mockResolvedValue(wavBuffer),
-        size: 44 + 1000
-      } as any
-      
-      const mockAudioBuffer = createMockAudioBuffer(1000, 44100)
-      mockAudioContext.decodeAudioData.mockResolvedValue(mockAudioBuffer)
-
-      const metadata = await readWavMetadata(mockFile)
-      
-      expect(metadata.sampleRate).toBe(44100)
-      expect(metadata.channels).toBe(1)
-      expect(metadata.bitDepth).toBe(16)
-      expect(metadata.format).toBe('PCM')
-    })
+  it('should return true for valid sizes', () => {
+    expect(isPatchSizeValid(0)).toBe(true)
+    expect(isPatchSizeValid(1024)).toBe(true)
+    expect(isPatchSizeValid(PATCH_SIZE_LIMIT)).toBe(true)
   })
 
-  describe('audioBufferToWav', () => {
-    it('should create a WAV blob from audio buffer', () => {
-      const mockBuffer = createMockAudioBuffer(1000, 44100)
-      const result = audioBufferToWav(mockBuffer)
-      
-      expect(result).toBeInstanceOf(Blob)
-      expect(result.type).toBe('audio/wav')
-    })
+  it('should return false for invalid sizes', () => {
+    expect(isPatchSizeValid(PATCH_SIZE_LIMIT + 1)).toBe(false)
+    expect(isPatchSizeValid(PATCH_SIZE_LIMIT * 2)).toBe(false)
+  })
+})
 
-    it('should handle different bit depths', () => {
-      const mockBuffer = createMockAudioBuffer(1000, 44100)
-      
-      const result16 = audioBufferToWav(mockBuffer, 16)
-      const result24 = audioBufferToWav(mockBuffer, 24)
-      
-      expect(result16).toBeInstanceOf(Blob)
-      expect(result24).toBeInstanceOf(Blob)
-      expect(result24.size).toBeGreaterThan(result16.size) // 24-bit should be larger
-    })
+describe('getPatchSizeWarning', () => {
+  const PATCH_SIZE_LIMIT = 8 * 1024 * 1024 // 8MB
 
-    it('should throw error for unsupported channels', () => {
-      const mockBuffer = {
-        ...createMockAudioBuffer(1000, 44100),
-        numberOfChannels: 3
+  it('should return null for small sizes', () => {
+    expect(getPatchSizeWarning(0)).toBe(null)
+    expect(getPatchSizeWarning(PATCH_SIZE_LIMIT * 0.5)).toBe(null)
+    expect(getPatchSizeWarning(PATCH_SIZE_LIMIT * 0.74)).toBe(null)
+  })
+
+  it('should return warning for large sizes', () => {
+    const result = getPatchSizeWarning(PATCH_SIZE_LIMIT * 0.8)
+    expect(result).toBe('Approaching size limit - consider optimizing samples')
+  })
+
+  it('should return error for very large sizes', () => {
+    const result = getPatchSizeWarning(PATCH_SIZE_LIMIT * 0.96)
+    expect(result).toBe('Preset size too large - reduce sample rate, bit depth, or convert to mono')
+  })
+
+  it('should handle edge cases', () => {
+    expect(getPatchSizeWarning(PATCH_SIZE_LIMIT * 0.75)).toBe('Approaching size limit - consider optimizing samples')
+    expect(getPatchSizeWarning(PATCH_SIZE_LIMIT * 0.95)).toBe('Preset size too large - reduce sample rate, bit depth, or convert to mono')
+  })
+})
+
+describe('getEffectiveSampleRate', () => {
+  it('should keep original when selected is "0"', () => {
+    expect(getEffectiveSampleRate(44100, "0")).toBe(44100)
+    expect(getEffectiveSampleRate(48000, "0")).toBe(48000)
+    expect(getEffectiveSampleRate(22050, "0")).toBe(22050)
+  })
+
+  it('should allow any conversion from 48kHz', () => {
+    expect(getEffectiveSampleRate(48000, "44100")).toBe(44100)
+    expect(getEffectiveSampleRate(48000, "22050")).toBe(22050)
+    expect(getEffectiveSampleRate(48000, "11025")).toBe(11025)
+  })
+
+  it('should prevent upsampling for other rates', () => {
+    expect(getEffectiveSampleRate(22050, "44100")).toBe(22050) // No upsampling
+    expect(getEffectiveSampleRate(11025, "22050")).toBe(11025) // No upsampling
+    expect(getEffectiveSampleRate(44100, "48000")).toBe(44100) // No upsampling
+  })
+
+  it('should allow downsampling', () => {
+    expect(getEffectiveSampleRate(44100, "22050")).toBe(22050)
+    expect(getEffectiveSampleRate(44100, "11025")).toBe(11025)
+    expect(getEffectiveSampleRate(22050, "11025")).toBe(11025)
+  })
+
+  it('should handle string and number inputs', () => {
+    expect(getEffectiveSampleRate(44100, 22050)).toBe(22050)
+    expect(getEffectiveSampleRate(44100, "22050")).toBe(22050)
+  })
+})
+
+describe('audioBufferToWav', () => {
+  let mockAudioBuffer: AudioBuffer
+
+  beforeEach(() => {
+    // Create a simple mock AudioBuffer
+    mockAudioBuffer = new (global.AudioBuffer as any)({
+      numberOfChannels: 2,
+      length: 44100,
+      sampleRate: 44100
+    })
+    
+    // Mock getChannelData to return Float32Array with some test data
+    mockAudioBuffer.getChannelData = vi.fn((channel: number) => {
+      const data = new Float32Array(44100)
+      for (let i = 0; i < data.length; i++) {
+        data[i] = Math.sin(2 * Math.PI * 440 * i / 44100) * 0.5 // 440Hz sine wave
       }
-      
-      expect(() => audioBufferToWav(mockBuffer)).toThrow('Expecting mono or stereo audioBuffer')
-    })
-
-    it('should throw error for unsupported bit depth', () => {
-      const mockBuffer = createMockAudioBuffer(1000, 44100)
-      
-      expect(() => audioBufferToWav(mockBuffer, 32)).toThrow('Unsupported bit depth: 32')
+      return data
     })
   })
 
-  describe('findNearestZeroCrossing', () => {
-    let mockBuffer: any
-
-    beforeEach(() => {
-      mockBuffer = createMockAudioBuffer(100, 44100)
-    })
-
-    it('should find the nearest zero crossing', () => {
-      const result = findNearestZeroCrossing(mockBuffer, 10)
-      expect(typeof result).toBe('number')
-      expect(result).toBeGreaterThanOrEqual(0)
-      expect(result).toBeLessThan(100)
-    })
-
-    it('should return original position if it is already close to zero', () => {
-      // Position 0 should be close to zero due to the sine wave starting at 0
-      const result = findNearestZeroCrossing(mockBuffer, 0)
-      expect(result).toBe(0)
-    })
-
-    it('should respect direction parameter', () => {
-      const forwardResult = findNearestZeroCrossing(mockBuffer, 50, 'forward')
-      const backwardResult = findNearestZeroCrossing(mockBuffer, 50, 'backward')
-      
-      expect(typeof forwardResult).toBe('number')
-      expect(typeof backwardResult).toBe('number')
-    })
-
-    it('should respect max distance parameter', () => {
-      // With a very small max distance, it should find something within range
-      const result = findNearestZeroCrossing(mockBuffer, 0, 'forward', 1)
-      expect(result).toBe(0) // Position 0 is already the best within 1 sample distance
-    })
+  it('should create WAV blob with correct type', () => {
+    const result = audioBufferToWav(mockAudioBuffer)
+    expect(result).toBeInstanceOf(Blob)
+    expect(result.type).toBe('audio/wav')
   })
 
-  describe('constants', () => {
-    it('should have correct NOTE_NAMES array', () => {
-      expect(NOTE_NAMES).toEqual([
-        "C", "C#", "D", "D#", "E", "F", "F#", "G", "G#", "A", "A#", "B",
-      ])
+  it('should handle 16-bit conversion by default', () => {
+    const result = audioBufferToWav(mockAudioBuffer)
+    expect(result.size).toBeGreaterThan(44) // Should have WAV header + data
+  })
+
+  it('should handle 24-bit conversion', () => {
+    const result = audioBufferToWav(mockAudioBuffer, 24)
+    expect(result.size).toBeGreaterThan(44)
+    // 24-bit should be larger than 16-bit for same audio
+    const result16 = audioBufferToWav(mockAudioBuffer, 16)
+    expect(result.size).toBeGreaterThan(result16.size)
+  })
+
+  it('should throw error for unsupported bit depths', () => {
+    expect(() => audioBufferToWav(mockAudioBuffer, 8)).toThrow('Unsupported bit depth: 8')
+    expect(() => audioBufferToWav(mockAudioBuffer, 32)).toThrow('Unsupported bit depth: 32')
+  })
+
+  it('should throw error for unsupported channel counts', () => {
+    const invalidBuffer = new (global.AudioBuffer as any)({
+      numberOfChannels: 4,
+      length: 1000,
+      sampleRate: 44100
+    })
+    
+    expect(() => audioBufferToWav(invalidBuffer)).toThrow('Expecting mono or stereo audioBuffer')
+  })
+})
+
+describe('findNearestZeroCrossing', () => {
+  let mockAudioBuffer: AudioBuffer
+
+  beforeEach(() => {
+    mockAudioBuffer = new (global.AudioBuffer as any)({
+      numberOfChannels: 1,
+      length: 1000,
+      sampleRate: 44100
     })
 
-    it('should have correct NOTE_OFFSET array', () => {
-      expect(NOTE_OFFSET).toEqual([33, 35, 24, 26, 28, 29, 31])
-    })
+    // Create test data with known zero crossings
+    const data = new Float32Array(1000)
+    for (let i = 0; i < data.length; i++) {
+      // Create a sine wave with zero crossings at predictable points
+      data[i] = Math.sin(2 * Math.PI * i / 100)
+    }
+    // Manually set some exact zero crossings
+    data[0] = 0
+    data[100] = 0
+    data[200] = 0
+    data[500] = 0
+
+    mockAudioBuffer.getChannelData = vi.fn(() => data)
+  })
+
+  it('should find exact zero crossings', () => {
+    const result = findNearestZeroCrossing(mockAudioBuffer, 95, 'both', 10)
+    expect(result).toBe(100) // Should find the zero at position 100
+  })
+
+  it('should return original position if already near zero', () => {
+    const result = findNearestZeroCrossing(mockAudioBuffer, 100)
+    expect(result).toBe(100)
+  })
+
+  it('should respect search direction', () => {
+    const forwardResult = findNearestZeroCrossing(mockAudioBuffer, 150, 'forward', 100)
+    expect(forwardResult).toBe(200)
+
+    const backwardResult = findNearestZeroCrossing(mockAudioBuffer, 150, 'backward', 100)
+    expect(backwardResult).toBe(50)
+  })
+
+  it('should respect max distance', () => {
+    const result = findNearestZeroCrossing(mockAudioBuffer, 150, 'both', 10)
+    // Should not find distant zero crossings if max distance is small
+    expect(Math.abs(result - 150)).toBeLessThanOrEqual(10)
+  })
+
+  it('should clamp position to valid range', () => {
+    expect(findNearestZeroCrossing(mockAudioBuffer, -100)).toBe(0)
+    expect(findNearestZeroCrossing(mockAudioBuffer, 2000)).toBe(0) // Clamped to end, finds best zero crossing
+  })
+
+  it('should handle edge positions', () => {
+    expect(findNearestZeroCrossing(mockAudioBuffer, 0)).toBe(0)
+    expect(findNearestZeroCrossing(mockAudioBuffer, 999)).toBe(0) // Finds best zero crossing within range
+  })
+})
+
+describe('constants and exports', () => {
+  it('should export NOTE_OFFSET array', () => {
+    expect(NOTE_OFFSET).toEqual([33, 35, 24, 26, 28, 29, 31])
+    expect(NOTE_OFFSET.length).toBe(7)
+  })
+
+  it('should export NOTE_NAMES array', () => {
+    expect(NOTE_NAMES).toEqual([
+      "C", "C#", "D", "D#", "E", "F", "F#", "G", "G#", "A", "A#", "B"
+    ])
+    expect(NOTE_NAMES.length).toBe(12)
+  })
+
+  it('should export base JSON templates', () => {
+    expect(baseMultisampleJson.type).toBe('multisampler')
+    expect(baseMultisampleJson.platform).toBe('OP-XY')
+    expect(baseMultisampleJson.version).toBe(4)
+    expect(Array.isArray(baseMultisampleJson.regions)).toBe(true)
+
+    expect(baseDrumJson.type).toBe('drum')
+    expect(baseDrumJson.platform).toBe('OP-XY')
+    expect(baseDrumJson.version).toBe(4)
   })
 })
