@@ -3,7 +3,7 @@ import { useState, useRef, useEffect, useCallback } from 'react';
 interface RecordingModalProps {
   isOpen: boolean;
   onClose: () => void;
-  onSave: (audioBuffer: AudioBuffer) => void;
+  onSave: (audioBuffer: AudioBuffer, filename: string) => void;
   maxDuration?: number; // in seconds
 }
 
@@ -25,6 +25,7 @@ export function RecordingModal({
   const [recordingTime, setRecordingTime] = useState(0);
   const [recordedBuffer, setRecordedBuffer] = useState<AudioBuffer | null>(null);
   const [error, setError] = useState<string>('');
+  const [filename, setFilename] = useState<string>('');
   
   const mediaRecorderRef = useRef<MediaRecorder | null>(null);
   const streamRef = useRef<MediaStream | null>(null);
@@ -73,6 +74,20 @@ export function RecordingModal({
       cleanup();
     }
   }, [isOpen, getAudioDevices]);
+
+  // Generate default filename when modal opens
+  useEffect(() => {
+    if (isOpen) {
+      const now = new Date();
+      const dateStr = now.getFullYear().toString() + 
+                     (now.getMonth() + 1).toString().padStart(2, '0') + 
+                     now.getDate().toString().padStart(2, '0');
+      const timeStr = now.getHours().toString().padStart(2, '0') + 
+                     now.getMinutes().toString().padStart(2, '0') + 
+                     now.getSeconds().toString().padStart(2, '0');
+      setFilename(`rec-sample-${dateStr}-${timeStr}-note`);
+    }
+  }, [isOpen]);
 
   const cleanup = () => {
     if (streamRef.current) {
@@ -330,7 +345,7 @@ export function RecordingModal({
 
   const handleSave = () => {
     if (recordedBuffer) {
-      onSave(recordedBuffer);
+      onSave(recordedBuffer, filename);
       onClose();
     }
   };
@@ -436,6 +451,36 @@ export function RecordingModal({
                 ))
               )}
             </select>
+          </div>
+
+          {/* Filename Input */}
+          <div style={{ marginBottom: '1.5rem' }}>
+            <label style={{ 
+              display: 'block', 
+              marginBottom: '0.5rem', 
+              fontSize: '0.9rem',
+              color: '#333',
+              fontWeight: '500'
+            }}>
+              filename
+            </label>
+            <input
+              type="text"
+              value={filename}
+              onChange={(e) => setFilename(e.target.value)}
+              disabled={isRecording}
+              style={{
+                width: '100%',
+                padding: '0.5rem',
+                border: '1px solid #d1d5db',
+                borderRadius: '3px',
+                fontSize: '0.9rem',
+                backgroundColor: '#fff',
+                color: '#333',
+                boxSizing: 'border-box'
+              }}
+              placeholder="enter filename for the recording"
+            />
           </div>
 
           {/* Recording Status */}

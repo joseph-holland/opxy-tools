@@ -1,8 +1,8 @@
-# unofficial OP-XY tools
+# unofficial OP-PatchLab
 
 web-based tools for creating custom drum and multisample presets for the teenage engineering OP-XY.
 
-![OP-XY Tools Preview](public/assets/preview-image.png)
+![OP-PatchLab Preview](public/assets/preview-image.png)
 
 - **live demo:** [opxy-tools](https://opxy-tools.pages.dev/)
 - **GitHub:** [github.com/joseph-holland/opxy-tools](https://github.com/joseph-holland/opxy-tools)

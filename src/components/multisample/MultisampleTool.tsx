@@ -210,33 +210,23 @@ export function MultisampleTool() {
     setRecordingModal({ isOpen: false, targetIndex: null });
   };
 
-  const handleSaveRecording = async (audioBuffer: AudioBuffer) => {
+  const handleSaveRecording = async (audioBuffer: AudioBuffer, filename: string) => {
     try {
-      // Convert AudioBuffer to File-like object for processing
-      const numberOfChannels = audioBuffer.numberOfChannels;
-      const length = audioBuffer.length;
-      const sampleRate = audioBuffer.sampleRate;
+      // Convert AudioBuffer to WAV blob
+      const wavBlob = await audioBufferToWav(audioBuffer);
       
-      // Create a new buffer with the same properties
-      const offlineContext = new OfflineAudioContext(numberOfChannels, length, sampleRate);
-      const source = offlineContext.createBufferSource();
-      source.buffer = audioBuffer;
-      source.connect(offlineContext.destination);
-      source.start();
+      // Create a File object with the provided filename
+      const file = new File([wavBlob], `${filename}.wav`, { type: 'audio/wav' });
       
-      const renderedBuffer = await offlineContext.startRendering();
-      
-      // Create a File-like object from the buffer
-      const wavData = audioBufferToWav(renderedBuffer);
-      const recordedFile = new File([wavData], 'recorded_sample.wav', { type: 'audio/wav' });
-      
-      // If a specific target index was set, upload to that slot
-      if (recordingModal.targetIndex !== null) {
-        await handleFileUpload(recordingModal.targetIndex, recordedFile);
+      // If we have a target MIDI note, use it; otherwise let the system assign one
+      if (targetMidiNote !== null) {
+        await handleMultisampleUpload(file, targetMidiNote);
       } else {
-        // Just add to the end of the array
-        await handleMultisampleUpload(recordedFile);
+        await handleMultisampleUpload(file);
       }
+      
+      // Reset target note
+      setTargetMidiNote(null);
     } catch (error) {
       console.error('Error saving recording:', error);
     }
@@ -440,6 +430,39 @@ export function MultisampleTool() {
               >
                 <i className="fas fa-folder-open"></i>
                 browse files
+              </button>
+              <button
+                onClick={() => setRecordingModal({ isOpen: true, targetIndex: null })}
+                style={{
+                  padding: '0.625rem 1.25rem',
+                  border: 'none',
+                  borderRadius: '3px',
+                  backgroundColor: '#333',
+                  color: '#fff',
+                  fontSize: '0.9rem',
+                  fontWeight: '500',
+                  cursor: 'pointer',
+                  transition: 'all 0.2s ease',
+                  fontFamily: 'inherit',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  gap: '0.5rem',
+                  flex: isMobile ? '1' : 'none'
+                }}
+                onMouseEnter={(e) => {
+                  e.currentTarget.style.backgroundColor = '#555';
+                  e.currentTarget.style.transform = 'translateY(-1px)';
+                  e.currentTarget.style.boxShadow = '0 4px 12px rgba(0, 0, 0, 0.3)';
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.backgroundColor = '#333';
+                  e.currentTarget.style.transform = 'translateY(0)';
+                  e.currentTarget.style.boxShadow = 'none';
+                }}
+              >
+                <i className="fas fa-microphone"></i>
+                record sample
               </button>
               <button
                 onClick={handleClearAll}
