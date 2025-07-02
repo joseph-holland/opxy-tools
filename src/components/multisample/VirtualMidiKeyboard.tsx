@@ -589,7 +589,8 @@ export function VirtualMidiKeyboard({
           }}>
             {renderKeys()}
 
-            {/* Compact Indicator Strip Over Keyboard */}
+            {/* Compact Indicator Strip Over Keyboard - hidden on mobile */}
+            {!isMobile && (
             <div style={{
               position: 'absolute',
               left: `${(activeOctave + 1) * 168}px`, // Each octave is 7 keys * 24px = 168px
@@ -812,6 +813,7 @@ export function VirtualMidiKeyboard({
                 </>
               )}
             </div>
+            )}
           </div>
         </div>
       </div>
