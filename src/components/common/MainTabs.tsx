@@ -134,7 +134,7 @@ export function MainTabs() {
       {/* Tab Content */}
       <div style={{
         background: 'var(--color-bg-primary)',
-        borderRadius: state.currentTab === 'drum' ? '15px 15px 15px 15px' : '15px 0 15px 15px',
+        borderRadius: '15px',
         border: '1px solid var(--color-border-subtle)',
         borderTop: 'none',
         minHeight: '500px',

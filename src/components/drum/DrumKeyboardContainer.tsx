@@ -224,7 +224,7 @@ export const DrumKeyboardContainer: React.FC<DrumKeyboardContainerProps> = ({ on
         </div>
 
         {/* Drum Keyboard */}
-        <div style={{ padding: '0.5rem 1rem 1rem 1rem' }}>
+        <div style={{ padding: '1rem' }}>
           <DrumKeyboard onFileUpload={onFileUpload} />
         </div>
       </div>

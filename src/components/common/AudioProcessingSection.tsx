@@ -277,9 +277,7 @@ export function AudioProcessingSection({
 
                 {/* Normalization Level Slider - below toggles */}
                 <div style={{
-                  width: '100%',
-                  maxWidth: '100%',
-                  overflow: 'hidden'
+                  width: '100%'
                 }}>
                   <div style={{
                     fontSize: '0.8rem',
@@ -290,7 +288,7 @@ export function AudioProcessingSection({
                   }}>
                     normalization level: {normalizeLevel.toFixed(1)} db
                   </div>
-                  <div style={{ width: '100%', maxWidth: '100%', overflow: 'hidden' }}>
+                  <div style={{ width: '100%' }}>
                     <Slider
                       id="normalize-level"
                       min={-6.0}

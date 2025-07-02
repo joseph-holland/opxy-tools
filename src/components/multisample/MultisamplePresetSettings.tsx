@@ -450,7 +450,7 @@ export function MultisamplePresetSettings() {
                   }}>
                     velocity sensitivity: {settings.velocitySensitivity}%
                   </div>
-                  <div style={{ width: '100%', maxWidth: '100%', overflow: 'hidden' }}>
+                  <div style={{ width: '100%' }}>
                     <Slider
                       id="multisample-velocity-sensitivity"
                       min={0}
@@ -472,7 +472,7 @@ export function MultisamplePresetSettings() {
                   }}>
                     volume: {settings.volume}%
                   </div>
-                  <div style={{ width: '100%', maxWidth: '100%', overflow: 'hidden' }}>
+                  <div style={{ width: '100%' }}>
                     <Slider
                       id="multisample-volume"
                       min={0}
@@ -497,7 +497,7 @@ export function MultisamplePresetSettings() {
                   }}>
                     transpose: {settings.transpose}
                   </div>
-                  <div style={{ width: '100%', maxWidth: '100%', overflow: 'hidden' }}>
+                  <div style={{ width: '100%' }}>
                     <Slider
                       id="multisample-transpose"
                       min={-36}
@@ -519,7 +519,7 @@ export function MultisamplePresetSettings() {
                   }}>
                     width: {settings.width}%
                   </div>
-                  <div style={{ width: '100%', maxWidth: '100%', overflow: 'hidden' }}>
+                  <div style={{ width: '100%' }}>
                     <Slider
                       id="multisample-width"
                       min={0}
@@ -541,7 +541,7 @@ export function MultisamplePresetSettings() {
                   }}>
                     highpass: {settings.highpass}%
                   </div>
-                  <div style={{ width: '100%', maxWidth: '100%', overflow: 'hidden' }}>
+                  <div style={{ width: '100%' }}>
                     <Slider
                       id="multisample-highpass"
                       min={0}
@@ -603,17 +603,17 @@ export function MultisamplePresetSettings() {
                 }}>
                   amount: {settings.portamentoAmount}%
                 </div>
-                <div style={{ width: '100%', maxWidth: '100%', overflow: 'hidden' }}>
-                  <Slider
-                    id="multisample-portamento-amount"
-                    min={0}
-                    max={100}
-                    step={1}
-                    value={settings.portamentoAmount}
-                    onChange={({ value }) => updateSetting('portamentoAmount', value)}
-                    hideTextInput
-                  />
-                </div>
+                                  <div style={{ width: '100%' }}>
+                    <Slider
+                      id="multisample-portamento-amount"
+                      min={0}
+                      max={100}
+                      step={1}
+                      value={settings.portamentoAmount}
+                      onChange={({ value }) => updateSetting('portamentoAmount', value)}
+                      hideTextInput
+                    />
+                  </div>
               </div>
             </div>
           </section>
