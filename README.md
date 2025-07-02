@@ -1,10 +1,10 @@
-# unofficial OP-PatchLab
+# OP-PatchStudio
 
 web-based tools for creating custom drum and multisample presets for the teenage engineering OP-XY.
 
-![OP-PatchLab Preview](public/assets/preview-image.png)
+![OP-PatchStudio Preview](public/assets/preview-image.png)
 
-- **live demo:** [opxy-tools](https://opxy-tools.pages.dev/)
+- **live demo:** [OP-PatchStudio](https://opxy-tools.pages.dev/)
 - **GitHub:** [github.com/joseph-holland/opxy-tools](https://github.com/joseph-holland/opxy-tools)
 
 ## features
@@ -30,7 +30,7 @@ This project has been migrated to React with TypeScript for improved maintainabi
 ```bash
 # Clone the repository
 git clone https://github.com/joseph-holland/opxy-tools.git
-cd opxy-tools
+cd op-patchstudio
 
 # Install dependencies
 npm install
@@ -60,7 +60,7 @@ npm run build
 
 ## usage
 
-1. open the [web app](https://opxy-tools.pages.dev/) in your browser.
+1. open the [OP-PatchStudio web app](https://opxy-tools.pages.dev/) in your browser.
 2. select either the **drum** or **multisample** tab.
 3. drag and drop your samples, or use the browse button to select files.
 4. assign notes (for multisample), adjust settings and use the advanced dialog for detailed control.
