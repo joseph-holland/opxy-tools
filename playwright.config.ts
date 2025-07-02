@@ -8,7 +8,7 @@ export default defineConfig({
   workers: process.env.CI ? 1 : undefined,
   reporter: [['html'], ['junit', { outputFile: 'test-results/junit.xml' }]],
   use: {
-    baseURL: 'http://127.0.0.1:5173',
+    baseURL: 'http://127.0.0.1:4173',
     trace: 'on-first-retry',
     screenshot: 'only-on-failure',
   },
@@ -27,8 +27,9 @@ export default defineConfig({
     },
   ],
   webServer: {
-    command: 'npm run dev',
-    url: 'http://127.0.0.1:5173',
+    command: 'npm run build && npm run preview',
+    url: 'http://127.0.0.1:4173',
     reuseExistingServer: !process.env.CI,
+    timeout: 120 * 1000,
   },
 })
